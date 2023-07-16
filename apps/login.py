@@ -1,0 +1,85 @@
+"""
+log in
+"""
+from aiogram.types import Message as m
+from aiogram.dispatcher import FSMContext as s
+
+from aiogram.types import ReplyKeyboardRemove
+from buttons.keyboardbuttons import keyboardbutton, share_contact_button
+from config import ADMIN_ID
+from database.database import add_user, get_user, user_exists, create_book_table, create_contact_table
+from states import *
+
+
+async def cmd_start(m: m):
+    """
+    :param m:
+    :return:
+    """
+    # create_contact_table()
+    # create_book_table()
+    # create_database()
+    # add_admin(ism="Kewa", familiya='O1', telefon="+9981", aloqa='t.me/mal_un', tg_id='1010090054')
+    # add_category('cat1')
+    # add_category('cat2')
+    # add_category('cat3')
+    # add_product(
+    #     name='p2',
+    #     category_id=1,
+    #     about="lkm",
+    #     price=456,
+    #     photo='nk',
+    # )
+    if m.from_user.id != ADMIN_ID:
+        await m.answer(
+            "Assalomu aleykum admin\nBotga hush kelibsiz\nKerakli menyuni tanlashiniz mumkin.",
+            reply_markup=keyboardbutton(["Audioteka 🎧", "Biz bilan aloqa 📞"])
+        )
+        await Admin_state.main_menu.set()
+    else:
+        if user_exists(m.from_user.id):
+            data = get_user(m.from_user.id)
+            await m.answer(f"Assalomu aleykum {data[2]}! Hush kelibsiz, muhtaram vatandosh!  \n\nSiz bu bot yordamida Omar Xalil ijrosidagi hali oʻzbek tiliga tarjima qilinmagan eng sara va noyob kitoblarning audio va elektron formatlarini harid qilib eshitishingiz mumkin.  \n\nBiz bilan birga boʻlganingiz uchun minnatdormiz! Sizni hali koʻplab foydali manbalar bilan siylay olishimizga ishonamiz.")
+            await m.answer("Kerakli menyuni tanlashingiz mumkin:",
+                           reply_markup=keyboardbutton(["Audioteka 🎧", "Audiokitoblarim 💽", "Qidirish🔍", "Biz bilan aloqa 📞"]))
+            await User_state.main_menu.set()
+        else:
+            await m.answer("Assalomu alaykum! Hush kelibsiz, muhtaram vatandosh! \n\nSiz bu bot yordamida Omar Xalil "
+                           "ijrosidagi hali oʻzbek tiliga tarjima qilinmagan eng sara va noyob kitoblarning audio "
+                           "va elektron formatlarini harid qilib eshitishingiz mumkin. \n\nBiz bilan birga boʻlganingiz"
+                           " uchun minnatdormiz! Sizni hali koʻplab foydali manbalar bilan siylay olishimizga ishonamiz"
+                           ".", reply_markup=keyboardbutton(["Ro'yxatdan o'tish"]))
+            await User_state.register.set()
+
+
+async def register(m: m, state: s):
+    if m.text == "Ro'yxatdan o'tish":
+        await m.answer("Ro'yxatdan o'tish uchun iltimos ism familiyangizni yozib yuboring:", reply_markup=
+        ReplyKeyboardRemove())
+        await User_state.fullname.set()
+    else:
+        await m.answer("Botdan foydalanish uchun iltimos ro'yxatdan o'ting!", reply_markup=keyboardbutton(["Ro'yxatdan o'tish"]))
+
+
+async def fullname(m: m, state: s):
+    fullname = m.text
+    await state.update_data(fullname=fullname)
+    await m.answer("Telefon raqaqamingizni yuboring:", reply_markup=share_contact_button)
+    await User_state.phone_number.set()
+
+
+async def phone_number(m: m, state: s):
+    if m.text:
+        phone_number = m.text
+    elif m.contact:
+        phone_number = m.contact.phone_number
+    else:
+        phone_number = False
+        await m.answer("Iltimos telefon raqamingizni yuboring:", reply_markup=share_contact_button)
+    if phone_number:
+        data = await state.get_data()
+        fullname = data.get("fullname")
+        add_user(tg_id=m.from_user.id, fullname=fullname, phone_number=phone_number)
+        await m.answer("Kerakli menyuni tanlashingiz mumkin:",reply_markup=keyboardbutton(["Audioteka 🎧", "Audiokitoblarim 💽", "Biz bilan aloqa 📞", "Qidirish🔍"]))
+        await User_state.main_menu.set()
+

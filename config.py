@@ -1,0 +1,4 @@
+
+ADMIN_ID = 2081653869
+TOKEN = '6307683917:AAGUqC6pAjL8FkjEIeDlcRa_gwwnYLbGsJ4'
+DATABASE_NAME = "database/database.db"
