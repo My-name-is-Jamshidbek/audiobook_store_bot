@@ -7,7 +7,7 @@ from aiogram.dispatcher import FSMContext as s
 from aiogram.types import ReplyKeyboardRemove
 from buttons.keyboardbuttons import keyboardbutton, share_contact_button
 from config import ADMIN_ID
-from database.database import add_user, get_user, user_exists, create_book_table, create_contact_table
+from database.database import add_user, get_user, user_exists, create_database
 from states import *
 
 
@@ -16,20 +16,7 @@ async def cmd_start(m: m):
     :param m:
     :return:
     """
-    # create_contact_table()
-    # create_book_table()
     # create_database()
-    # add_admin(ism="Kewa", familiya='O1', telefon="+9981", aloqa='t.me/mal_un', tg_id='1010090054')
-    # add_category('cat1')
-    # add_category('cat2')
-    # add_category('cat3')
-    # add_product(
-    #     name='p2',
-    #     category_id=1,
-    #     about="lkm",
-    #     price=456,
-    #     photo='nk',
-    # )
     if m.from_user.id != ADMIN_ID:
         await m.answer(
             "Assalomu aleykum admin\nBotga hush kelibsiz\nKerakli menyuni tanlashiniz mumkin.",

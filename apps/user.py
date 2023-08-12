@@ -67,25 +67,42 @@ async def user_premium_books(m: m, state: s):
         await m.answer("Audiokitob turini tanlang:", reply_markup=keyboardbutton(["Premium audiokitoblar 💰", "Bepul audiokitoblar 🎁", "Chiqish"]))
         await User_state.audiobook_type.set()
     elif m.text in get_premium_books():
-        await m.answer(f"Kitob nomi: {m.text}\n"
-                       f"Kitob ma'lumoti: {get_premium_book_description(m.text)}\n"
-                       f"Narxi: {get_premium_book_price(m.text)}", reply_markup=keyboardbutton([" Audio format 🎧", " Audio va elektron format 📔", "Chiqish"]))
+        await m.answer_photo(
+                        photo=InputFile(get_book_photo(m.text)),
+                        caption=f"<strong>{m.text}</strong>\n"
+                       f"{get_premium_book_description(name=m.text)}\n"
+                       f"Kitob narhi {get_premium_book_price(name=m.text)} so'm",
+                        reply_markup=keyboardbutton([" Audio format 🎧", " Elektron format 📔", "Chiqish"]))
         await state.update_data(premium_book_name=m.text)
         await User_state.premium_book_main_menu.set()
 
 
 async def user_premium_book_main_menu(m: m, state: s):
     data = await state.get_data()
-    book_name = data.get("Premium_book_name")
+    book_name = data.get("premium_book_name")
     if m.text == "Chiqish":
         await m.answer("Chiqildi!")
         await m.answer("Premium audiokitoblar ro'yxati:", reply_markup=keyboardbutton(get_premium_books()+["Chiqish"]))
         await User_state.premium_books.set()
     elif m.text == "Audio format 🎧":
-        await bot.send_audio(m.chat.id, InputFile(get_premium_audiobook_path(book_name)))
-    elif m.text == "Audio va elektron format 📔":
-        await bot.send_audio(m.chat.id, InputFile(get_premium_audiobook_path(book_name)))
+        if len(get_premium_audiobook_path(book_name).split("_"))==1:
+            await bot.send_audio(m.chat.id, InputFile(get_premium_audiobook_path(book_name)))
+        else:    
+            await m.answer("Qismni tanlang:", reply_markup=keyboardbutton([f"{i}-qism" for i in range(1, len(get_premium_audiobook_path(book_name).split("_"))+1)]+["Chiqish"]))
+            await User_state.premium_books_audio.set()
+    elif m.text == "Elektron format 📔":
         await bot.send_document(m.chat.id, InputFile(get_premium_book_file_address_path(book_name)))
+
+async def user_premium_book_audio(m: m, state: s):
+    data = await state.get_data()
+    book_name = data.get("premium_book_name")
+    if m.text == "Chiqish":
+        await m.answer(f"<strong>{book_name}</strong>\n"
+                       f"{get_premium_book_description(book_name)}\n"
+                       f"Kitob {get_premium_book_price(book_name)} so'm", reply_markup=keyboardbutton([" Audio format 🎧", " Elektron format 📔", "Chiqish"]))
+        await User_state.premium_book_main_menu.set()
+    elif m.text in [f"{i}-qism" for i in range(1, len(get_premium_audiobook_path(book_name).split("_"))+1)]:
+        await bot.send_audio(m.chat.id, InputFile(get_premium_audiobook_path(book_name).split("_")[int(m.text.split("-")[0])-1]))          
 
 
 async def user_free_books(m: m, state: s):
@@ -94,9 +111,11 @@ async def user_free_books(m: m, state: s):
         await m.answer("Audiokitob turini tanlang:", reply_markup=keyboardbutton(["Premium audiokitoblar 💰", "Bepul audiokitoblar 🎁", "Chiqish"]))
         await User_state.audiobook_type.set()
     elif m.text in get_free_books():
-        await m.answer(f"Kitob nomi: {m.text}\n"
-                       f"Kitob ma'lumoti: {get_free_book_description(m.text)}\n",
-                       reply_markup=keyboardbutton([" Audio format 🎧", " Audio va elektron format 📔", "Chiqish"]))
+        await m.answer_photo(
+                        photo=InputFile(get_book_photo(m.text, premium=0)),
+                        caption=f"{m.text}\n"
+                        f"{get_free_book_description(m.text)}\n",
+                        reply_markup=keyboardbutton([" Audio format 🎧", " Elektron format 📔", "Chiqish"]))
         await state.update_data(free_book_name=m.text)
         await User_state.free_book_main_menu.set()
 
@@ -110,7 +129,22 @@ async def user_free_book_main_menu(m: m, state: s):
                        reply_markup=keyboardbutton(get_free_books() + ["Chiqish"]))
         await User_state.free_books.set()
     elif m.text == "Audio format 🎧":
-        await bot.send_audio(m.chat.id, InputFile(get_free_audiobook_path(book_name)))
-    elif m.text == "Audio va elektron format 📔":
-        await bot.send_audio(m.chat.id, InputFile(get_free_audiobook_path(book_name)))
+        if len(get_free_audiobook_path(book_name).split("_"))==1:
+            await bot.send_audio(m.chat.id, InputFile(get_free_audiobook_path(book_name)))
+        else:    
+            await m.answer("Qismni tanlang:", reply_markup=keyboardbutton([f"{i}-qism" for i in range(1, len(get_free_audiobook_path(book_name).split("_"))+1)]+["Chiqish"]))
+            await User_state.free_books_audio.set()
+    elif m.text == "Elektron format 📔":
         await bot.send_document(m.chat.id, InputFile(get_free_book_file_address(book_name)))
+
+async def user_free_book_audio(m: m, state: s):
+    data = await state.get_data()
+    book_name = data.get("free_book_name")
+    if m.text == "Chiqish":
+        await m.answer(f"<strong>{book_name}</strong>\n"
+                        f"{get_free_book_description(book_name)}\n",
+                        reply_markup=keyboardbutton([" Audio format 🎧", " Elektron format 📔", "Chiqish"]))
+        await User_state.free_book_main_menu.set()
+    elif m.text in [f"{i}-qism" for i in range(1, len(get_free_audiobook_path(book_name).split("_"))+1)]:
+        await bot.send_audio(m.chat.id, InputFile(get_free_audiobook_path(book_name).split("_")[int(m.text.split("-")[0])-1]))          
+

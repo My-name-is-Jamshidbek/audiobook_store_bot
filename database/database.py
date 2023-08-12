@@ -67,20 +67,168 @@ def create_book_table():
                  file_address TEXT NOT NULL,
                  premium_book INTEGER NOT NULL,
                  book_description TEXT NOT NULL,
+                 book_photo TEXT NOT NULL,
                  book_price REAL NOT NULL)''')
 
     conn.commit()
     conn.close()
 
 
-def add_book(book_name, audiobook_address, file_address, premium_book, book_description, book_price):
+def update_premium_book_price(book_name, new_price):
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    c.execute('''UPDATE books
+                 SET book_price = ?
+                 WHERE book_name = ? AND premium_book = 1''',
+              (new_price, book_name))
+
+    conn.commit()
+    conn.close()
+
+
+def update_premium_book_name(book_name, new_name):
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    c.execute('''UPDATE books
+                 SET book_name = ?
+                 WHERE book_name = ? AND premium_book = 1''',
+              (new_name, book_name))
+
+    conn.commit()
+    conn.close()
+
+
+def update_premium_book_description(book_name, new_description):
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    c.execute('''UPDATE books
+                 SET book_description = ?
+                 WHERE book_name = ? AND premium_book = 1''',
+              (new_description, book_name))
+
+    conn.commit()
+    conn.close()
+
+
+def update_premium_book_file(book_name, new_file):
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    c.execute('''UPDATE books
+                 SET file_address = ?
+                 WHERE book_name = ? AND premium_book = 1''',
+              (new_file, book_name))
+
+    conn.commit()
+    conn.close()
+
+
+def update_premium_book_type(book_name):
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    c.execute('''UPDATE books
+                 SET premium_book = ?
+                 WHERE book_name = ? AND premium_book = 1''',
+              (0, book_name))
+
+    conn.commit()
+    conn.close()
+
+
+def update_premium_book_photo_type(book_name, book_photo):
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    c.execute('''UPDATE books
+                 SET book_photo = ?
+                 WHERE book_name = ? AND premium_book = 1''',
+              (book_photo, book_name))
+
+    conn.commit()
+    conn.close()
+
+def update_free_book_name(book_name, new_name):
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    c.execute('''UPDATE books
+                 SET book_name = ?
+                 WHERE book_name = ? AND premium_book = 0''',
+              (new_name, book_name))
+
+    conn.commit()
+    conn.close()
+
+
+def update_free_book_description(book_name, new_description):
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    c.execute('''UPDATE books
+                 SET book_description = ?
+                 WHERE book_name = ? AND premium_book = 0''',
+              (new_description, book_name))
+
+    conn.commit()
+    conn.close()
+
+
+def update_free_book_file(book_name, new_file):
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    c.execute('''UPDATE books
+                 SET file_address = ?
+                 WHERE book_name = ? AND premium_book = 0''',
+              (new_file, book_name))
+
+    conn.commit()
+    conn.close()
+
+
+def update_free_book_type(book_name, price):
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    c.execute('''UPDATE books
+                 SET premium_book = ?
+                 WHERE book_name = ? AND premium_book = 1''',
+              (1, book_name))
+
+    c.execute('''UPDATE books
+                 SET book_price = ?
+                 WHERE book_name = ? AND premium_book = 1''',
+              (price, book_name))
+
+    conn.commit()
+    conn.close()
+
+
+def update_free_book_photo_type(book_name, book_photo):
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    c.execute('''UPDATE books
+                 SET book_photo = ?
+                 WHERE book_name = ? AND premium_book = 0''',
+              (book_photo, book_name))
+
+    conn.commit()
+    conn.close()
+
+
+def add_book(book_name, audiobook_address, file_address, premium_book, book_description, book_price, book_photo):
     conn = sqlite3.connect(DATABASE_NAME)
     c = conn.cursor()
 
     # Insert a new book into the database
-    c.execute("INSERT INTO books (book_name, audiobook_address, file_address, premium_book, book_description, "
-              "book_price) VALUES (?, ?, ?, ?, ?, ?)",
-              (book_name, audiobook_address, file_address, premium_book, book_description, book_price))
+    c.execute("INSERT INTO books (book_name, audiobook_address, file_address, premium_book, book_description, book_photo,"
+              "book_price) VALUES (?, ?, ?, ?, ?, ?, ?)",
+              (book_name, audiobook_address, file_address, premium_book, book_description, book_photo, book_price))
 
     conn.commit()
     conn.close()
@@ -166,6 +314,19 @@ def get_premium_book_description(name):
     conn.close()
 
     return book_description[0] if book_description else None
+
+
+def get_book_photo(name, premium=1):
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    # Retrieve the book description of a premium book by name
+    c.execute("SELECT book_photo FROM books WHERE premium_book=? AND book_name=?", (premium, name,))
+    book_photo = c.fetchone()
+
+    conn.close()
+
+    return book_photo[0] if book_photo else None
 
 
 def delete_premium_book(book_name):
@@ -333,3 +494,9 @@ def search_book(keyword):
     conn.close()
 
     return books
+
+
+def create_database():
+    create_book_table()
+    create_contact_table()
+    create_user_table()

@@ -1,4 +1,13 @@
-from database.database import get_orders_years, get_orders_months
+_matritsa = [
+    [1, 2, 3, 4],
+    [6, 2, 0, 3]
+]
 
-print(get_orders_years())
-print(get_orders_months("2023"))
+_min = _matritsa[0][0]
+
+for _list in _matritsa:
+    for i in _list:
+        if _min>i:
+            _min = i
+
+print(_min)
