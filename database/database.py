@@ -441,6 +441,22 @@ def get_premium_book_price(name):
         return None  # Book not found or no price available
 
 
+def get_premium_book_id(name):
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    # Retrieve the price from the database based on the book name
+    c.execute("SELECT id FROM books WHERE book_name = ? AND premium_book = 1", (name,))
+    result = c.fetchone()
+
+    conn.close()
+
+    if result:
+        return result[0]  # Return the book price
+    else:
+        return None  # Book not found or no price available
+
+
 # contact us
 def create_contact_table():
     conn = sqlite3.connect(DATABASE_NAME)
@@ -494,9 +510,48 @@ def search_book(keyword):
     conn.close()
 
     return books
+def create_user_premium_book_table():
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    # Create the user_premium_books table if it doesn't exist
+    c.execute('''CREATE TABLE IF NOT EXISTS user_premium_books
+                 (id INTEGER PRIMARY KEY AUTOINCREMENT,
+                 tg_id INTEGER NOT NULL,
+                 book_id INTEGER NOT NULL,
+                 FOREIGN KEY(tg_id) REFERENCES users(tg_id),
+                 FOREIGN KEY(book_id) REFERENCES books(id))''')
+
+    conn.commit()
+    conn.close()
+
+def add_user_premium_book(tg_id, book_id):
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    # Insert a new user_premium_book into the database
+    c.execute("INSERT INTO user_premium_books (tg_id, book_id) VALUES (?, ?)", (tg_id, book_id))
+
+    conn.commit()
+    conn.close()
+
+def get_user_premium_books(tg_id):
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    # Retrieve premium books for a specific user from the database
+    c.execute("SELECT books.* FROM books INNER JOIN user_premium_books ON books.id = user_premium_books.book_id WHERE user_premium_books.tg_id=?", (tg_id,))
+    premium_books = c.fetchall()
+
+    conn.close()
+
+    pb = [i[1] for i in premium_books]
+
+    return pb
 
 
 def create_database():
     create_book_table()
     create_contact_table()
     create_user_table()
+    create_user_premium_book_table()

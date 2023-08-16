@@ -140,9 +140,8 @@ async def admin_book_add_audio(m: m, state: s):
     elif m.text == "Tugatish":
         data = await state.get_data()
         if len(data.get("premium_book_add_audio")) > 1:
-            await m.answer("Kitobning elektron nusxasini (pdf, word) yuborishingiz mumkin:")
+            await m.answer("Kitobning elektron nusxasini (pdf, word) yuborishingiz mumkin:", reply_markup=keyboardbutton(["Bekor qilish"]))
             await Admin_state.premium_book_add_file.set()
-            print(data)
         else:
             await m.answer("Siz hali audio fayl kiritmadingiz!")
     elif m.audio:

@@ -1,7 +1,7 @@
 """
 app file
 """
-from aiogram.types import ContentType as ct
+from aiogram.types import ContentType as ct, PreCheckoutQuery
 
 from apps.admin import *
 from apps.user import *
@@ -11,9 +11,26 @@ from apps.login import cmd_start, fullname, phone_number, register
 from apps.user import user_main_menu
 from states import User_state, Admin_state
 
-
 # cmd start
-dp.register_message_handler(cmd_start, content_types=[ct.TEXT])
+dp.register_message_handler(cmd_start, commands=['start'])
+
+"""
+PAYMENT
+"""
+
+@dp.pre_checkout_query_handler(lambda query: True)
+async def pre_check_query(pre_checkout_q: PreCheckoutQuery):
+    await bot.answer_pre_checkout_query(pre_checkout_q.id, ok=True)
+
+@dp.message_handler(content_types=[ct.SUCCESSFUL_PAYMENT])
+async def succesfull_pay(m: m):
+    try:
+        add_user_premium_book(tg_id=m.from_user.id, book_id=get_premium_book_id(m.successful_payment.invoice_payload))
+        await m.answer(f"{m.successful_payment.invoice_payload} nomli kitob uchun {m.successful_payment.total_amount // 100} {m.successful_payment.currency} to'lov qilindi kitobni \"Audiokitoblarim 💽\" bo'limidan topishingiz mumkin.", reply_markup=keyboardbutton(["Audioteka 🎧", "Audiokitoblarim 💽", "Biz bilan aloqa 📞", "Qidirish🔍"]))
+    except:
+        await m.answer(f"Tizimda xatolik yuzaga keldi iltimos admin bilan bog'laning", reply_markup=keyboardbutton(["Audioteka 🎧", "Audiokitoblarim 💽", "Biz bilan aloqa 📞", "Qidirish🔍"]))
+    await User_state.main_menu.set()
+
 
 """
 ADMIN APPS
@@ -140,7 +157,7 @@ dp.register_message_handler(user_free_books, content_types=[ct.TEXT], state=User
 
 dp.register_message_handler(user_premium_book_main_menu, content_types=[ct.TEXT], state=User_state.premium_book_main_menu)
 
-dp.register_message_handler(user_premium_books, content_types=[ct.TEXT], state=User_state.premium_books)
+dp.register_message_handler(user_premium_books, content_types=[ct.TEXT])
 
 dp.register_message_handler(register, content_types=[ct.TEXT], state=User_state.register)
 
@@ -149,3 +166,5 @@ dp.register_message_handler(search_books, content_types=[ct.TEXT], state=User_st
 dp.register_message_handler(user_premium_book_audio, content_types=[ct.TEXT], state=User_state.premium_books_audio)
 
 dp.register_message_handler(user_free_book_audio, content_types=[ct.TEXT], state=User_state.free_books_audio)
+
+dp.register_message_handler(user_audiobooks, content_types=[ct.TEXT], state=User_state.audiobooks)
