@@ -4,7 +4,8 @@ buttons inline
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 
-def buy_book(book_id, user_id):
-    button = InlineKeyboardButton(text='Click me!', callback_data='button_clicked')
-
-    keyboard = InlineKeyboardMarkup().add(button)
+def inlinekeyboardbutton(btns):
+    keyboard = InlineKeyboardMarkup(row_width=1)
+    buttons = [InlineKeyboardButton(text=btn["text"], callback_data=btn["data"]) for btn in btns]
+    keyboard.add(*buttons)
+    return keyboard

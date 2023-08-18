@@ -5,6 +5,7 @@ from aiogram.types import Message as m, InputFile
 from aiogram.dispatcher import FSMContext as s
 
 from buttons.keyboardbuttons import keyboardbutton
+from buttons.inlinekeyboardbuttons import inlinekeyboardbutton
 from database.database import *
 from loader import bot
 from states import *
@@ -84,7 +85,13 @@ async def user_audiobook_type(m: m, state: s):
 
 
 async def user_premium_books(m: m, state: s):
-    if m.text == "Chiqish":
+    if m.from_user.id == ADMIN_ID:
+        await m.answer(
+            "Assalomu aleykum admin\nBotga hush kelibsiz\nKerakli menyuni tanlashiniz mumkin.",
+            reply_markup=keyboardbutton(["Audioteka 🎧", "Biz bilan aloqa 📞"])
+        )
+        await Admin_state.main_menu.set()
+    elif m.text == "Chiqish":
         await m.answer("Chiqildi!")
         await m.answer("Audiokitob turini tanlang:", reply_markup=keyboardbutton(["Premium audiokitoblar 💰", "Bepul audiokitoblar 🎁", "Chiqish"]))
         await User_state.audiobook_type.set()
@@ -100,20 +107,17 @@ async def user_premium_books(m: m, state: s):
             await state.update_data(premium_book_name=m.text)
             await User_state.premium_book_main_menu.set()
         else:
-            await bot.send_invoice(
-                m.chat.id,
-                title=f"{m.text}",
-                description=f"{get_premium_book_description(name=m.text)}",
-                provider_token=PAY_TOKEN,
-                currency="uzs",
-                photo=InputFile(get_book_photo(m.text)),
-                is_flexible=False,
-                prices=[get_price_label(f"{m.text}", int(get_premium_book_price(name=m.text)))],
-                start_parameter="premium-book-subcription",
-                payload=m.text,
-            )
+            await m.answer_photo(
+                        photo=InputFile(get_book_photo(m.text)),
+                        caption=f"<strong>{m.text}</strong>\n"
+                        f"{get_premium_book_description(name=m.text)}\n"
+                        f"Kitob narhi {get_premium_book_price(name=m.text)} so'm",
+                        reply_markup=inlinekeyboardbutton([
+                            {"text": "Click", "data": f"click_{get_premium_book_id(m.text)}"},
+                            {"text": "Payme", "data": f"payme_{get_premium_book_id(m.text)}"}
+                            ]))
     else:
-        if m.from_user.id != ADMIN_ID:
+        if m.from_user.id == ADMIN_ID:
             await m.answer(
                 "Assalomu aleykum admin\nBotga hush kelibsiz\nKerakli menyuni tanlashiniz mumkin.",
                 reply_markup=keyboardbutton(["Audioteka 🎧", "Biz bilan aloqa 📞"])

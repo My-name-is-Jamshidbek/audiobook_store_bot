@@ -457,6 +457,23 @@ def get_premium_book_id(name):
         return None  # Book not found or no price available
 
 
+def get_premium_book_name(_id):
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    # Retrieve the price from the database based on the book _id
+    c.execute("SELECT book_name FROM books WHERE id = ? AND premium_book = 1", (_id,))
+    result = c.fetchone()
+
+    conn.close()
+
+    if result:
+        return result[0]  # Return the book price
+    else:
+        return None  # Book not found or no price available
+
+
+
 # contact us
 def create_contact_table():
     conn = sqlite3.connect(DATABASE_NAME)

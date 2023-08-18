@@ -8,7 +8,7 @@ from apps.user import *
 from loader import dp
 
 from apps.login import cmd_start, fullname, phone_number, register
-from apps.user import user_main_menu
+from apps.payment_helper import on_callback_query
 from states import User_state, Admin_state
 
 # cmd start
@@ -168,3 +168,5 @@ dp.register_message_handler(user_premium_book_audio, content_types=[ct.TEXT], st
 dp.register_message_handler(user_free_book_audio, content_types=[ct.TEXT], state=User_state.free_books_audio)
 
 dp.register_message_handler(user_audiobooks, content_types=[ct.TEXT], state=User_state.audiobooks)
+
+dp.register_callback_query_handler(on_callback_query, text_startswith=["click_", "payme_"])

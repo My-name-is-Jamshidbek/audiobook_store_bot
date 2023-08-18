@@ -17,7 +17,7 @@ async def cmd_start(m: m):
     :return:
     """
     # create_database()
-    if m.from_user.id != ADMIN_ID:
+    if m.from_user.id == ADMIN_ID:
         await m.answer(
             "Assalomu aleykum admin\nBotga hush kelibsiz\nKerakli menyuni tanlashiniz mumkin.",
             reply_markup=keyboardbutton(["Audioteka 🎧", "Biz bilan aloqa 📞"])
