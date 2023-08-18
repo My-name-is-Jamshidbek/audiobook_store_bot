@@ -6,7 +6,7 @@ from aiogram.dispatcher import FSMContext as s
 
 from aiogram.types import ReplyKeyboardRemove
 from buttons.keyboardbuttons import keyboardbutton, share_contact_button
-from config import ADMIN_ID
+from config import ADMIN_IDS
 from database.database import add_user, get_user, user_exists, create_database
 from states import *
 
@@ -17,7 +17,7 @@ async def cmd_start(m: m):
     :return:
     """
     # create_database()
-    if m.from_user.id == ADMIN_ID:
+    if m.from_user.id in ADMIN_IDS:
         await m.answer(
             "Assalomu aleykum admin\nBotga hush kelibsiz\nKerakli menyuni tanlashiniz mumkin.",
             reply_markup=keyboardbutton(["Audioteka 🎧", "Biz bilan aloqa 📞"])

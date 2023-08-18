@@ -10,7 +10,7 @@ from database.database import *
 from loader import bot
 from states import *
 from .payment_helper import get_price_label
-from config import PAY_CLICK_LIVE_TOKEN as PAY_TOKEN, ADMIN_ID
+from config import PAY_CLICK_LIVE_TOKEN as PAY_TOKEN, ADMIN_IDS
 
 
 async def user_main_menu(m: m, state: s):
@@ -85,7 +85,7 @@ async def user_audiobook_type(m: m, state: s):
 
 
 async def user_premium_books(m: m, state: s):
-    if m.from_user.id == ADMIN_ID:
+    if m.from_user.id in ADMIN_IDS:
         await m.answer(
             "Assalomu aleykum admin\nBotga hush kelibsiz\nKerakli menyuni tanlashiniz mumkin.",
             reply_markup=keyboardbutton(["Audioteka 🎧", "Biz bilan aloqa 📞"])
@@ -117,7 +117,7 @@ async def user_premium_books(m: m, state: s):
                             {"text": "Payme", "data": f"payme_{get_premium_book_id(m.text)}"}
                             ]))
     else:
-        if m.from_user.id == ADMIN_ID:
+        if m.from_user.id in ADMIN_IDS:
             await m.answer(
                 "Assalomu aleykum admin\nBotga hush kelibsiz\nKerakli menyuni tanlashiniz mumkin.",
                 reply_markup=keyboardbutton(["Audioteka 🎧", "Biz bilan aloqa 📞"])
