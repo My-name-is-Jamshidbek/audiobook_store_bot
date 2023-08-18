@@ -9,3 +9,10 @@ def inlinekeyboardbutton(btns):
     buttons = [InlineKeyboardButton(text=btn["text"], callback_data=btn["data"]) for btn in btns]
     keyboard.add(*buttons)
     return keyboard
+
+
+def get_group_link_button(link):
+    keyboard = InlineKeyboardMarkup(row_width=1)
+    group_link_button = InlineKeyboardButton(text="Guruhga qo'shiling", url=link)
+    keyboard.add(group_link_button)
+    return keyboard

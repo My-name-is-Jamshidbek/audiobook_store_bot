@@ -16,7 +16,7 @@ async def cmd_start(m: m):
     :param m:
     :return:
     """
-    # create_database()
+    create_database()
     if m.from_user.id in ADMIN_IDS:
         await m.answer(
             "Assalomu aleykum admin\nBotga hush kelibsiz\nKerakli menyuni tanlashiniz mumkin.",

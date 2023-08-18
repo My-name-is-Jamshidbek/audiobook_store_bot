@@ -80,11 +80,8 @@ dp.register_message_handler(admin_free_book_add_name, content_types=[ct.TEXT], s
 # Admin free book add description
 dp.register_message_handler(admin_free_book_add_description, content_types=[ct.TEXT], state=Admin_state.free_book_add_description)
 
-# Admin free book add audio
-dp.register_message_handler(admin_free_book_add_audio, content_types=[ct.AUDIO, ct.TEXT], state=Admin_state.free_book_add_audio)
-
-# Admin free book add file
-dp.register_message_handler(admin_free_book_add_file, content_types=[ct.DOCUMENT, ct.TEXT], state=Admin_state.free_book_add_file)
+# Admin free book add group
+dp.register_message_handler(admin_free_book_add_group, content_types=[ct.TEXT], state=Admin_state.free_book_add_group)
 
 # Admin free book add photo
 dp.register_message_handler(admin_free_book_add_photo, content_types=[ct.DOCUMENT, ct.TEXT], state=Admin_state.free_book_add_photo)
@@ -104,9 +101,6 @@ dp.register_message_handler(admin_contact_us_change, content_types=[ct.TEXT], st
 # Admin audiobooks
 dp.register_message_handler(admin_premium_book_audio, content_types=[ct.TEXT], state=Admin_state.premium_book_audio)
 
-# Admin free audiobooks
-dp.register_message_handler(admin_free_book_audio, content_types=[ct.TEXT], state=Admin_state.free_book_audio)
-
 # Admin books update
 dp.register_message_handler(admin_book_update_main_menu, content_types=[ct.TEXT], state=Admin_state.admin_book_update_main_menu)
 
@@ -125,17 +119,13 @@ dp.register_message_handler(premium_book_update_photo, content_types=[ct.TEXT, c
 # Admin free books update
 dp.register_message_handler(admin_free_book_update_main_menu, content_types=[ct.TEXT], state=Admin_state.admin_free_book_update_main_menu)
 
-dp.register_message_handler(free_book_update_file, content_types=[ct.TEXT, ct.DOCUMENT], state=Admin_state.free_book_update_file)
-
 dp.register_message_handler(free_book_update_name, content_types=[ct.TEXT], state=Admin_state.free_book_update_name)
 
 dp.register_message_handler(free_book_update_description, content_types=[ct.TEXT], state=Admin_state.free_book_update_description)
 
-dp.register_message_handler(free_book_update_type, content_types=[ct.TEXT], state=Admin_state.free_book_update_type)
+dp.register_message_handler(free_book_update_group, content_types=[ct.TEXT], state=Admin_state.free_book_update_group)
 
 dp.register_message_handler(free_book_update_photo, content_types=[ct.TEXT, ct.DOCUMENT], state=Admin_state.free_book_update_photo)
-
-dp.register_message_handler(update_free_book_type_, content_types=[ct.TEXT], state=Admin_state.update_free_book_type)
 
 """
 USER APPS
@@ -151,8 +141,6 @@ dp.register_message_handler(user_main_menu, content_types=[ct.TEXT], state=User_
 
 dp.register_message_handler(user_audiobook_type, content_types=[ct.TEXT], state=User_state.audiobook_type)
 
-dp.register_message_handler(user_free_book_main_menu, content_types=[ct.TEXT], state=User_state.free_book_main_menu)
-
 dp.register_message_handler(user_free_books, content_types=[ct.TEXT], state=User_state.free_books)
 
 dp.register_message_handler(user_premium_book_main_menu, content_types=[ct.TEXT], state=User_state.premium_book_main_menu)
@@ -164,8 +152,6 @@ dp.register_message_handler(register, content_types=[ct.TEXT], state=User_state.
 dp.register_message_handler(search_books, content_types=[ct.TEXT], state=User_state.search_books)
 
 dp.register_message_handler(user_premium_book_audio, content_types=[ct.TEXT], state=User_state.premium_books_audio)
-
-dp.register_message_handler(user_free_book_audio, content_types=[ct.TEXT], state=User_state.free_books_audio)
 
 dp.register_message_handler(user_audiobooks, content_types=[ct.TEXT], state=User_state.audiobooks)
 
