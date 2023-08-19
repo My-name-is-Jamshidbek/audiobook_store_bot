@@ -62,7 +62,7 @@ async def admin_premium_books(m: m, state: s):
         await m.answer("Kitob nomini kiriting:", reply_markup=keyboardbutton(["Bekor qilish"]))
         await Admin_state.admin_book_add_name.set()
     elif m.text in get_premium_books():
-        await m.answer("Kerakli menyuni tanlang:", reply_markup=keyboardbutton(["Elektron", "Audio va elektron", "Kitobni o'chirish", "Chiqish"]))
+        await m.answer("Kerakli menyuni tanlang:", reply_markup=keyboardbutton(["Audioversiya", "Audio va elektron versiya", "Tahrirlash", "Kitobni o'chirish", "Chiqish"]))
         await state.update_data(premium_book_name = m.text)
         await Admin_state.book_main_menu.set()
 
@@ -77,20 +77,26 @@ async def admin_book_main_menu(m: m, state: s):
     elif m.text == "Kitobni o'chirish":
         await m.answer("Kitobni o'chirishga aminmisiz?", reply_markup=keyboardbutton(["HA kitob o'chirilsin", "YO'Q bekor qilish"]))
         await Admin_state.book_delete.set()
-    elif m.text == "Elektron":
+    elif m.text == "Audioversiya":
         r_m = f"<strong>“{data.get('premium_book_name')}”</strong>\n\n{get_premium_book_description(book_name=data.get('premium_book_name'))}\n\n💰Asar narxi - {get_premium_book_price(book_name=data.get('premium_book_name'))} soʻm"
         await m.answer_photo(
             photo=InputFile(get_premium_book_photo(book_name=data.get('premium_book_name'))),
             caption=r_m,
-            reply_markup=keyboardbutton(["Ma'lumotini o'zgartirish", "Narxini o'zgartirish", "File ni almashtirish", "Chiqish"])
         )
-        await m.answer_document(InputFile(get_premium_book_file(book_name=data.get('premium_book_name'))), protect_content=True)
-    elif m.text == "Audio va elektron":
+        audios = get_premium_audiobook_address(data.get('premium_book_name'))
+        i = 0
+        for audio in audios.split("_"):
+            i+=1
+            await m.answer_audio(
+                audio=InputFile(audio),
+                caption=f"{i}-qism",
+                protect_content=True,
+            )
+    elif m.text == "Audio va elektron versiya":
         r_m = f"Siz bu yerdan <strong>“{data.get('premium_book_name')}”</strong> kitobining audio va elektron versiyasini birgalikda harid qilib olishingiz mumkin.\n\n{get_premium_audiobook_description(data.get('premium_book_name'))}\n\n💰Audiokitob narxi - {get_premium_audiobook_price(book_name=data.get('premium_book_name'))} soʻm"
         await m.answer_photo(
             photo=InputFile(get_premium_audiobook_photo(data.get('premium_book_name'))),
             caption=r_m,
-            reply_markup=keyboardbutton(["Ma'lumotini o'zgartirish", "Narxini o'zgartirish", "Chiqish"])
         )
         audios = get_premium_audiobook_address(data.get('premium_book_name'))
         await m.answer_document(InputFile(get_premium_book_file(book_name=data.get('premium_book_name'))), protect_content=True)
@@ -133,7 +139,7 @@ async def admin_book_add_name(m: m, state: s):
             await m.answer("Bunday nomli premium kitob mavjud iltimos boshqa nom tanlang!")
         else:
             await state.update_data(admin_book_add_name=m.text)
-            await m.answer("Kitob muqovasi uchun fayl shaklida rasm yuboring:")
+            await m.answer("Audioversiya muqovasi uchun fayl shaklida rasm yuboring:")
             await Admin_state.admin_book_add_photo.set()
 
 
@@ -156,7 +162,7 @@ async def admin_book_add_photo(m: m, state: s):
                 await bot.download_file_by_id(file_id, save_path, timeout=1000)
                 await state.update_data(admin_book_add_photo=save_path)
                 await m.answer("Rasm muvaffaqiyatli saqlandi!")
-                await m.answer("Kitobning sarlavhasi uchun malumotlarni yuboring:")
+                await m.answer("Audioversiya sarlavhasi uchun malumotlarni yuboring:")
                 await Admin_state.admin_book_add_description.set()
             except:
                 await m.answer("Ayrim muammolar sababli faylni yuklab olishni iloji bo'lmadi iltimos qayta yuboring!")
@@ -174,7 +180,7 @@ async def admin_book_add_description(m: m, state: s):
         await Admin_state.premium_books.set()
     else:
         await state.update_data(admin_book_add_description=m.text)
-        await m.answer("Kitob narhini yuboring:")
+        await m.answer("Audioversiya narhini yuboring:")
         await Admin_state.admin_book_add_price.set()
 
 
@@ -187,7 +193,7 @@ async def admin_book_add_price(m: m, state: s):
     else:
         if m.text.isdigit():
             await state.update_data(admin_book_add_price=m.text)
-            await m.answer("Kitob elektron faylini yuboring:")
+            await m.answer("Kitobning elektron faylini yuboring:")
             await Admin_state.admin_book_add_file.set()
         else:
             await m.answer("Kitob narhini raqam ko'rinishida kiriting!")
@@ -211,7 +217,7 @@ async def admin_book_add_file(m: m, state: s):
             try:
                 await bot.download_file_by_id(file_id, save_path, timeout=1000)
                 await state.update_data(admin_book_add_file=save_path)
-                await m.answer("File muvaffaqiyatli saqlandi!\nAudiokitob sarlavhasi uchun fayl shaklida rasm yuboring:")
+                await m.answer("File muvaffaqiyatli saqlandi!\nAudio va elektron versiya sarlavhasi uchun fayl shaklida rasm yuboring:")
                 await Admin_state.admin_audiobook_add_photo.set()
             except:
                 await m.answer("Ayrim muammolar sababli faylni yuklab olishni iloji bo'lmadi iltimos qayta yuboring!")
@@ -241,7 +247,7 @@ async def admin_audiobook_add_photo(m: m, state: s):
                 await bot.download_file_by_id(file_id, save_path, timeout=1000)
                 await state.update_data(admin_audiobook_add_photo=save_path)
                 await m.answer("Rasm muvaffaqiyatli saqlandi!")
-                await m.answer("Audiokitobning sarlavhasi uchun malumotlarni yuboring:")
+                await m.answer("Audio va elektron versiya sarlavhasi uchun malumotlarni yuboring:")
                 await Admin_state.admin_audiobook_add_description.set()
             except:
                 await m.answer("Ayrim muammolar sababli faylni yuklab olishni iloji bo'lmadi iltimos qayta yuboring!")
@@ -259,7 +265,7 @@ async def admin_audiobook_add_description(m: m, state: s):
         await Admin_state.premium_books.set()
     else:
         await state.update_data(admin_audiobook_add_description=m.text)
-        await m.answer("Audiokitob narhini kiriting:")
+        await m.answer("Audio va elektron versiya narhini kiriting:")
         await Admin_state.admin_audiobook_add_price.set()
 
 
@@ -272,7 +278,7 @@ async def admin_audiobook_add_price(m: m, state: s):
     else:
         if m.text.isdigit():
             await state.update_data(admin_audiobook_add_price=m.text)
-            await m.answer("Kitob audio faylini (mp3) formatida yuboring:\nHar bir fayl bir qism hisoblanadi!")
+            await m.answer("Audio va elektron versiya audio faylini (mp3) formatida yuboring:\nHar bir fayl bir qism hisoblanadi!")
             await Admin_state.admin_audiobook_add_audio.set()
         else:
             await m.answer("Kitob narhini raqam ko'rinishida kiriting!")
