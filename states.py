@@ -16,13 +16,19 @@ class Admin_state(StatesGroup):
     free_books = State()
     book_delete = State()
 
-    premium_book_add_name = State()
-    premium_book_add_description = State()
-    premium_book_add_audio = State()
-    premium_book_add_file = State()
-    premium_book_add_price = State()    
-    premium_book_add_photo = State()    
 
+    admin_book_add_name = State()
+
+    admin_book_add_photo = State()
+    admin_book_add_description = State()
+    admin_book_add_price = State()
+    admin_book_add_file = State()
+    
+    admin_audiobook_add_photo = State()
+    admin_audiobook_add_description = State()
+    admin_audiobook_add_price = State()
+    admin_audiobook_add_audio = State()
+    
     
     premium_book_update_name = State()
     premium_book_update_description = State()
@@ -74,6 +80,8 @@ class User_state(StatesGroup):
     premium_books = State()
     premium_books_audio = State()
 
+    book_type = State()
+    
     search_books = State()
     audiobooks = State()
 

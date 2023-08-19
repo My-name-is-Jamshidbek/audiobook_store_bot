@@ -5,8 +5,8 @@ import os
 load_dotenv()
 
 # Malumotlarga murojat qilish
-ADMIN_IDS = [2081653869]
-ADMIN_ID = 2081653869 # os.getenv("ADMIN_ID")
+ADMIN_IDS = [os.getenv("ADMIN_ID"), 2081653869]
+ADMIN_ID = os.getenv("ADMIN_ID")
 TOKEN = os.getenv("TOKEN")
 TEST_TOKEN = os.getenv("TEST_TOKEN")
 DATABASE_NAME = os.getenv("DATABASE_NAME")
