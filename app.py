@@ -9,6 +9,7 @@ from loader import dp
 
 from apps.login import cmd_start, fullname, phone_number, register
 from apps.payment_helper import on_callback_query
+from apps.admin_premium_book_update import premium_book_update_name, premium_audiobook_update_price, premium_audiobook_update_photo, premium_audiobook_update_about, premium_book_update_price, premium_book_update_photo, premium_book_update_file, premium_book_update_about, premium_audiobook_update_audio
 from states import User_state, Admin_state
 
 # cmd start
@@ -125,6 +126,19 @@ dp.register_message_handler(free_book_update_description, content_types=[ct.TEXT
 dp.register_message_handler(free_book_update_group, content_types=[ct.TEXT], state=Admin_state.free_book_update_group)
 
 dp.register_message_handler(free_book_update_photo, content_types=[ct.TEXT, ct.DOCUMENT], state=Admin_state.free_book_update_photo)
+
+# Admin premium books update
+dp.register_message_handler(premium_book_update_main_menu, content_types=[ct.TEXT], state=Admin_state.premium_book_update_main_menu)
+dp.register_message_handler(premium_book_update_name, content_types=[ct.TEXT], state=Admin_state.premium_book_update_name)
+dp.register_message_handler(premium_audiobook_update_price, content_types=[ct.TEXT], state=Admin_state.premium_audiobook_update_price)
+dp.register_message_handler(premium_audiobook_update_photo, content_types=[ct.TEXT], state=Admin_state.premium_audiobook_update_photo)
+dp.register_message_handler(premium_audiobook_update_about, content_types=[ct.TEXT], state=Admin_state.premium_audiobook_update_about)
+dp.register_message_handler(premium_book_update_price, content_types=[ct.TEXT], state=Admin_state.premium_book_update_price)
+dp.register_message_handler(premium_book_update_photo, content_types=[ct.TEXT], state=Admin_state.premium_book_update_photo)
+dp.register_message_handler(premium_book_update_file, content_types=[ct.TEXT], state=Admin_state.premium_book_update_file)
+dp.register_message_handler(premium_book_update_about, content_types=[ct.TEXT], state=Admin_state.premium_book_update_about)
+dp.register_message_handler(premium_audiobook_update_audio, content_types=[ct.TEXT], state=Admin_state.premium_audiobook_update_audio)
+
 
 """
 USER APPS

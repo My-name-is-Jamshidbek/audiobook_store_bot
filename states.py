@@ -30,15 +30,16 @@ class Admin_state(StatesGroup):
     admin_audiobook_add_audio = State()
     
     
+    premium_book_update_main_menu = State()
     premium_book_update_name = State()
-    premium_book_update_description = State()
-    premium_book_update_audio = State()
-    premium_book_update_file = State()
+    premium_audiobook_update_price = State()
+    premium_audiobook_update_photo = State()
+    premium_audiobook_update_about = State()
     premium_book_update_price = State()
-    premium_book_update_type = State()
     premium_book_update_photo = State()
-    admin_book_update_main_menu = State()
-
+    premium_book_update_file = State()
+    premium_book_update_about = State()
+    premium_audiobook_update_audio = State()
     premium_book_audio = State()
 
     free_book_add_name = State()

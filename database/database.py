@@ -154,7 +154,7 @@ def get_premium_book_price(book_name):
     conn.close()
 
     if price:
-        formatted_price = float(price[0])
+        formatted_price = int(price[0])
         return formatted_price
     else:
         return None
@@ -200,7 +200,7 @@ def get_premium_audiobook_price(book_name):
     conn.close()
 
     if audiobook_price:
-        formatted_price = float(audiobook_price[0])
+        formatted_price = int(audiobook_price[0])
         return formatted_price
     else:
         return None
@@ -285,7 +285,7 @@ def get_premium_book_price_by_id(book_id):
     conn.close()
 
     if price:
-        formatted_price = float(price[0])
+        formatted_price = int(price[0])
         return formatted_price
     else:
         return None
@@ -315,7 +315,7 @@ def get_premium_audiobook_price_by_id(book_id):
     conn.close()
 
     if price:
-        formatted_price = float(price[0])
+        formatted_price = int(price[0])
         return formatted_price
     else:
         return None
@@ -335,6 +335,96 @@ def get_premium_book_id(book_name):
     else:
         return None
     
+
+def update_premium_book_name(old_name, new_name):
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    c.execute("UPDATE premium_books SET book_name = ? WHERE book_name = ?", (new_name, old_name))
+    conn.commit()
+
+    conn.close()
+
+
+def update_premium_audiobook_price(book_name, new_price):
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    c.execute("UPDATE premium_books SET audiobook_price = ? WHERE book_name = ?", (new_price, book_name))
+    conn.commit()
+
+    conn.close()
+
+
+def update_premium_book_price(book_name, new_price):
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    c.execute("UPDATE premium_books SET book_price = ? WHERE book_name = ?", (new_price, book_name))
+    conn.commit()
+
+    conn.close()
+
+
+def update_premium_audiobook_photo_type(book_name, audiobook_photo):
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    c.execute("UPDATE premium_books SET audiobook_photo = ? WHERE book_name = ?", (audiobook_photo, book_name))
+    conn.commit()
+
+    conn.close()
+
+
+def update_premium_book_photo_type(book_name, book_photo):
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    c.execute("UPDATE premium_books SET book_photo = ? WHERE book_name = ?", (book_photo, book_name))
+    conn.commit()
+
+    conn.close()
+
+
+def update_premium_audiobook_description(book_name, new_description):
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    c.execute("UPDATE premium_books SET audibook_description = ? WHERE book_name = ?", (new_description, book_name))
+    conn.commit()
+
+    conn.close()
+
+
+def update_premium_book_description(book_name, new_description):
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    c.execute("UPDATE premium_books SET book_description = ? WHERE book_name = ?", (new_description, book_name))
+    conn.commit()
+
+    conn.close()
+
+
+def update_premium_book_file(book_name, audiobook_address):
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    c.execute("UPDATE premium_books SET audiobook_address = ? WHERE book_name = ?", (audiobook_address, book_name))
+    conn.commit()
+
+    conn.close()
+
+
+def update_premium_audiobook_audio(book_name, new_audiobook_address):
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    c.execute("UPDATE premium_books SET audiobook_address = ? WHERE book_name = ?", (new_audiobook_address, book_name))
+    conn.commit()
+
+    conn.close()
+
 
 """
 FREE BOOKS

@@ -62,7 +62,7 @@ async def admin_premium_books(m: m, state: s):
         await m.answer("Kitob nomini kiriting:", reply_markup=keyboardbutton(["Bekor qilish"]))
         await Admin_state.admin_book_add_name.set()
     elif m.text in get_premium_books():
-        await m.answer("Kerakli menyuni tanlang:", reply_markup=keyboardbutton(["Audioversiya", "Audio va elektron versiya", "Tahrirlash", "Kitobni o'chirish", "Chiqish"]))
+        await m.answer("Kerakli menyuni tanlang:", reply_markup=keyboardbutton(["Audioversiya", "Audio va elektron versiya", "Kitobni tahrirlash", "Kitobni o'chirish", "Chiqish"]))
         await state.update_data(premium_book_name = m.text)
         await Admin_state.book_main_menu.set()
 
@@ -108,6 +108,57 @@ async def admin_book_main_menu(m: m, state: s):
                 caption=f"{i}-qism",
                 protect_content=True,
             )
+    elif m.text == "Kitobni tahrirlash":
+        await m.answer("Kitobni tahrirlamoqchi bo'lgan malumotingizni tanlang:",
+                       reply_markup=keyboardbutton([
+                           "Kitob nomi",
+                           "Audiokitob narhi",
+                           "Audiokitob rasmi",
+                           "Audiokitob audiosi",
+                           "Audiokitob malumoti",
+                           "Audio narhi",
+                           "Audio rasmi",
+                           "Elektron fayli",
+                           "Audio malumoti",
+                           "Chiqish"
+                       ]))
+        await Admin_state.premium_book_update_main_menu.set()
+
+
+async def premium_book_update_main_menu(m: m, state: s):
+    data = await state.get_data()
+    book_name = data.get("premium_book_name")
+    if m.text == "Chiqish":
+        await m.answer("Chiqildi!")
+        await m.answer("Kerakli menyuni tanlang:", reply_markup=keyboardbutton(["Audioversiya", "Audio va elektron versiya", "Tahrirlash", "Kitobni o'chirish", "Chiqish"]))
+        await Admin_state.book_main_menu.set()
+    elif m.text == "Kitob nomi":
+        await m.answer("Kitobning yangi nomini kiriting:", reply_markup=keyboardbutton(["Bekor qilish"]))
+        await Admin_state.premium_book_update_name.set()
+    elif m.text == "Auidiokitob narhi":
+        await m.answer("Kitobning yangi nomini kiriting:")
+        await Admin_state.premium_audiobook_update_price.set()
+    elif m.text == "Audiokitob rasmi":
+        await m.answer("Kitobning yangi Audiokitob rasmini kiriting:", reply_markup=keyboardbutton(["Bekor qilish"]))
+        await Admin_state.premium_audiobook_update_photo.set()
+    elif m.text == "Audiokitob audiosi":
+        await m.answer("Kitobning yangi Audiokitob audiosini kiriting:\nHar bitta fayl 1 qism hisoblanadi", reply_markup=keyboardbutton(["Bekor qilish"]))
+        await Admin_state.premium_audiobook_update_audio.set()
+    elif m.text == "Audiokitob malumoti":
+        await m.answer("Kitobning yangi Audiokitob malumotini kiriting:", reply_markup=keyboardbutton(["Bekor qilish"]))
+        await Admin_state.premium_audiobook_update_about.set()
+    elif m.text == "Audio narhi":
+        await m.answer("Kitobning yangi Audio narhini kiriting:", reply_markup=keyboardbutton(["Bekor qilish"]))
+        await Admin_state.premium_book_update_price.set()
+    elif m.text == "Audio rasmi":
+        await m.answer("Kitobning yangi Audio rasmini kiriting:", reply_markup=keyboardbutton(["Bekor qilish"]))
+        await Admin_state.premium_book_update_photo.set()
+    elif m.text == "Elektron fayli":
+        await m.answer("Kitobning yangi Elektron faylini kiriting:", reply_markup=keyboardbutton(["Bekor qilish"]))
+        await Admin_state.premium_book_update_file.set()
+    elif m.text == "Audio malumoti":
+        await m.answer("Kitobning yangi Audio malumotini kiriting:", reply_markup=keyboardbutton(["Bekor qilish"]))
+        await Admin_state.premium_book_update_about.set()
 
 
 
