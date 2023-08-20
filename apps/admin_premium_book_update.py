@@ -87,7 +87,6 @@ async def premium_audiobook_update_about(m: m, state: s):
         update_premium_audiobook_description(book_name, m.text)
         await m.answer("Kerakli menyuni tanlang:", reply_markup=keyboardbutton(["Audioversiya", "Audio va elektron versiya", "Tahrirlash", "Kitobni o'chirish", "Chiqish"]))
         await Admin_state.book_main_menu.set()
-        await state.update_data(premium_book_name = m.text)
 
 
 async def premium_book_update_price(m: m, state: s):
