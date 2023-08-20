@@ -137,11 +137,7 @@ dp.register_message_handler(premium_book_update_price, content_types=[ct.TEXT], 
 dp.register_message_handler(premium_book_update_photo, content_types=[ct.TEXT, ct.DOCUMENT], state=Admin_state.premium_book_update_photo)
 dp.register_message_handler(premium_book_update_file, content_types=[ct.TEXT, ct.DOCUMENT], state=Admin_state.premium_book_update_file)
 dp.register_message_handler(premium_book_update_about, content_types=[ct.TEXT], state=Admin_state.premium_book_update_about)
-<<<<<<< HEAD
 dp.register_message_handler(premium_audiobook_update_audio, content_types=[ct.TEXT, ct.AUDIO], state=Admin_state.premium_audiobook_update_audio)
-=======
-dp.register_message_handler(premium_audiobook_update_audio, content_types=[ct.TEXT, ct.AUDIO, ct.all()], state=Admin_state.premium_audiobook_update_audio)
->>>>>>> bde41e6 (serverdan)
 
 
 """
