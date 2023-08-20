@@ -152,9 +152,13 @@ def get_premium_book_price(book_name):
     price = c.fetchone()
 
     conn.close()
-
+    price = price[0]
     if price:
-        
+        if int(price) > 999:
+            price = int(price)
+            formatted_price = '{:.3f}'.format(price / 1000)
+        else:
+            formatted_price = price  # Format for values less than 1000
         return formatted_price
     else:
         return None
@@ -198,13 +202,16 @@ def get_premium_audiobook_price(book_name):
     audiobook_price = c.fetchone()
 
     conn.close()
-
-    if audiobook_price:
-        formatted_price = int(audiobook_price[0])
+    price = audiobook_price[0]
+    if price:
+        if int(price) > 999:
+            price = int(price)
+            formatted_price = '{:.3f}'.format(price / 1000)
+        else:
+            formatted_price = price  # Format for values less than 1000
         return formatted_price
     else:
         return None
-    
 
 def get_premium_audiobook_photo(book_name):
     conn = sqlite3.connect(DATABASE_NAME)

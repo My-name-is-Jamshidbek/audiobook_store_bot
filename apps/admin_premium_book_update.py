@@ -37,7 +37,7 @@ async def premium_audiobook_update_price(m: m, state: s):
         await Admin_state.book_main_menu.set()
     else:
         if m.text.isdigit():
-            update_premium_book_price(book_name, m.text)
+            update_premium_audiobook_price(book_name, m.text)
             await m.answer("Kitob narxi muvaffaqiyatli o'zgartirildi!")
             await m.answer("Kerakli menyuni tanlang:", reply_markup=keyboardbutton(["Audioversiya", "Audio va elektron versiya", "Tahrirlash", "Kitobni o'chirish", "Chiqish"]))
             await Admin_state.book_main_menu.set()
