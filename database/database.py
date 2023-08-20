@@ -154,7 +154,7 @@ def get_premium_book_price(book_name):
     conn.close()
 
     if price:
-        formatted_price = int(price[0])
+        
         return formatted_price
     else:
         return None

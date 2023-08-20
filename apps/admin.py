@@ -136,7 +136,7 @@ async def premium_book_update_main_menu(m: m, state: s):
         await m.answer("Kitobning yangi nomini kiriting:", reply_markup=keyboardbutton(["Bekor qilish"]))
         await Admin_state.premium_book_update_name.set()
     elif m.text == "Auidiokitob narhi":
-        await m.answer("Kitobning yangi nomini kiriting:")
+        await m.answer("Kitobning yangi nomini kiriting:", reply_markup=keyboardbutton(["Bekor qilish"]))
         await Admin_state.premium_audiobook_update_price.set()
     elif m.text == "Audiokitob rasmi":
         await m.answer("Kitobning yangi Audiokitob rasmini kiriting:", reply_markup=keyboardbutton(["Bekor qilish"]))
