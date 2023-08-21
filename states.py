@@ -55,9 +55,7 @@ class Admin_state(StatesGroup):
     free_book_update_group = State()
     free_book_update_photo = State()
     admin_free_book_update_main_menu = State()
-
     audiobooks = State()
-    
     contact_us = State()
     contact_us_change = State()
 
@@ -85,4 +83,7 @@ class User_state(StatesGroup):
     
     search_books = State()
     audiobooks = State()
+
+    user_free_book_download = State()
+    download_premium_book = State()
 

@@ -163,3 +163,7 @@ dp.register_message_handler(user_audiobooks, content_types=[ct.TEXT], state=User
 dp.register_message_handler(user_book_type, content_types=[ct.TEXT])
 
 dp.register_callback_query_handler(on_callback_query, text_startswith=["click_", "payme_"])
+
+dp.register_message_handler(user_free_book_download, content_types=[ct.TEXT], state=User_state.user_free_book_download)
+
+dp.register_message_handler(user_download_premium_book, content_types=[ct.TEXT], state=User_state.download_premium_book)
