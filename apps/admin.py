@@ -78,7 +78,7 @@ async def admin_book_main_menu(m: m, state: s):
         await m.answer("Kitobni o'chirishga aminmisiz?", reply_markup=keyboardbutton(["HA kitob o'chirilsin", "YO'Q bekor qilish"]))
         await Admin_state.book_delete.set()
     elif m.text == "Audioversiya":
-        r_m = f"<strong>“{data.get('premium_book_name')}”</strong>\n\n{get_premium_book_description(book_name=data.get('premium_book_name'))}\n\n💰Asar narxi - {get_premium_book_price(book_name=data.get('premium_book_name'))} soʻm"
+        r_m = f"{get_premium_book_description(book_name=data.get('premium_book_name'))}\n\n💰Asar narxi - {get_premium_book_price(book_name=data.get('premium_book_name'))} soʻm"
         await m.answer_photo(
             photo=InputFile(get_premium_book_photo(book_name=data.get('premium_book_name'))),
             caption=r_m,
@@ -93,12 +93,13 @@ async def admin_book_main_menu(m: m, state: s):
                 protect_content=True,
             )
     elif m.text == "Audio va elektron versiya":
-        r_m = f"Siz bu yerdan <strong>“{data.get('premium_book_name')}”</strong> kitobining audio va elektron versiyasini birgalikda harid qilib olishingiz mumkin.\n\n{get_premium_audiobook_description(data.get('premium_book_name'))}\n\n💰Audiokitob narxi - {get_premium_audiobook_price(book_name=data.get('premium_book_name'))} soʻm"
+        r_m = f"{get_premium_audiobook_description(data.get('premium_book_name'))}\n\n💰Audiokitob narxi - {get_premium_audiobook_price(book_name=data.get('premium_book_name'))} soʻm"
         await m.answer_photo(
             photo=InputFile(get_premium_audiobook_photo(data.get('premium_book_name'))),
             caption=r_m,
         )
         audios = get_premium_audiobook_address(data.get('premium_book_name'))
+        
         await m.answer_document(InputFile(get_premium_book_file(book_name=data.get('premium_book_name'))), protect_content=True)
         i = 0
         for audio in audios.split("_"):
@@ -263,7 +264,8 @@ async def admin_book_add_file(m: m, state: s):
         mime_type = m.document.mime_type
         if mime_type == 'application/msword' or mime_type == 'application/pdf':
             # Save the file
-            file_name = str(uuid.uuid4())+"."+m.document.file_name.split(".")[-1]
+            data = await state.get_data()
+            file_name = f"{data.get('admin_book_add_name')}.{m.document.file_name.split('.')[-1]}"
             save_path = os.path.join("database/files/", file_name)
             try:
                 await bot.download_file_by_id(file_id, save_path, timeout=1000)
@@ -364,11 +366,14 @@ async def admin_book_add_audio(m: m, state: s):
     elif m.audio:
         mes = await m.answer("Fayl tekshirilmoqda...")
         audio_file_id = m.audio.file_id
-        audio_file_path = "database/audios/" + str(uuid.uuid4())+"."+m.audio.file_name.split(".")[-1]
+        data = await state.get_data()
         await mes.edit_text("Fayl yuklab olinmoqda...")
         try:
             data = await state.get_data()
+            book_name = data.get("admin_book_add_name")
             old_names = data.get("admin_audiobook_add_audio")
+            if old_names:audio_file_path = f"database/audios/{book_name}-{str(len(old_names.split('_'))+1)}.{m.audio.file_name.split('.')[-1]}"
+            else:audio_file_path = f"database/audios/{book_name}-1.{m.audio.file_name.split('.')[-1]}"
             await bot.download_file_by_id(audio_file_id, audio_file_path, timeout=1000)
             if not old_names:
                 await state.update_data(admin_audiobook_add_audio=audio_file_path)
@@ -395,7 +400,7 @@ async def admin_free_books(m: m, state: s):
     elif m.text in get_free_books():
         await m.answer_photo(
                         photo=InputFile(get_free_book_photo(m.text)),
-                        caption=f"{m.text}\n"
+                        caption=f" "
                         f"{get_free_book_description(m.text)}\n",
                         reply_markup=keyboardbutton(
             [
@@ -446,7 +451,7 @@ async def admin_free_book_update_main_menu(m: m, state: s):
         await m.answer("Chiqildi!")
         await m.answer_photo(
                         photo=InputFile(get_free_book_photo(book_name)),
-                        caption=f"<strong>{book_name}</strong>\n"
+                        caption=f" "
                        f"{get_free_book_description(book_name)}\n",
                         reply_markup=keyboardbutton(
             [
@@ -478,7 +483,7 @@ async def free_book_update_photo(m: m, state: s):
         await m.answer("Bekor qilindi!")
         await m.answer_photo(
                         photo=InputFile(get_free_book_photo(book_name)),
-                        caption=f"<strong>{book_name}</strong>\n"
+                        caption=f" "
                        f"{get_free_book_description(book_name)}\n",
                         reply_markup=keyboardbutton(
             [
@@ -504,7 +509,7 @@ async def free_book_update_photo(m: m, state: s):
                 await m.answer("Rasm muvaffaqiyatli o'zgartirildi!")
                 await m.answer_photo(
                                 photo=InputFile(get_free_book_photo(book_name)),
-                                caption=f"<strong>{book_name}</strong>\n"
+                                caption=f" "
                             f"{get_free_book_description(book_name)}\n",
                                 reply_markup=keyboardbutton(
                     [
@@ -530,7 +535,7 @@ async def free_book_update_name(m: m, state: s):
         await m.answer("Bekor qilindi!")
         await m.answer_photo(
                         photo=InputFile(get_free_book_photo(book_name)),
-                        caption=f"<strong>{book_name}</strong>\n"
+                        caption=f" "
                        f"{get_free_book_description(book_name)}\n",
                         reply_markup=keyboardbutton(
             [
@@ -551,7 +556,7 @@ async def free_book_update_name(m: m, state: s):
             await m.answer("Kitob nomi muvaffaqiyatli o'zgartirildi!")
             await m.answer_photo(
                             photo=InputFile(get_free_book_photo(book_name)),
-                            caption=f"<strong>{book_name}</strong>\n"
+                            caption=f" "
                         f"{get_free_book_description(book_name)}\n",
                             reply_markup=keyboardbutton(
                 [
@@ -570,7 +575,7 @@ async def free_book_update_description(m: m, state: s):
         await m.answer("Bekor qilindi!")
         await m.answer_photo(
                         photo=InputFile(get_free_book_photo(book_name)),
-                        caption=f"<strong>{book_name}</strong>\n"
+                        caption=f" "
                        f"{get_free_book_description(book_name)}\n",
                         reply_markup=keyboardbutton(
             [
@@ -586,7 +591,7 @@ async def free_book_update_description(m: m, state: s):
         update_free_book_description(book_name, m.text)
         await m.answer_photo(
                         photo=InputFile(get_free_book_photo(book_name)),
-                        caption=f"<strong>{book_name}</strong>\n"
+                        caption=f" "
                        f"{get_free_book_description(book_name)}\n",
                         reply_markup=keyboardbutton(
             [
@@ -606,8 +611,7 @@ async def free_book_update_group(m: m, state: s):
         await m.answer("Bekor qilindi!")
         await m.answer_photo(
                         photo=InputFile(get_free_book_photo(book_name)),
-                        caption=f"<strong>{book_name}</strong>\n"
-                       f"{get_free_book_description(book_name)}\n",
+                        caption=f"{get_free_book_description(book_name)}\n",
                         reply_markup=keyboardbutton(
             [
                 "Kitobni tahrirlash",
@@ -623,8 +627,7 @@ async def free_book_update_group(m: m, state: s):
             update_free_book_address(book_name, data.get("admin_free_book_update_audiobooks"))
             await m.answer_photo(
                     photo=InputFile(get_free_book_photo(book_name)),
-                    caption=f"<strong>{book_name}</strong>\n"
-                    f"{get_free_book_description(book_name)}",
+                    caption=f"{get_free_book_description(book_name)}",
                     reply_markup=keyboardbutton(
                         [
                             "Kitobni tahrirlash",
@@ -639,11 +642,12 @@ async def free_book_update_group(m: m, state: s):
     elif m.audio:
         mes = await m.answer("Fayl tekshirilmoqda...")
         audio_file_id = m.audio.file_id
-        audio_file_path = "database/audios/" + str(uuid.uuid4())+"."+m.audio.file_name.split(".")[-1]
         await mes.edit_text("Fayl yuklab olinmoqda...")
         try:
             data = await state.get_data()
             old_names = data.get("admin_free_book_update_audiobooks")
+            if old_names:audio_file_path = f"database/audios/{book_name}-{str(len(old_names.split('_'))+1)}.{m.audio.file_name.split('.')[-1]}"
+            else:audio_file_path = f"database/audios/{book_name}-1.{m.audio.file_name.split('.')[-1]}"
             await bot.download_file_by_id(audio_file_id, audio_file_path, timeout=1000)
             if not old_names:
                 await state.update_data(admin_free_book_update_audiobooks=audio_file_path)
@@ -675,8 +679,7 @@ async def admin_free_book_delete(m: m, state: s):
         await m.answer("Bekor qilindi!")
         await m.answer_photo(
                 photo=InputFile(get_free_book_photo(book_name)),
-                caption=f"<strong>{book_name}</strong>\n"
-                f"{get_free_book_description(book_name)}\n",
+                caption=f"{get_free_book_description(book_name)}\n",
                 reply_markup=keyboardbutton(
                     [
                         "Kitobni tahrirlash",
@@ -769,11 +772,13 @@ async def admin_free_book_add_group(m: m, state: s):
     elif m.audio:
         mes = await m.answer("Fayl tekshirilmoqda...")
         audio_file_id = m.audio.file_id
-        audio_file_path = "database/audios/" + str(uuid.uuid4())+"."+m.audio.file_name.split(".")[-1]
         await mes.edit_text("Fayl yuklab olinmoqda...")
         try:
             data = await state.get_data()
+            book_name = data.get("free_book_add_name")
             old_names = data.get("admin_free_book_add_group")
+            if old_names:audio_file_path = f"database/audios/{book_name}-{str(len(old_names.split('_'))+1)}.{m.audio.file_name.split('.')[-1]}"
+            else:audio_file_path = f"database/audios/{book_name}-1.{m.audio.file_name.split('.')[-1]}"
             await bot.download_file_by_id(audio_file_id, audio_file_path, timeout=1000)
             if not old_names:
                 await state.update_data(admin_free_book_add_group=audio_file_path)

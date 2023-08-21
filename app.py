@@ -167,3 +167,8 @@ dp.register_callback_query_handler(on_callback_query, text_startswith=["click_",
 dp.register_message_handler(user_free_book_download, content_types=[ct.TEXT], state=User_state.user_free_book_download)
 
 dp.register_message_handler(user_download_premium_book, content_types=[ct.TEXT], state=User_state.download_premium_book)
+
+
+# CHAT
+from apps.chat import *
+dp.register_message_handler(new_chat_member, content_types=ct.NEW_CHAT_MEMBERS)

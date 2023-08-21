@@ -417,7 +417,7 @@ def update_premium_book_file(book_name, audiobook_address):
     conn = sqlite3.connect(DATABASE_NAME)
     c = conn.cursor()
 
-    c.execute("UPDATE premium_books SET audiobook_address = ? WHERE book_name = ?", (audiobook_address, book_name))
+    c.execute("UPDATE premium_books SET book_address = ? WHERE book_name = ?", (audiobook_address, book_name))
     conn.commit()
 
     conn.close()

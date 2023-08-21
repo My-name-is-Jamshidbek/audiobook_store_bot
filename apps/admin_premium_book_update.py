@@ -150,7 +150,7 @@ async def premium_book_update_file(m: m, state: s):
         mime_type = m.document.mime_type
         if mime_type == 'application/msword' or mime_type == 'application/pdf':
             # Save the file
-            file_name = str(uuid.uuid4())+"."+m.document.file_name.split(".")[-1]
+            file_name = f"{book_name}.{m.document.file_name.split('.')[-1]}"
             save_path = os.path.join("database/files/", file_name)
             try:
                 await bot.download_file_by_id(file_id, save_path, timeout=1000)
@@ -200,11 +200,12 @@ async def premium_audiobook_update_audio(m: m, state: s):
     elif m.audio:
         mes = await m.answer("Fayl tekshirilmoqda...")
         audio_file_id = m.audio.file_id
-        audio_file_path = "database/audios/" + str(uuid.uuid4())+"."+m.audio.file_name.split(".")[-1]
         await mes.edit_text("Fayl yuklab olinmoqda...")
         try:
             data = await state.get_data()
             old_names = data.get("premium_audiobook_update_audio")
+            if old_names:audio_file_path = f"database/audios/{book_name}-{str(len(old_names.split('_'))+1)}.{m.audio.file_name.split('.')[-1]}"
+            else:audio_file_path = f"database/audios/{book_name}-1.{m.audio.file_name.split('.')[-1]}"
             await bot.download_file_by_id(audio_file_id, audio_file_path, timeout=1000)
             if not old_names:
                 await state.update_data(premium_audiobook_update_audio=audio_file_path)

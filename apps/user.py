@@ -38,7 +38,7 @@ async def user_audiobooks(m: m, state:s):
         await m.answer("Kerakli menyuni tanlashingiz mumkin:",reply_markup=keyboardbutton(["Audioteka 🎧", "Audiokitoblarim 💽", "Biz bilan aloqa 📞", "Qidirish🔍"]))
         await User_state.main_menu.set()
     elif m.text in get_user_premium_audiobooks(m.from_user.id):
-        r_m = f"Siz bu yerdan <strong>“{m.text}”</strong> kitobining audio va elektron versiyasini birgalikda harid qilib olishingiz mumkin.\n\n{get_premium_audiobook_description(m.text)}\n\n💰Audiokitob narxi - {get_premium_audiobook_price(book_name=m.text)} soʻm"
+        r_m = f"{get_premium_audiobook_description(m.text)}\n\n💰Audiokitob narxi - {get_premium_audiobook_price(book_name=m.text)} soʻm"
         await m.answer_photo(
             photo=InputFile(get_premium_audiobook_photo(m.text)),
             caption=r_m,
@@ -47,7 +47,7 @@ async def user_audiobooks(m: m, state:s):
         await User_state.download_premium_book.set()
         await state.update_data(premium_book_name=m.text)
     elif m.text in get_user_premium_books(m.from_user.id):
-        r_m = f"<strong>“{m.text}”</strong>\n\n{get_premium_book_description(book_name=m.text)}\n\n💰Asar narxi - {get_premium_book_price(book_name=m.text)} soʻm"
+        r_m = f"{get_premium_book_description(book_name=m.text)}\n\n💰Asar narxi - {get_premium_book_price(book_name=m.text)} soʻm"
         await m.answer_photo(
             photo=InputFile(get_premium_book_photo(book_name=m.text)),
             caption=r_m,
@@ -231,8 +231,7 @@ async def user_free_books(m: m, state: s):
     elif m.text in get_free_books():
         await m.answer_photo(
                         photo=InputFile(get_free_book_photo(m.text)),
-                        caption=f"{m.text}\n"
-                        f"{get_free_book_description(m.text)}\n",
+                        caption=f"{get_free_book_description(m.text)}\n",
                         reply_markup=keyboardbutton(["Yuklash", "Chiqish"]))
         await state.update_data(free_book_name = m.text)
         await User_state.user_free_book_download.set()
