@@ -396,11 +396,12 @@ async def admin_free_books(m: m, state: s):
         await m.answer_photo(
                         photo=InputFile(get_free_book_photo(m.text)),
                         caption=f"{m.text}\n"
-                        f"{get_free_book_description(m.text)}\nTelegram guruh: {get_free_book_address(m.text)}",
+                        f"{get_free_book_description(m.text)}\n",
                         reply_markup=keyboardbutton(
             [
                 "Kitobni tahrirlash",
-                "Kitobni o'chirish",
+                        "Audiolarni yuklash",
+                        "Kitobni o'chirish",
                 "Chiqish",
             ]
         ))
@@ -422,11 +423,21 @@ async def admin_free_book_main_menu(m: m, state: s):
                            "Kitob nomi",
                            "Kitob sarlavhasi",
                            "Kitob rasmi",
-                           "Telegram guruh",
+                           "Audiofayllar",
                            "Chiqish",
                        ], row=2))
         await Admin_state.admin_free_book_update_main_menu.set()
-
+    elif m.text == "Audiolarni yuklash":
+        data = await state.get_data()
+        audios = get_free_book_address(data.get('free_book_name'))
+        i = 0
+        for audio in audios.split("_"):
+            i+=1
+            await m.answer_audio(
+                audio=InputFile(audio),
+                caption=f"{i}-qism",
+                protect_content=True,
+            )
 
 async def admin_free_book_update_main_menu(m: m, state: s):
     data = await state.get_data()
@@ -436,11 +447,12 @@ async def admin_free_book_update_main_menu(m: m, state: s):
         await m.answer_photo(
                         photo=InputFile(get_free_book_photo(book_name)),
                         caption=f"<strong>{book_name}</strong>\n"
-                       f"{get_free_book_description(book_name)}\nTelegram guruh: {get_free_book_address(book_name)}",
+                       f"{get_free_book_description(book_name)}\n",
                         reply_markup=keyboardbutton(
             [
                 "Kitobni tahrirlash",
-                "Kitobni o'chirish",
+                        "Audiolarni yuklash",
+                        "Kitobni o'chirish",
                 "Chiqish",
             ]
         ))
@@ -454,8 +466,8 @@ async def admin_free_book_update_main_menu(m: m, state: s):
     elif m.text == "Kitob rasmi":
         await m.answer("Kitobning yangi rasmini yuboring:", reply_markup=keyboardbutton(["Bekor qilish"]))
         await Admin_state.free_book_update_photo.set()
-    elif m.text == "Telegram guruh":
-        await m.answer("Kitobning yangi telegram guruhini yuboring:", reply_markup=keyboardbutton(["Bekor qilish"]))
+    elif m.text == "Audiofayllar":
+        await m.answer("Kitobning yangi Audiofayllarini yuboring:\nHar bir fayl bir qism hisoblanadi!", reply_markup=keyboardbutton(["Bekor qilish"]))
         await Admin_state.free_book_update_group.set()
 
 
@@ -467,11 +479,12 @@ async def free_book_update_photo(m: m, state: s):
         await m.answer_photo(
                         photo=InputFile(get_free_book_photo(book_name)),
                         caption=f"<strong>{book_name}</strong>\n"
-                       f"{get_free_book_description(book_name)}\nTelegram guruh: {get_free_book_address(book_name)}",
+                       f"{get_free_book_description(book_name)}\n",
                         reply_markup=keyboardbutton(
             [
                 "Kitobni tahrirlash",
-                "Kitobni o'chirish",
+                        "Audiolarni yuklash",
+                        "Kitobni o'chirish",
                 "Chiqish",
             ]
         ))
@@ -492,10 +505,11 @@ async def free_book_update_photo(m: m, state: s):
                 await m.answer_photo(
                                 photo=InputFile(get_free_book_photo(book_name)),
                                 caption=f"<strong>{book_name}</strong>\n"
-                            f"{get_free_book_description(book_name)}\nTelegram guruh: {get_free_book_address(book_name)}",
+                            f"{get_free_book_description(book_name)}\n",
                                 reply_markup=keyboardbutton(
                     [
                         "Kitobni tahrirlash",
+                        "Audiolarni yuklash",
                         "Kitobni o'chirish",
                         "Chiqish",
                     ]
@@ -517,11 +531,12 @@ async def free_book_update_name(m: m, state: s):
         await m.answer_photo(
                         photo=InputFile(get_free_book_photo(book_name)),
                         caption=f"<strong>{book_name}</strong>\n"
-                       f"{get_free_book_description(book_name)}\nTelegram guruh: {get_free_book_address(book_name)}",
+                       f"{get_free_book_description(book_name)}\n",
                         reply_markup=keyboardbutton(
             [
                 "Kitobni tahrirlash",
-                "Kitobni o'chirish",
+                        "Audiolarni yuklash",
+                        "Kitobni o'chirish",
                 "Chiqish",
             ]
         ))
@@ -537,7 +552,7 @@ async def free_book_update_name(m: m, state: s):
             await m.answer_photo(
                             photo=InputFile(get_free_book_photo(book_name)),
                             caption=f"<strong>{book_name}</strong>\n"
-                        f"{get_free_book_description(book_name)}\nTelegram guruh: {get_free_book_address(book_name)}",
+                        f"{get_free_book_description(book_name)}\n",
                             reply_markup=keyboardbutton(
                 [
                     "Kitobni tahrirlash",
@@ -556,11 +571,12 @@ async def free_book_update_description(m: m, state: s):
         await m.answer_photo(
                         photo=InputFile(get_free_book_photo(book_name)),
                         caption=f"<strong>{book_name}</strong>\n"
-                       f"{get_free_book_description(book_name)}\nTelegram guruh: {get_free_book_address(book_name)}",
+                       f"{get_free_book_description(book_name)}\n",
                         reply_markup=keyboardbutton(
             [
                 "Kitobni tahrirlash",
-                "Kitobni o'chirish",
+                        "Audiolarni yuklash",
+                        "Kitobni o'chirish",
                 "Chiqish",
             ]
         ))
@@ -571,11 +587,12 @@ async def free_book_update_description(m: m, state: s):
         await m.answer_photo(
                         photo=InputFile(get_free_book_photo(book_name)),
                         caption=f"<strong>{book_name}</strong>\n"
-                       f"{get_free_book_description(book_name)}\nTelegram guruh: {get_free_book_address(book_name)}",
+                       f"{get_free_book_description(book_name)}\n",
                         reply_markup=keyboardbutton(
             [
                 "Kitobni tahrirlash",
-                "Kitobni o'chirish",
+                        "Audiolarni yuklash",
+                        "Kitobni o'chirish",
                 "Chiqish",
             ]
         ))
@@ -590,29 +607,57 @@ async def free_book_update_group(m: m, state: s):
         await m.answer_photo(
                         photo=InputFile(get_free_book_photo(book_name)),
                         caption=f"<strong>{book_name}</strong>\n"
-                       f"{get_free_book_description(book_name)}\nTelegram guruh: {get_free_book_address(book_name)}",
+                       f"{get_free_book_description(book_name)}\n",
                         reply_markup=keyboardbutton(
             [
                 "Kitobni tahrirlash",
-                "Kitobni o'chirish",
+                        "Audiolarni yuklash",
+                        "Kitobni o'chirish",
                 "Chiqish",
             ]
         ))
         await Admin_state.free_book_main_menu.set()
-    elif m.text:
-        update_free_book_address(book_name, m.text)
-        await m.answer_photo(
-                photo=InputFile(get_free_book_photo(book_name)),
-                caption=f"<strong>{book_name}</strong>\n"
-                f"{get_free_book_description(book_name)}\nTelegram guruh: {get_free_book_address(book_name)}",
-                reply_markup=keyboardbutton(
-                    [
-                        "Kitobni tahrirlash",
-                        "Kitobni o'chirish",
-                        "Chiqish",
-                    ]
-                ))
-        await Admin_state.free_book_main_menu.set()
+    elif m.text == "Tugatish":
+        data = await state.get_data()
+        if len(data.get("admin_free_book_update_audiobooks")) > 1:
+            update_free_book_address(book_name, data.get("admin_free_book_update_audiobooks"))
+            await m.answer_photo(
+                    photo=InputFile(get_free_book_photo(book_name)),
+                    caption=f"<strong>{book_name}</strong>\n"
+                    f"{get_free_book_description(book_name)}",
+                    reply_markup=keyboardbutton(
+                        [
+                            "Kitobni tahrirlash",
+                            "Audiolarni yuklash",
+                            "Kitobni o'chirish",
+                            "Chiqish",
+                        ]
+                    ))
+            await Admin_state.free_book_main_menu.set()
+        else:
+            await m.answer("Siz hali audio fayl kiritmadingiz!")
+    elif m.audio:
+        mes = await m.answer("Fayl tekshirilmoqda...")
+        audio_file_id = m.audio.file_id
+        audio_file_path = "database/audios/" + str(uuid.uuid4())+"."+m.audio.file_name.split(".")[-1]
+        await mes.edit_text("Fayl yuklab olinmoqda...")
+        try:
+            data = await state.get_data()
+            old_names = data.get("admin_free_book_update_audiobooks")
+            await bot.download_file_by_id(audio_file_id, audio_file_path, timeout=1000)
+            if not old_names:
+                await state.update_data(admin_free_book_update_audiobooks=audio_file_path)
+            else:
+                await state.update_data(admin_free_book_update_audiobooks=old_names+"_"+audio_file_path)
+            await mes.delete()
+            await m.answer("Fayl muvaffaqiyatli saqlandi keyingi qismni kiritishingiz mumkin:", reply_markup=keyboardbutton(["Tugatish", "Bekor qilish", ]))
+        except Exception as e:
+            print(e)
+            await mes.delete()
+            await m.answer("Ayrim muammolar sababli faylni yuklab olishni iloji bo'lmadi iltimos qayta yuboring!")
+    else:
+        await m.answer("mp3 file ni document shaklida jo'nating!")
+
     
 
 async def admin_free_book_delete(m: m, state: s):
@@ -631,10 +676,11 @@ async def admin_free_book_delete(m: m, state: s):
         await m.answer_photo(
                 photo=InputFile(get_free_book_photo(book_name)),
                 caption=f"<strong>{book_name}</strong>\n"
-                f"{get_free_book_description(book_name)}\nTelegram guruh: {get_free_book_address(book_name)}",
+                f"{get_free_book_description(book_name)}\n",
                 reply_markup=keyboardbutton(
                     [
                         "Kitobni tahrirlash",
+                        "Audiolarni yuklash",
                         "Kitobni o'chirish",
                         "Chiqish",
                     ]
@@ -688,7 +734,7 @@ async def admin_free_book_add_photo(m: m, state: s):
                 await bot.download_file_by_id(file_id, save_path, timeout=1000)
                 await state.update_data(free_book_add_photo=save_path)
                 await m.answer("Rasm muvaffaqiyatli saqlandi!")
-                await m.answer("Kitob audio (mp3) fayllari joylashgan guruh linkini yuboring:")
+                await m.answer("Kitob audio (mp3) fayllarini yuboring:\nHar bitta fayl bir qism hisoblanadi!")
                 await Admin_state.free_book_add_group.set()
             except:
                 await m.answer("Ayrim muammolar sababli faylni yuklab olishni iloji bo'lmadi iltimos qayta yuboring!")
@@ -704,15 +750,41 @@ async def admin_free_book_add_group(m: m, state: s):
         await m.answer("Beepul auidokitoblar ro'yxati:", reply_markup=keyboardbutton(
             get_free_books() + ["Kitob qo'shish", "Chiqish"]))
         await Admin_state.free_books.set()
-    else:
+    elif m.text == "Tugatish":
         data = await state.get_data()
-        add_free_book(
-            book_name=data.get("free_book_add_name"),
-            audiobook_address=m.text,
-            book_description=data.get("free_book_add_description"),
-            book_photo=data.get("free_book_add_photo")
-        )
-        await m.answer("Kitob muvaffaqiyatli qo'shildi!")
-        await m.answer("Beepul auidokitoblar ro'yxati:", reply_markup=keyboardbutton(
-            get_free_books() + ["Kitob qo'shish", "Chiqish"]))
-        await Admin_state.free_books.set()
+        if len(data.get("admin_free_book_add_group")) > 1:
+            data = await state.get_data()
+            add_free_book(
+                book_name=data.get("free_book_add_name"),
+                audiobook_address=data.get("admin_free_book_add_group"),
+                book_description=data.get("free_book_add_description"),
+                book_photo=data.get("free_book_add_photo")
+            )
+            await m.answer("Kitob muvaffaqiyatli qo'shildi!")
+            await m.answer("Beepul auidokitoblar ro'yxati:", reply_markup=keyboardbutton(
+                get_free_books() + ["Kitob qo'shish", "Chiqish"]))
+            await Admin_state.free_books.set()
+        else:
+            await m.answer("Siz hali audio fayl kiritmadingiz!")
+    elif m.audio:
+        mes = await m.answer("Fayl tekshirilmoqda...")
+        audio_file_id = m.audio.file_id
+        audio_file_path = "database/audios/" + str(uuid.uuid4())+"."+m.audio.file_name.split(".")[-1]
+        await mes.edit_text("Fayl yuklab olinmoqda...")
+        try:
+            data = await state.get_data()
+            old_names = data.get("admin_free_book_add_group")
+            await bot.download_file_by_id(audio_file_id, audio_file_path, timeout=1000)
+            if not old_names:
+                await state.update_data(admin_free_book_add_group=audio_file_path)
+            else:
+                await state.update_data(admin_free_book_add_group=old_names+"_"+audio_file_path)
+            await mes.delete()
+            await m.answer("Fayl muvaffaqiyatli saqlandi keyingi qismni kiritishingiz mumkin:", reply_markup=keyboardbutton(["Tugatish", "Bekor qilish", ]))
+        except Exception as e:
+            print(e)
+            await mes.delete()
+            await m.answer("Ayrim muammolar sababli faylni yuklab olishni iloji bo'lmadi iltimos qayta yuboring!")
+    else:
+        await m.answer("mp3 file ni document shaklida jo'nating!")
+
