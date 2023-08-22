@@ -341,6 +341,34 @@ def get_premium_book_id(book_name):
         return book_id[0]
     else:
         return None
+
+
+def get_all_premium_audiobook_address():
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    c.execute("SELECT audiobook_address FROM premium_books")
+    addresses = c.fetchall()
+
+    conn.close()
+    links = []
+    for addres in addresses:
+        for i in addres:links.append(i)
+    return links
+
+    
+def get_all_premium_book_address():
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    c.execute("SELECT book_address FROM premium_books")
+    addresses = c.fetchall()
+
+    conn.close()
+    links = []
+    for addres in addresses:
+        for i in addres:links.append(i)
+    return links
     
 
 def update_premium_book_name(old_name, new_name):
@@ -653,6 +681,20 @@ def get_user_premium_books(tg_id):
     return pb
 
 
+def get_user_premium_books_address(tg_id):
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    # Retrieve premium books for a specific user from the database
+    c.execute("SELECT premium_books.book_address FROM premium_books INNER JOIN user_premium_books ON premium_books.id = user_premium_books.book_id WHERE user_premium_books.tg_id=?", (tg_id,))
+    premium_books = c.fetchall()
+
+    conn.close()
+    pb = [i[0] for i in premium_books]
+
+    return pb
+
+
 def create_user_premium_audiobook_table():
     conn = sqlite3.connect(DATABASE_NAME)
     c = conn.cursor()
@@ -693,6 +735,19 @@ def get_user_premium_audiobooks(tg_id):
 
     return pb
 
+
+def get_user_premium_audiobooks_address(tg_id):
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    # Retrieve premium books for a specific user from the database
+    c.execute("SELECT premium_books.audiobook_address FROM premium_books INNER JOIN user_premium_audiobooks ON premium_books.id = user_premium_audiobooks.book_id WHERE user_premium_audiobooks.tg_id=?", (tg_id,))
+    premium_books = c.fetchall()
+
+    conn.close()
+    pb = [i[0] for i in premium_books]
+
+    return pb
 
 def create_database():
     create_book_table()

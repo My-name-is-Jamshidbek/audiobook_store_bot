@@ -65,4 +65,12 @@ async def on_callback_query(callback_query: CallbackQuery):
                     start_parameter="premium-book-subcription",
                     payload=f"{book_name}_{callback_query.data.split('_')[-1]}",
                 )
+                
+    elif callback_query.data.startswith("visa_"):
+        book_id = callback_query.data.split("_")[1]
+        book_name = get_premium_book_name_by_id(book_id)
+        if callback_query.data.split('_')[-1] == "e":
+            await bot.send_message(callback_query.from_user.id, f"Agarda siz click yoki payme orqali to'lov qilishda muammoga duch kelgan bo'lsangiz unda Quyida kartalarga to'lovni amalga oshirishingiz mumkin! \n\nUshbu karta raqamlaridan biriga {int(get_premium_book_price_by_id(book_id))} so'm to'lov qilib chekni @ ga ulashasiz va sizga kitob ochib beriladi!\n\nVisa: 4231 2000 0823 7124")
+        elif callback_query.data.split('_')[-1] == "a":
+            await bot.send_message(callback_query.from_user.id, f"Agarda siz click yoki payme orqali to'lov qilishda muammoga duch kelgan bo'lsangiz unda Quyida kartalarga to'lovni amalga oshirishingiz mumkin! \n\nUshbu karta raqamlaridan biriga {int(get_premium_book_price_by_id(book_id))} so'm to'lov qilib chekni @ ga ulashasiz va sizga kitob ochib beriladi!\n\nVisa: 4231 2000 0823 7124")
             

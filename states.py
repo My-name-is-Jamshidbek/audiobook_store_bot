@@ -58,6 +58,9 @@ class Admin_state(StatesGroup):
     audiobooks = State()
     contact_us = State()
     contact_us_change = State()
+    
+    give_book_type = State()
+    give_book_user = State()
 
 
 class User_state(StatesGroup):

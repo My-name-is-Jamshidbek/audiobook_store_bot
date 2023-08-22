@@ -19,6 +19,7 @@ async def user_main_menu(m: m, state: s):
         await m.answer("Audiokitob turini tanlang:", reply_markup=keyboardbutton(["Premium audiokitoblar 💰", "Bepul audiokitoblar 🎁", "Chiqish"]))
         await User_state.audiobook_type.set()
     elif m.text == "Audiokitoblarim 💽":
+        add_user_premium_book(m.from_user.id, get_premium_book_id('“Qur’on sirlari”'))
         if len(get_user_premium_books(m.from_user.id)+get_user_premium_audiobooks(m.from_user.id)):
             await m.answer("Siz xarid qilgan audiokitoblar ro'yxati:", reply_markup=keyboardbutton(list(set(get_user_premium_books(m.from_user.id)+get_user_premium_audiobooks(m.from_user.id)))+["Chiqish"]))
             await User_state.audiobooks.set()
@@ -39,52 +40,19 @@ async def user_audiobooks(m: m, state:s):
         await User_state.main_menu.set()
     elif m.text in get_user_premium_audiobooks(m.from_user.id):
         r_m = f"{get_premium_audiobook_description(m.text)}\n\n💰Audiokitob narxi - {get_premium_audiobook_price(book_name=m.text)} soʻm"
+        audios = get_premium_audiobook_address(m.text)
         await m.answer_photo(
             photo=InputFile(get_premium_audiobook_photo(m.text)),
             caption=r_m,
-            reply_markup=keyboardbutton(["Yuklash", "Chiqish"])
-        )
-        await User_state.download_premium_book.set()
-        await state.update_data(premium_book_name=m.text)
+            reply_markup=get_group_link_button(audios))
+        
     elif m.text in get_user_premium_books(m.from_user.id):
         r_m = f"{get_premium_book_description(book_name=m.text)}\n\n💰Asar narxi - {get_premium_book_price(book_name=m.text)} soʻm"
+        audios = get_premium_audiobook_address(m.text)
         await m.answer_photo(
             photo=InputFile(get_premium_book_photo(book_name=m.text)),
             caption=r_m,
-            reply_markup=keyboardbutton(["Yuklash", "Chiqish"])
-        )
-        await User_state.download_premium_book.set()
-        await state.update_data(premium_book_name=m.text)
-
-async def user_download_premium_book(m: m, state: s):
-    data = await state.get_data()
-    if m.text == "Chiqish":
-        await m.answer("Chiqildi!")
-        await m.answer("Kerakli menyuni tanlashingiz mumkin:",
-                       reply_markup=keyboardbutton(
-                           ["Audioteka 🎧", "Audiokitoblarim 💽", "Qidirish🔍", "Biz bilan aloqa 📞"]))
-        await User_state.main_menu.set()
-    elif m.text == "Yuklash" and data.get("premium_book_name") in get_user_premium_audiobooks(m.from_user.id):
-        await m.answer_document(InputFile(get_premium_book_file(book_name=data.get('premium_book_name'))), protect_content=True)
-        audios = get_premium_audiobook_address(data.get('premium_book_name'))
-        i = 0
-        for audio in audios.split("_"):
-            i+=1
-            await m.answer_audio(
-                audio=InputFile(audio),
-                caption=f"{i}-qism",
-                protect_content=True,
-            )
-    elif m.text == "Yuklash" and data.get("premium_book_name") in get_user_premium_books(m.from_user.id):
-        audios = get_premium_audiobook_address(data.get('premium_book_name'))
-        i = 0
-        for audio in audios.split("_"):
-            i+=1
-            await m.answer_audio(
-                audio=InputFile(audio),
-                caption=f"{i}-qism",
-                protect_content=True,
-            )
+            reply_markup=get_group_link_button(audios))
 
 
 async def search_books(m: m, state: s):
@@ -154,7 +122,8 @@ async def user_book_type(m: m, state: s):
                     caption=r_m,
                     reply_markup=inlinekeyboardbutton([
                         {"text": "Click", "data": f"click_{get_premium_book_id(data.get('premium_book_name'))}_a"},
-                        {"text": "Payme", "data": f"payme_{get_premium_book_id(data.get('premium_book_name'))}_a"}
+                        {"text": "Payme", "data": f"payme_{get_premium_book_id(data.get('premium_book_name'))}_a"},
+                        {"text": "Qo'shimcha to'lov usuli", "data": f"visa_{get_premium_book_id(data.get('premium_book_name'))}_a"},
                         ]))
                 await state.finish()
         elif m.text == "Audio format 🎧":
@@ -167,7 +136,8 @@ async def user_book_type(m: m, state: s):
                     caption=r_m,
                     reply_markup=inlinekeyboardbutton([
                         {"text": "Click", "data": f"click_{get_premium_book_id(data.get('premium_book_name'))}_e"},
-                        {"text": "Payme", "data": f"payme_{get_premium_book_id(data.get('premium_book_name'))}_e"}
+                        {"text": "Payme", "data": f"payme_{get_premium_book_id(data.get('premium_book_name'))}_e"},
+                        {"text": "Qo'shimcha to'lov usuli", "data": f"visa_{get_premium_book_id(data.get('premium_book_name'))}_e"},
                         ]))
                 await state.finish()
         elif m.text == "Chiqish":
@@ -229,28 +199,9 @@ async def user_free_books(m: m, state: s):
         await m.answer("Audiokitob turini tanlang:", reply_markup=keyboardbutton(["Premium audiokitoblar 💰", "Bepul audiokitoblar 🎁", "Chiqish"]))
         await User_state.audiobook_type.set()
     elif m.text in get_free_books():
+        audios = get_free_book_address(m.text)
         await m.answer_photo(
                         photo=InputFile(get_free_book_photo(m.text)),
                         caption=f"{get_free_book_description(m.text)}\n",
-                        reply_markup=keyboardbutton(["Yuklash", "Chiqish"]))
-        await state.update_data(free_book_name = m.text)
-        await User_state.user_free_book_download.set()
-
-async def user_free_book_download(m: m, state: s):
-    if m.text == "Chiqish":
-        await m.answer("Chiqildi!")
-        await m.answer("Audiokitob turini tanlang:", reply_markup=keyboardbutton(["Premium audiokitoblar 💰", "Bepul audiokitoblar 🎁", "Chiqish"]))
-        await User_state.audiobook_type.set()
-    elif m.text == "Yuklash":
-        data = await state.get_data()
-        audios = get_free_book_address(data.get('free_book_name'))
-        i = 0
-        for audio in audios.split("_"):
-            i+=1
-            await m.answer_audio(
-                audio=InputFile(audio),
-                caption=f"{i}-qism",
-                protect_content=True,
-            )
-
+                        reply_markup=inlinekeyboardbutton(audios))
 

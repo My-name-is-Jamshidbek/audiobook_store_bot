@@ -143,27 +143,11 @@ async def premium_book_update_file(m: m, state: s):
         await m.answer("Bekor qilindi!")
         await m.answer("Kerakli menyuni tanlang:", reply_markup=keyboardbutton(["Audioversiya", "Audio va elektron versiya", "Tahrirlash", "Kitobni o'chirish", "Chiqish"]))
         await Admin_state.book_main_menu.set()
-    elif m.document:
-        file_id = m.document.file_id
-
-        # Get the MIME type of the file
-        mime_type = m.document.mime_type
-        if mime_type == 'application/msword' or mime_type == 'application/pdf':
-            # Save the file
-            file_name = f"{book_name}.{m.document.file_name.split('.')[-1]}"
-            save_path = os.path.join("database/files/", file_name)
-            try:
-                await bot.download_file_by_id(file_id, save_path, timeout=1000)
-                update_premium_book_file(book_name, save_path)
-                await m.answer("File muvaffaqiyatli saqlandi!")
-                await m.answer("Kerakli menyuni tanlang:", reply_markup=keyboardbutton(["Audioversiya", "Audio va elektron versiya", "Tahrirlash", "Kitobni o'chirish", "Chiqish"]))
-                await Admin_state.book_main_menu.set()
-            except:
-                await m.answer("Ayrim muammolar sababli faylni yuklab olishni iloji bo'lmadi iltimos qayta yuboring!")
-        else:
-            await m.answer("File formati noto'g'ri!\nFile word yoki pdf formatida bo'lishi zarur!")
-    else:
-        await m.answer("Word yoki pdf file ni document shaklida jo'nating!")
+    elif m.text:
+        update_premium_book_file(book_name, m.text)
+        await m.answer("id muvaffaqiyatli saqlandi!")
+        await m.answer("Kerakli menyuni tanlang:", reply_markup=keyboardbutton(["Audioversiya", "Audio va elektron versiya", "Tahrirlash", "Kitobni o'chirish", "Chiqish"]))
+        await Admin_state.book_main_menu.set()
 
 
 async def premium_book_update_about(m: m, state: s):
@@ -187,36 +171,10 @@ async def premium_audiobook_update_audio(m: m, state: s):
         await m.answer("Bekor qilindi!")
         await m.answer("Kerakli menyuni tanlang:", reply_markup=keyboardbutton(["Audioversiya", "Audio va elektron versiya", "Tahrirlash", "Kitobni o'chirish", "Chiqish"]))
         await Admin_state.book_main_menu.set()
-    elif m.text == "Tugatish":
+    elif m.text:
         data = await state.get_data()
-        if len(data.get("premium_audiobook_update_audio")) > 1:
-            update_premium_audiobook_audio(book_name, data.get("premium_audiobook_update_audio"))
-            await m.answer("Kitob audiosi muvaffaqiyatli o'zgartirildi!")
-            await m.answer("Premium auidokitoblar ro'yxati:", reply_markup=keyboardbutton(get_premium_books()+["Kitob qo'shish",
-                                                                                                            "Chiqish"]))
-            await Admin_state.premium_books.set()
-        else:
-            await m.answer("Siz hali audio fayl kiritmadingiz!")
-    elif m.audio:
-        mes = await m.answer("Fayl tekshirilmoqda...")
-        audio_file_id = m.audio.file_id
-        await mes.edit_text("Fayl yuklab olinmoqda...")
-        try:
-            data = await state.get_data()
-            old_names = data.get("premium_audiobook_update_audio")
-            if old_names:audio_file_path = f"database/audios/{book_name}-{str(len(old_names.split('_'))+1)}.{m.audio.file_name.split('.')[-1]}"
-            else:audio_file_path = f"database/audios/{book_name}-1.{m.audio.file_name.split('.')[-1]}"
-            await bot.download_file_by_id(audio_file_id, audio_file_path, timeout=1000)
-            if not old_names:
-                await state.update_data(premium_audiobook_update_audio=audio_file_path)
-            else:
-                await state.update_data(premium_audiobook_update_audio=old_names+"_"+audio_file_path)
-            await mes.delete()
-            await m.answer("Fayl muvaffaqiyatli saqlandi keyingi qismni kiritishingiz mumkin:", reply_markup=keyboardbutton(["Tugatish", "Bekor qilish", ]))
-        except Exception as e:
-            print(e)
-            await mes.delete()
-            await m.answer("Ayrim muammolar sababli faylni yuklab olishni iloji bo'lmadi iltimos qayta yuboring!")
-    else:
-        await m.answer("mp3 file ni document shaklida jo'nating!")
-
+        update_premium_audiobook_audio(book_name, m.text)
+        await m.answer("Kitob audiosi muvaffaqiyatli o'zgartirildi!")
+        await m.answer("Premium auidokitoblar ro'yxati:", reply_markup=keyboardbutton(get_premium_books()+["Kitob qo'shish",
+                                                                                                        "Chiqish"]))
+        await Admin_state.premium_books.set()

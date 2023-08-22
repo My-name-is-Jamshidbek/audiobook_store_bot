@@ -113,14 +113,17 @@ dp.register_message_handler(admin_contact_us, content_types=[ct.TEXT], state=Adm
 # Admin contact us change
 dp.register_message_handler(admin_contact_us_change, content_types=[ct.TEXT], state=Admin_state.contact_us_change)
 
-# Admin books update
+# Admin give book
+
+dp.register_message_handler(admin_give_book_type, content_types=[ct.TEXT], state=Admin_state.give_book_type)
+dp.register_message_handler(admin_give_book_user, content_types=[ct.TEXT], state=Admin_state.give_book_user)
 
 
 # Admin free books update
 dp.register_message_handler(admin_free_book_update_main_menu, content_types=[ct.TEXT], state=Admin_state.admin_free_book_update_main_menu)
 dp.register_message_handler(free_book_update_name, content_types=[ct.TEXT], state=Admin_state.free_book_update_name)
 dp.register_message_handler(free_book_update_description, content_types=[ct.TEXT], state=Admin_state.free_book_update_description)
-dp.register_message_handler(free_book_update_group, content_types=[ct.TEXT, ct.AUDIO], state=Admin_state.free_book_update_group)
+dp.register_message_handler(free_book_update_group, content_types=[ct.TEXT], state=Admin_state.free_book_update_group)
 dp.register_message_handler(free_book_update_photo, content_types=[ct.TEXT, ct.DOCUMENT], state=Admin_state.free_book_update_photo)
 
 # Admin premium books update
@@ -131,9 +134,9 @@ dp.register_message_handler(premium_audiobook_update_photo, content_types=[ct.TE
 dp.register_message_handler(premium_audiobook_update_about, content_types=[ct.TEXT], state=Admin_state.premium_audiobook_update_about)
 dp.register_message_handler(premium_book_update_price, content_types=[ct.TEXT], state=Admin_state.premium_book_update_price)
 dp.register_message_handler(premium_book_update_photo, content_types=[ct.TEXT, ct.DOCUMENT], state=Admin_state.premium_book_update_photo)
-dp.register_message_handler(premium_book_update_file, content_types=[ct.TEXT, ct.DOCUMENT], state=Admin_state.premium_book_update_file)
+dp.register_message_handler(premium_book_update_file, content_types=[ct.TEXT], state=Admin_state.premium_book_update_file)
 dp.register_message_handler(premium_book_update_about, content_types=[ct.TEXT], state=Admin_state.premium_book_update_about)
-dp.register_message_handler(premium_audiobook_update_audio, content_types=[ct.TEXT, ct.AUDIO], state=Admin_state.premium_audiobook_update_audio)
+dp.register_message_handler(premium_audiobook_update_audio, content_types=[ct.TEXT], state=Admin_state.premium_audiobook_update_audio)
 
 
 """
@@ -162,13 +165,9 @@ dp.register_message_handler(user_audiobooks, content_types=[ct.TEXT], state=User
 
 dp.register_message_handler(user_book_type, content_types=[ct.TEXT])
 
-dp.register_callback_query_handler(on_callback_query, text_startswith=["click_", "payme_"])
-
-dp.register_message_handler(user_free_book_download, content_types=[ct.TEXT], state=User_state.user_free_book_download)
-
-dp.register_message_handler(user_download_premium_book, content_types=[ct.TEXT], state=User_state.download_premium_book)
+dp.register_callback_query_handler(on_callback_query, text_startswith=["click_", "payme_", "visa_"])
 
 
 # CHAT
-from apps.chat import *
-dp.register_message_handler(new_chat_member, content_types=ct.NEW_CHAT_MEMBERS)
+# from apps.chat import *
+# dp.register_message_handler(usermanager)#, content_types=ct.NEW_CHAT_MEMBERS)
