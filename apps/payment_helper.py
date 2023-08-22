@@ -70,7 +70,8 @@ async def on_callback_query(callback_query: CallbackQuery):
         book_id = callback_query.data.split("_")[1]
         book_name = get_premium_book_name_by_id(book_id)
         if callback_query.data.split('_')[-1] == "e":
-            await bot.send_message(callback_query.from_user.id, f"Agarda siz click yoki payme orqali to'lov qilishda muammoga duch kelgan bo'lsangiz unda Quyida kartalarga to'lovni amalga oshirishingiz mumkin! \n\nUshbu karta raqamlaridan biriga {int(get_premium_book_price_by_id(book_id))} so'm to'lov qilib chekni @ ga ulashasiz va sizga kitob ochib beriladi!\n\nVisa: 4231 2000 0823 7124")
+            tes = f"Agar toʻlov tizimida muammoga duch kelgan boʻlsangiz, unda quyidagi tartibda toʻlovni amalga oshirishingiz mumkin. Quyidagi kartalarga 👇\n\nVisa: 4231 2000 0823 7124\n\nUzcard: 5614 6810 1706 4589\n(Muzaffarjon Ne’matov)\n\nToʻlovni amalga oshirib ushbu @narrator_uz akkauntiga toʻlov kvitansiyasini va qaysi kitobni tanlaganingizni yuborasiz. Soʻngra sizning chekingiz tekshirilib audiokitoblar guruhiga qabul qilinasiz.\n\n💰Asar narxi - {book_id} soʻm"
+            await bot.send_message(callback_query.from_user.id, tes)
         elif callback_query.data.split('_')[-1] == "a":
-            await bot.send_message(callback_query.from_user.id, f"Agarda siz click yoki payme orqali to'lov qilishda muammoga duch kelgan bo'lsangiz unda Quyida kartalarga to'lovni amalga oshirishingiz mumkin! \n\nUshbu karta raqamlaridan biriga {int(get_premium_book_price_by_id(book_id))} so'm to'lov qilib chekni @ ga ulashasiz va sizga kitob ochib beriladi!\n\nVisa: 4231 2000 0823 7124")
-            
+            tes = f"Agar toʻlov tizimida muammoga duch kelgan boʻlsangiz, unda quyidagi tartibda toʻlovni amalga oshirishingiz mumkin. Quyidagi kartalarga 👇\n\nVisa: 4231 2000 0823 7124\n\nUzcard: 5614 6810 1706 4589\n(Muzaffarjon Ne’matov)\n\nToʻlovni amalga oshirib ushbu @narrator_uz akkauntiga toʻlov kvitansiyasini va qaysi kitobni tanlaganingizni yuborasiz. Soʻngra sizning chekingiz tekshirilib audiokitoblar guruhiga qabul qilinasiz.\n\n💰Audiokitob narxi - {get_premium_audiobook_price_by_id(book_id)} soʻm"
+            await bot.send_message(callback_query.from_user.id, tes)            
