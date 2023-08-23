@@ -21,6 +21,8 @@ async def admin_main_menu(m: m, state: s):
     elif m.text == "Biz bilan aloqa 📞":
         await m.answer(get_latest_contact_message(), reply_markup=keyboardbutton(["O'zgartirish", "Chiqish"]))
         await Admin_state.contact_us.set()
+    elif m.text == "Statistika 📊":
+        await m.answer(f"Foydalanuvchilar statistikasi:\nJami: {count_starters_users()} nafar\nRo'yxatdan o'tgan: {all_users_count()} nafar\n")
 
 
 async def admin_contact_us(m: m, state: s):
@@ -80,7 +82,7 @@ async def admin_book_main_menu(m: m, state: s):
         await Admin_state.book_delete.set()
     elif m.text == "Audioversiya":
         r_m = f"{get_premium_book_description(book_name=data.get('premium_book_name'))}\n\n💰Asar narxi - {get_premium_book_price(book_name=data.get('premium_book_name'))} soʻm"
-        audios = get_premium_audiobook_address(data.get('premium_book_name'))
+        audios = get_premium_book_address(data.get('premium_book_name'))
         await m.answer_photo(
             photo=InputFile(get_premium_book_photo(book_name=data.get('premium_book_name'))),
             caption=r_m,

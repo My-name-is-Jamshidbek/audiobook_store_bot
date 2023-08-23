@@ -3,6 +3,54 @@ from config import DATABASE_NAME
 
 
 # users functions
+def create_starters_table():
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    # Create the user table if it doesn't exist
+    c.execute('''CREATE TABLE IF NOT EXISTS starters
+                 (id INTEGER PRIMARY KEY AUTOINCREMENT,
+                 tg_id TEXT NOT NULL,
+                 fullname TEXT NOT NULL)''')
+
+    conn.commit()
+    conn.close()
+
+
+def add_starter_user(tg_id, fullname):
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    c.execute("INSERT INTO starters (tg_id, fullname) VALUES (?, ?)", (tg_id, fullname))
+
+    conn.commit()
+    conn.close()
+    
+
+def count_starters_users():
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    c.execute("SELECT COUNT(*) FROM starters")
+    count = c.fetchone()[0]
+
+    conn.close()
+
+    return count
+
+
+def get_all_starters_tg_id():
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    c.execute("SELECT tg_id FROM starters")
+    tg_ids = [row[0] for row in c.fetchall()]
+
+    conn.close()
+
+    return tg_ids
+    
+    
 def create_user_table():
     conn = sqlite3.connect(DATABASE_NAME)
     c = conn.cursor()
@@ -16,6 +64,18 @@ def create_user_table():
 
     conn.commit()
     conn.close()
+
+
+def all_users_count():
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    c.execute("SELECT COUNT(*) FROM users")
+    count = c.fetchone()[0]
+
+    conn.close()
+
+    return count
 
 
 def add_user(tg_id, fullname, phone_number):
@@ -233,6 +293,21 @@ def get_premium_audiobook_address(book_name):
     c = conn.cursor()
 
     c.execute("SELECT audiobook_address FROM premium_books WHERE book_name = ?", (book_name,))
+    audiobook_address = c.fetchone()
+
+    conn.close()
+
+    if audiobook_address:
+        return audiobook_address[0]
+    else:
+        return None
+    
+    
+def get_premium_book_address(book_name):
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    c.execute("SELECT book_address FROM premium_books WHERE book_name = ?", (book_name,))
     audiobook_address = c.fetchone()
 
     conn.close()
@@ -749,9 +824,35 @@ def get_user_premium_audiobooks_address(tg_id):
 
     return pb
 
+
+def all_users_premium_audiobooks_count():
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    c.execute("SELECT SUM((SELECT COUNT(*) FROM user_premium_audiobooks WHERE user_premium_audiobooks.tg_id = users.tg_id)) FROM users")
+    count = c.fetchone()[0]
+
+    conn.close()
+
+    return count
+
+
+def all_users_premium_books_count():
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    c.execute("SELECT SUM((SELECT COUNT(*) FROM user_premium_books WHERE user_premium_books.tg_id = users.tg_id)) FROM users")
+    count = c.fetchone()[0]
+
+    conn.close()
+
+    return count
+
+
 def create_database():
     create_book_table()
     create_contact_table()
     create_user_table()
     create_user_premium_book_table()
     create_user_premium_audiobook_table()
+    create_starters_table()
