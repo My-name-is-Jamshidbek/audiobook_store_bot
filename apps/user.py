@@ -158,7 +158,7 @@ async def user_book_type(m: m, state: s):
             if m.from_user.id in ADMIN_IDS:
                 await m.answer(
                     "Assalomu aleykum admin\nBotga hush kelibsiz\nKerakli menyuni tanlashiniz mumkin.",
-                    reply_markup=keyboardbutton(["Audioteka 🎧", "Biz bilan aloqa 📞"])
+                    reply_markup=keyboardbutton(["Audioteka 🎧", "Biz bilan aloqa 📞", "Statistika 📊", "Reklama"])
                 )
                 await Admin_state.main_menu.set()
             else:
@@ -180,7 +180,7 @@ async def user_book_type(m: m, state: s):
         if m.from_user.id in ADMIN_IDS:
             await m.answer(
                 "Assalomu aleykum admin\nBotga hush kelibsiz\nKerakli menyuni tanlashiniz mumkin.",
-                reply_markup=keyboardbutton(["Audioteka 🎧", "Biz bilan aloqa 📞"])
+                reply_markup=keyboardbutton(["Audioteka 🎧", "Biz bilan aloqa 📞", "Statistika 📊", "Reklama"])
             )
             await Admin_state.main_menu.set()
         else:

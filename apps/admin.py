@@ -22,7 +22,53 @@ async def admin_main_menu(m: m, state: s):
         await m.answer(get_latest_contact_message(), reply_markup=keyboardbutton(["O'zgartirish", "Chiqish"]))
         await Admin_state.contact_us.set()
     elif m.text == "Statistika 📊":
-        await m.answer(f"Foydalanuvchilar statistikasi:\nJami: {count_starters_users()} nafar\nRo'yxatdan o'tgan: {all_users_count()} nafar\n")
+        await m.answer(f"Foydalanuvchilar statistikasi:\nJami: {count_starters_users()} nafar\nRo'yxatdan o'tgan: {all_users_count()} nafar\n\nKitoblar statistikasi:\nJami sotilgan kitoblar: {all_users_premium_books_count()+all_users_premium_audiobooks_count()-30} ta\nAudio va elektron versiya: {all_users_premium_audiobooks_count()-5}\nAudio versiya: {all_users_premium_books_count()-25}")
+    elif m.text == "Reklama":
+        await m.answer("Reklama habarini yuboring:", reply_markup=keyboardbutton(["Chiqish"]))
+        await Admin_state.ad_message.set()
+
+
+async def Admin_ad_message(m: m, state: s):
+    if m.text == "Chiqish":
+        await m.answer("Chiqildi!", reply_markup=keyboardbutton(["Audioteka 🎧", "Biz bilan aloqa 📞", "Statistika 📊", "Reklama"]))
+        await Admin_state.main_menu.set()
+    else:
+        m_id = m.message_id
+        await m.answer("Reklama taqdim etilishi kerak bo'lgan foydalanuvchilarni tanlang:", reply_markup=keyboardbutton(["Barcha foydalanuvchilarga", "Ro'yxatdan o'tganlarga", "Kitob sotib olganlarga", "Chiqish"]))
+        await state.update_data(ad_m_id=m_id)
+        await Admin_state.ad_users_type.set()
+
+
+async def send_ad(A_ID, m_id, users):
+    c, e = 0,0
+    _id = await bot.send_message(A_ID, f"Reklama jo'natilmoqda jami {len(users)} nafar")
+    for i in users:
+        try:
+            await bot.forward_message(i, A_ID, m_id,)
+            c+=1
+        except:
+            e+=1
+    await _id.delete()
+    await bot.send_message(A_ID, f"Reklama jo'natildi\nMuvaffaqiyatli {c}\nMuvaffaqiyatsiz: {e}", reply_to_message_id=m_id)
+
+async def Admin_ad_message_type(m: m, state: s):
+    if m.text == "Chiqish":
+        await m.answer("Chiqildi!", reply_markup=keyboardbutton(["Audioteka 🎧", "Biz bilan aloqa 📞", "Statistika 📊", "Reklama"]))
+        await Admin_state.main_menu.set()
+    else:
+        data = await state.get_data()
+        m_id = data.get("ad_m_id")
+        A_ID = m.from_user.id
+        if m.text == "Barcha foydalanuvchilarga":
+            users = get_all_starters_tg_id() 
+        elif m.text == "Ro'yxatdan o'tganlarga":
+            users = get_all_users_tg_id()
+        elif m.text == "Kitob sotib olganlarga":
+            users = all_premium_books_users_tg_id()
+        users = list(set(list(map(int, users))))
+        await send_ad(A_ID=A_ID, m_id=m_id, users=users)
+        await m.answer("Asosiy menyu", reply_markup=keyboardbutton(["Audioteka 🎧", "Biz bilan aloqa 📞", "Statistika 📊", "Reklama"]))
+        await Admin_state.main_menu.set()
 
 
 async def admin_contact_us(m: m, state: s):
@@ -30,17 +76,17 @@ async def admin_contact_us(m: m, state: s):
         await m.answer("Yangi habarni yuboring:", reply_markup=keyboardbutton(["Chiqish"]))
         await Admin_state.contact_us_change.set()
     elif m.text == "Chiqish":
-        await m.answer("Chiqildi!", reply_markup=keyboardbutton(["Audioteka 🎧", "Biz bilan aloqa 📞"]))
+        await m.answer("Chiqildi!", reply_markup=keyboardbutton(["Audioteka 🎧", "Biz bilan aloqa 📞", "Statistika 📊", "Reklama"]))
         await Admin_state.main_menu.set()
 
 
 async def admin_contact_us_change(m: m, state: s):
     if m.text == "Chiqish":
-        await m.answer("Chiqildi!", reply_markup=keyboardbutton(["Audioteka 🎧", "Biz bilan aloqa 📞"]))
+        await m.answer("Chiqildi!", reply_markup=keyboardbutton(["Audioteka 🎧", "Biz bilan aloqa 📞", "Statistika 📊", "Reklama"]))
         await Admin_state.main_menu.set()
     elif m.text:
         insert_contact_message(m.text)
-        await m.answer("Habar yangilandi!", reply_markup=keyboardbutton(["Audioteka 🎧", "Biz bilan aloqa 📞"]))
+        await m.answer("Habar yangilandi!", reply_markup=keyboardbutton(["Audioteka 🎧", "Biz bilan aloqa 📞", "Statistika 📊", "Reklama"]))
         await Admin_state.main_menu.set()
 
 
@@ -54,7 +100,7 @@ async def admin_book_type(m: m, state: s):
                                                                         "Chiqish"]))
         await Admin_state.free_books.set()
     elif m.text == "Chiqish":
-        await m.answer("Chiqildi!", reply_markup=keyboardbutton(["Audioteka 🎧", "Biz bilan aloqa 📞"]))
+        await m.answer("Chiqildi!", reply_markup=keyboardbutton(["Audioteka 🎧", "Biz bilan aloqa 📞", "Statistika 📊", "Reklama"]))
         await Admin_state.main_menu.set()
 
 async def admin_premium_books(m: m, state: s):

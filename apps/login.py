@@ -7,7 +7,7 @@ from aiogram.dispatcher import FSMContext as s
 from aiogram.types import ReplyKeyboardRemove
 from buttons.keyboardbuttons import keyboardbutton, share_contact_button
 from config import ADMIN_IDS
-from database.database import add_user, get_user, user_exists, create_database
+from database.database import add_user, get_user, user_exists, create_database, add_starter_user
 from states import *
 
 
@@ -16,11 +16,11 @@ async def cmd_start(m: m):
     :param m:
     :return:
     """
-    create_database()
+    # create_database()
     if m.from_user.id in ADMIN_IDS:
         await m.answer(
             "Assalomu aleykum admin\nBotga hush kelibsiz\nKerakli menyuni tanlashiniz mumkin.",
-            reply_markup=keyboardbutton(["Audioteka 🎧", "Biz bilan aloqa 📞"])
+            reply_markup=keyboardbutton(["Audioteka 🎧", "Biz bilan aloqa 📞", "Statistika 📊", "Reklama"])
         )
         await Admin_state.main_menu.set()
     else:
@@ -31,6 +31,10 @@ async def cmd_start(m: m):
                            reply_markup=keyboardbutton(["Audioteka 🎧", "Audiokitoblarim 💽", "Qidirish🔍", "Biz bilan aloqa 📞"]))
             await User_state.main_menu.set()
         else:
+            try:
+                add_starter_user(m.from_user.id, str(m.from_user.full_name))
+            except:
+                pass
             await m.answer("Assalomu alaykum! Hush kelibsiz, muhtaram vatandosh! \n\nSiz bu bot yordamida Omar Xalil "
                            "ijrosidagi hali oʻzbek tiliga tarjima qilinmagan eng sara va noyob kitoblarning audio "
                            "va elektron formatlarini harid qilib eshitishingiz mumkin. \n\nBiz bilan birga boʻlganingiz"

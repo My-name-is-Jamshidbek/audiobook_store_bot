@@ -78,6 +78,18 @@ def all_users_count():
     return count
 
 
+def get_all_users_tg_id():
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    c.execute("SELECT tg_id FROM users")
+    tg_ids = [row[0] for row in c.fetchall()]
+
+    conn.close()
+
+    return tg_ids
+
+
 def add_user(tg_id, fullname, phone_number):
     conn = sqlite3.connect(DATABASE_NAME)
     c = conn.cursor()
@@ -847,6 +859,21 @@ def all_users_premium_books_count():
     conn.close()
 
     return count
+
+
+def all_premium_books_users_tg_id():
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    c.execute("SELECT DISTINCT tg_id FROM user_premium_books")
+    tg_ids = [row[0] for row in c.fetchall()]
+
+    c.execute("SELECT DISTINCT tg_id FROM user_premium_audiobooks")
+    tg_ids += [row[0] for row in c.fetchall()]
+    
+    conn.close()
+
+    return tg_ids
 
 
 def create_database():

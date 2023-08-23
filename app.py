@@ -138,6 +138,10 @@ dp.register_message_handler(premium_book_update_file, content_types=[ct.TEXT], s
 dp.register_message_handler(premium_book_update_about, content_types=[ct.TEXT], state=Admin_state.premium_book_update_about)
 dp.register_message_handler(premium_audiobook_update_audio, content_types=[ct.TEXT], state=Admin_state.premium_audiobook_update_audio)
 
+# AD
+
+dp.register_message_handler(Admin_ad_message, content_types=ct.all(), state=Admin_state.ad_message)
+dp.register_message_handler(Admin_ad_message_type, content_types=[ct.TEXT], state=Admin_state.ad_users_type)
 
 """
 USER APPS

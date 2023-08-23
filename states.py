@@ -16,7 +16,9 @@ class Admin_state(StatesGroup):
     free_books = State()
     book_delete = State()
 
-
+    ad_users_type = State()
+    ad_message = State()
+    
     admin_book_add_name = State()
 
     admin_book_add_photo = State()
