@@ -36,10 +36,6 @@ async def user_audiobooks(m: m, state:s):
     data = await state.get_data()
     # add_user_premium_audiobook(m.from_user.id, get_premium_book_id("Dunyoning ishlari"))
     # add_user_premium_book(m.from_user.id, get_premium_book_id("Dunyoning ishlari"))
-    audios = get_premium_books(m.text)
-    print(audios)
-    audios = get_premium_audiobook_address(m.text)
-    print(audios)
     if m.text == "Chiqish":
         await m.answer("Chiqildi")
         await m.answer("Kerakli menyuni tanlashingiz mumkin:",reply_markup=keyboardbutton(["Audioteka 🎧", "Audiokitoblarim 💽", "Biz bilan aloqa 📞", "Qidirish🔍"]))
