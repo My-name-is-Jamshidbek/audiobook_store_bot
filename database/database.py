@@ -716,18 +716,37 @@ def search_book(keyword):
     conn = sqlite3.connect(DATABASE_NAME)
     c = conn.cursor()
 
-    # Search for books based on the keyword in book name or description
-    c.execute("SELECT * FROM books WHERE book_name LIKE ? OR book_description LIKE ?", ('%{}%'.format(keyword), '%{}%'.format(keyword)))
-    books = c.fetchall()
+    query = f'''
+        SELECT * FROM free_books
+        WHERE book_name LIKE ? OR book_description LIKE ?
+    '''
+
+    keyword_with_wildcard = f"%{keyword}%"
+    params = (keyword_with_wildcard, keyword_with_wildcard,)
+
+    c.execute(query, params)
+    results = c.fetchall()
+
+    query = f'''
+        SELECT * FROM premium_books
+        WHERE book_name LIKE ? OR book_description LIKE ? OR audibook_description LIKE ?
+    '''
+
+    keyword_with_wildcard = f"%{keyword}%"
+    params = (keyword_with_wildcard, keyword_with_wildcard, keyword_with_wildcard)
+
+    c.execute(query, params)
+    results += c.fetchall()
 
     conn.close()
 
-    return books
+    return results
 
 
 def create_user_premium_book_table():
     conn = sqlite3.connect(DATABASE_NAME)
     c = conn.cursor()
+
 
     # Create the user_premium_books table if it doesn't exist
     c.execute('''CREATE TABLE IF NOT EXISTS user_premium_books

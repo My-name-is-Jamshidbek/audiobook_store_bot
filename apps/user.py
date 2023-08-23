@@ -71,11 +71,12 @@ async def search_books(m: m, state: s):
             await m.answer("Natijalar:")
             f, n = f"", 0
             for book in result:
-                f += f"{n}. \nKitob nomi: {book[1]} \nKitob malumoti: {book[5]}\n"
-                if str(book[4]) == "1":
-                    f+=f"Kitob turi: Premium\nKitob narhi: {book[6]}"
+                n+=1
+                f += f"\n{n}. {book[1]}  "
+                if book[2].isdigit():
+                    f+=f" Premium"
                 else:
-                    f+=f"Kitob turi: Beepul"
+                    f+=f" Beepul"
             await m.answer(f)
         else:
             await m.answer("Kitob topilmadi.")
@@ -205,5 +206,5 @@ async def user_free_books(m: m, state: s):
         await m.answer_photo(
                         photo=InputFile(get_free_book_photo(m.text)),
                         caption=f"{get_free_book_description(m.text)}\n",
-                        reply_markup=inlinekeyboardbutton(audios))
+                        reply_markup=get_group_link_button(audios))
 
