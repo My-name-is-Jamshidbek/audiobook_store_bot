@@ -119,7 +119,7 @@ async def user_book_type(m: m, state: s):
             if data.get("premium_book_name") in get_user_premium_audiobooks(m.from_user.id):
                 await m.answer("Siz ushbu kitobni allaqachon harid qilgansiz uni \"Audiokitoblarim 💽\" bo'limidan topishingiz mumkin")
             else:
-                r_m = f"Siz bu yerdan <strong>“{data.get('premium_book_name')}”</strong> kitobining audio va elektron versiyasini birgalikda harid qilib olishingiz mumkin.\n\n{get_premium_audiobook_description(data.get('premium_book_name'))}\n\n💰Audiokitob narxi - {get_premium_audiobook_price(book_name=data.get('premium_book_name'))} soʻm"
+                r_m = f"{get_premium_audiobook_description(data.get('premium_book_name'))}\n\n💰Audiokitob narxi - {get_premium_audiobook_price(book_name=data.get('premium_book_name'))} soʻm"
                 await m.answer_photo(
                     photo=InputFile(get_premium_audiobook_photo(data.get('premium_book_name'))),
                     caption=r_m,
@@ -133,7 +133,7 @@ async def user_book_type(m: m, state: s):
             if data.get("premium_book_name") in get_user_premium_books(m.from_user.id):
                 await m.answer("Siz ushbu kitobni allaqachon harid qilgansiz uni \"Audiokitoblarim 💽\" bo'limidan topishingiz mumkin")
             else:
-                r_m = f"<strong>“{data.get('premium_book_name')}”</strong>\n\n{get_premium_book_description(book_name=data.get('premium_book_name'))}\n\n💰Asar narxi - {get_premium_book_price(book_name=data.get('premium_book_name'))} soʻm"
+                r_m = f"{get_premium_book_description(book_name=data.get('premium_book_name'))}\n\n💰Asar narxi - {get_premium_book_price(book_name=data.get('premium_book_name'))} soʻm"
                 await m.answer_photo(
                     photo=InputFile(get_premium_book_photo(book_name=data.get('premium_book_name'))),
                     caption=r_m,
