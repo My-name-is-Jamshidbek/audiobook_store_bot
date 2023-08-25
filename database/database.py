@@ -760,6 +760,16 @@ def create_user_premium_book_table():
     conn.close()
 
 
+def delete_all_user_premium_books():
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    # Delete all rows from the user_premium_books table
+    c.execute("DELETE FROM user_premium_audiobooks")
+
+    conn.commit()
+    conn.close()
+
 
 def add_user_premium_book(tg_id, book_id):
     conn = sqlite3.connect(DATABASE_NAME)

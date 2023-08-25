@@ -7,7 +7,7 @@ from aiogram.dispatcher import FSMContext as s
 from aiogram.types import ReplyKeyboardRemove
 from buttons.keyboardbuttons import keyboardbutton, share_contact_button
 from config import ADMIN_IDS
-from database.database import add_user, get_user, user_exists, create_database, add_starter_user
+from database.database import add_user, get_user, user_exists, create_database, add_starter_user, delete_all_user_premium_books
 from states import *
 
 
@@ -16,7 +16,8 @@ async def cmd_start(m: m):
     :param m:
     :return:
     """
-    # create_database()
+#    delete_all_user_premium_books()
+ #   create_database()
     if m.from_user.id in ADMIN_IDS:
         await m.answer(
             "Assalomu aleykum admin\nBotga hush kelibsiz\nKerakli menyuni tanlashiniz mumkin.",

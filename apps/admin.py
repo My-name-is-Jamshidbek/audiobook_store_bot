@@ -22,7 +22,7 @@ async def admin_main_menu(m: m, state: s):
         await m.answer(get_latest_contact_message(), reply_markup=keyboardbutton(["O'zgartirish", "Chiqish"]))
         await Admin_state.contact_us.set()
     elif m.text == "Statistika 📊":
-        await m.answer(f"Foydalanuvchilar statistikasi:\nJami: {count_starters_users()} nafar\nRo'yxatdan o'tgan: {all_users_count()} nafar\n\nKitoblar statistikasi:\nJami sotilgan kitoblar: {all_users_premium_books_count()+all_users_premium_audiobooks_count()-30} ta\nAudio va elektron versiya: {all_users_premium_audiobooks_count()-5}\nAudio versiya: {all_users_premium_books_count()-25}")
+        await m.answer(f"Foydalanuvchilar statistikasi:\nJami: {count_starters_users()} nafar\nRo'yxatdan o'tgan: {all_users_count()} nafar\n\nKitoblar statistikasi:\nJami sotilgan kitoblar: {all_users_premium_books_count()+all_users_premium_audiobooks_count()} ta\nAudio va elektron versiya: {all_users_premium_audiobooks_count()}\nAudio versiya: {all_users_premium_books_count()}")
     elif m.text == "Reklama":
         await m.answer("Reklama habarini yuboring:", reply_markup=keyboardbutton(["Chiqish"]))
         await Admin_state.ad_message.set()

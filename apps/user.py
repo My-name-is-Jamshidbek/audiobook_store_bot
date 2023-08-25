@@ -19,7 +19,6 @@ async def user_main_menu(m: m, state: s):
         await m.answer("Audiokitob turini tanlang:", reply_markup=keyboardbutton(["Premium audiokitoblar 💰", "Bepul audiokitoblar 🎁", "Chiqish"]))
         await User_state.audiobook_type.set()
     elif m.text == "Audiokitoblarim 💽":
-        add_user_premium_book(m.from_user.id, get_premium_book_id('“Qur’on sirlari”'))
         if len(get_user_premium_books(m.from_user.id)+get_user_premium_audiobooks(m.from_user.id)):
             await m.answer("Siz xarid qilgan audiokitoblar ro'yxati:", reply_markup=keyboardbutton(list(set(get_user_premium_books(m.from_user.id)+get_user_premium_audiobooks(m.from_user.id)))+["Chiqish"]))
             await User_state.audiobooks.set()
@@ -30,6 +29,10 @@ async def user_main_menu(m: m, state: s):
     elif m.text == "Qidirish🔍":
         await m.answer("Qidirish uchun kalit so'zni kiriting:", reply_markup=keyboardbutton(["Chiqish"]))
         await User_state.search_books.set()
+    else:
+        await m.answer("Bunday menyu mavjud emas!")
+        await m.answer("Kerakli menyuni tanlashingiz mumkin:",reply_markup=keyboardbutton(["Audioteka 🎧", "Audiokitoblarim 💽", "Biz bilan aloqa 📞", "Qidirish🔍"]))
+        await User_state.main_menu.set()
 
 
 async def user_audiobooks(m: m, state:s):
@@ -55,6 +58,10 @@ async def user_audiobooks(m: m, state:s):
             photo=InputFile(get_premium_book_photo(book_name=m.text)),
             caption=r_m,
             reply_markup=get_group_link_button(audios))
+    else:
+        await m.answer("Bunday menyu mavjud emas!")
+        await m.answer("Kerakli menyuni tanlashingiz mumkin:",reply_markup=keyboardbutton(["Audioteka 🎧", "Audiokitoblarim 💽", "Biz bilan aloqa 📞", "Qidirish🔍"]))
+        await User_state.main_menu.set()
 
 
 async def search_books(m: m, state: s):
@@ -95,6 +102,10 @@ async def user_audiobook_type(m: m, state: s):
         await m.answer("Kerakli menyuni tanlashingiz mumkin:",
                        reply_markup=keyboardbutton(["Audioteka 🎧", "Audiokitoblarim 💽", "Qidirish🔍", "Biz bilan aloqa 📞"]))
         await User_state.main_menu.set()
+    else:
+        await m.answer("Bunday menyu mavjud emas!")
+        await m.answer("Kerakli menyuni tanlashingiz mumkin:",reply_markup=keyboardbutton(["Audioteka 🎧", "Audiokitoblarim 💽", "Biz bilan aloqa 📞", "Qidirish🔍"]))
+        await User_state.main_menu.set()
 
 
 async def user_premium_books(m: m, state: s):
@@ -110,6 +121,10 @@ async def user_premium_books(m: m, state: s):
         data = await state.get_data()
         user_data[m.from_user.id] = data
         await state.finish()
+    else:
+        await m.answer("Bunday menyu mavjud emas!")
+        await m.answer("Audiokitob turini tanlang:", reply_markup=keyboardbutton(["Premium audiokitoblar 💰", "Bepul audiokitoblar 🎁", "Chiqish"]))
+        await User_state.audiobook_type.set()
     
 
 async def user_book_type(m: m, state: s):
@@ -207,4 +222,8 @@ async def user_free_books(m: m, state: s):
                         photo=InputFile(get_free_book_photo(m.text)),
                         caption=f"{get_free_book_description(m.text)}\n",
                         reply_markup=get_group_link_button(audios))
+    else:
+        await m.answer("Bunday menyu mavjud emas!")
+        await m.answer("Audiokitob turini tanlang:", reply_markup=keyboardbutton(["Premium audiokitoblar 💰", "Bepul audiokitoblar 🎁", "Chiqish"]))
+        await User_state.audiobook_type.set()
 

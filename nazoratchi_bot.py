@@ -14,7 +14,7 @@ bot = Bot(token=TOKEN)
 dp = Dispatcher(bot)
 dp.middleware.setup(LoggingMiddleware())
 
-@dp.message_handler(content_types=[ct.TEXT, ct.NEW_CHAT_MEMBERS])
+@dp.message_handler(content_types=[ct.TEXT, ct.NEW_CHAT_MEMBERS, ct.LEFT_CHAT_MEMBER])
 async def usermanager(message: types.Message):
     user_id = message.from_user.id
     chat_id = message.chat.id
@@ -27,7 +27,7 @@ async def usermanager(message: types.Message):
         if chat_invite_link in get_all_premium_audiobook_address()+get_all_premium_book_address():
             if chat_invite_link not in get_user_premium_audiobooks_address(user_id) and chat_invite_link not in get_user_premium_books_address(user_id):        
                 try:
-                    await bot.unban_chat_member(chat_id, user_id, types.ChatPermissions())
+                    ub = await bot.unban_chat_member(chat_id, user_id, types.ChatPermissions())
                 except Exception as e:
                     await bot.send_message(ADMIN_ID, f"Guruhdan chetlatishda xatolik!\nGuruh: {chat_invite_link}\nFoydalanuvchi: {message.from_user.full_name}\nID: {user_id}\nXatolik: {e}")
             user_id = message.from_user.id
