@@ -1,7 +1,7 @@
 """
 log in
 """
-from aiogram.types import Message as m
+from aiogram.types import Message as m, InputFile
 from aiogram.dispatcher import FSMContext as s
 
 from aiogram.types import ReplyKeyboardRemove
@@ -28,6 +28,7 @@ async def cmd_start(m: m):
         if user_exists(m.from_user.id):
             data = get_user(m.from_user.id)
             await m.answer(f"Assalomu aleykum {data[2]}! Hush kelibsiz, muhtaram vatandosh!  \n\nSiz bu bot yordamida Omar Xalil ijrosidagi hali oʻzbek tiliga tarjima qilinmagan eng sara va noyob kitoblarning audio va elektron formatlarini harid qilib eshitishingiz mumkin.  \n\nBiz bilan birga boʻlganingiz uchun minnatdormiz! Sizni hali koʻplab foydali manbalar bilan siylay olishimizga ishonamiz.")
+            await m.answer_video_note(InputFile('video.mp4'))
             await m.answer("Kerakli menyuni tanlashingiz mumkin:",
                            reply_markup=keyboardbutton(["Audioteka 🎧", "Audiokitoblarim 💽", "Qidirish🔍", "Biz bilan aloqa 📞"]))
             await User_state.main_menu.set()
@@ -36,6 +37,7 @@ async def cmd_start(m: m):
                 add_starter_user(m.from_user.id, str(m.from_user.full_name))
             except:
                 pass
+            await m.answer_video_note(InputFile('video.mp4'))
             await m.answer("Assalomu alaykum! Hush kelibsiz, muhtaram vatandosh! \n\nSiz bu bot yordamida Omar Xalil "
                            "ijrosidagi hali oʻzbek tiliga tarjima qilinmagan eng sara va noyob kitoblarning audio "
                            "va elektron formatlarini harid qilib eshitishingiz mumkin. \n\nBiz bilan birga boʻlganingiz"
