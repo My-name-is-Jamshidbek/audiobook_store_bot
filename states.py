@@ -61,8 +61,12 @@ class Admin_state(StatesGroup):
     contact_us = State()
     contact_us_change = State()
     
-    give_book_type = State()
-    give_book_user = State()
+    add_channel_link = State()
+    changed_group = State()
+
+    change_group = State()
+    channel_link = State()
+    add_group_name = State()
 
 
 class User_state(StatesGroup):
@@ -75,6 +79,8 @@ class User_state(StatesGroup):
     fullname = State()
     phone_number = State()
     main_menu = State()
+    get_uc = State()
+
     audiobook_type = State()
 
     free_book_main_menu = State()

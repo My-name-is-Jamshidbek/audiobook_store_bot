@@ -1,79 +1,90 @@
-"""
-log in
-"""
 from aiogram.types import Message as m, InputFile
 from aiogram.dispatcher import FSMContext as s
-
 from aiogram.types import ReplyKeyboardRemove
 from buttons.keyboardbuttons import keyboardbutton, share_contact_button
+from buttons.inlinekeyboardbuttons import inlinekeyboardbuttonlinks
 from config import ADMIN_IDS
-from database.database import add_user, get_user, user_exists, create_database, add_starter_user, delete_all_user_premium_books
+from database.database import add_user, get_user, user_exists, create_database, add_starter_user, add_uc, get_uc, update_uc, add_invite, update_invite, get_invite, get_setting, get_all_channels
 from states import *
+from loader import bot
 
+async def check_join(user_id):
+    try:
+        for i in get_all_channels():
+            member = await bot.get_chat_member(chat_id=i[1], user_id=user_id)
+            if member["status"] == "left": return False
+        return True
+    except Exception as e:
+        print(e)
+        return False
 
-async def cmd_start(m: m):
-    """
-    :param m:
-    :return:
-    """
-#    delete_all_user_premium_books()
- #   create_database()
-    if m.from_user.id in ADMIN_IDS:
-        await m.answer(
+async def cmd_start(message: m, state: s):
+    # create_database()
+    if message.from_user.id in ADMIN_IDS:
+        await message.answer(
             "Assalomu aleykum admin\nBotga hush kelibsiz\nKerakli menyuni tanlashiniz mumkin.",
-            reply_markup=keyboardbutton(["Audioteka 🎧", "Biz bilan aloqa 📞", "Statistika 📊", "Reklama"])
+            reply_markup=keyboardbutton(["Biz bilan aloqa 📞", "Statistika 📊", "UC Chiqarish", "Boshlang'ich uc", "Odam qo'shish", "Reklama", "Kanallar"], row=2)
         )
         await Admin_state.main_menu.set()
     else:
-        if user_exists(m.from_user.id):
-            data = get_user(m.from_user.id)
-            await m.answer(f"Assalomu aleykum {data[2]}! Hush kelibsiz, muhtaram vatandosh!  \n\nSiz bu bot yordamida Omar Xalil ijrosidagi hali oʻzbek tiliga tarjima qilinmagan eng sara va noyob kitoblarning audio va elektron formatlarini harid qilib eshitishingiz mumkin.  \n\nBiz bilan birga boʻlganingiz uchun minnatdormiz! Sizni hali koʻplab foydali manbalar bilan siylay olishimizga ishonamiz.")
-            await m.answer_video_note(InputFile('video.mp4'))
-            await m.answer("Kerakli menyuni tanlashingiz mumkin:",
-                           reply_markup=keyboardbutton(["Audioteka 🎧", "Audiokitoblarim 💽", "Qidirish🔍", "Biz bilan aloqa 📞"]))
+        if user_exists(message.from_user.id) and check_join(m.from_user.id):
+            await message.answer(f"Assalomu aleykum! Hush kelibsiz", reply_markup=keyboardbutton(["Taklif qilish📣", "Chiqarish✅", "Takliflar🫂", "Bot haqida🤖"]))
             await User_state.main_menu.set()
         else:
+            await message.answer(f"Assalomu aleykum! Hush kelibsiz", reply_markup=keyboardbutton(["Tekshirish"]))
+            if len(message.text.split("=")) == 2:
+                if user_exists(message.text.split("=")[1]):
+                    await message.answer(f"Sizni {get_user(message.text.split('=')[1])[2]} taklif qildi. Taklif qilgan foydalanuvchiga uc sovg'a qilinishi uchun botda ro'yxatdan o'ting.")
+                    await state.update_data(promocode=message.text.split("=")[1])
+                else:
+                    await message.answer("Promo kod noto'g'ri!")
             try:
-                add_starter_user(m.from_user.id, str(m.from_user.full_name))
+                add_starter_user(message.from_user.id, str(message.from_user.full_name))
             except:
                 pass
-            await m.answer_video_note(InputFile('video.mp4'))
-            await m.answer("Assalomu alaykum! Hush kelibsiz, muhtaram vatandosh! \n\nSiz bu bot yordamida Omar Xalil "
-                           "ijrosidagi hali oʻzbek tiliga tarjima qilinmagan eng sara va noyob kitoblarning audio "
-                           "va elektron formatlarini harid qilib eshitishingiz mumkin. \n\nBiz bilan birga boʻlganingiz"
-                           " uchun minnatdormiz! Sizni hali koʻplab foydali manbalar bilan siylay olishimizga ishonamiz"
-                           ".", reply_markup=keyboardbutton(["Ro'yxatdan o'tish"]))
+            links = [{"text": i[0], "link": f"https://t.me/{i[1][1:]}"} for i in get_all_channels()]
+            await message.answer(f"Bot ishini davom etishi uchun quyidagi kanallarga a'zo bo'ling:", reply_markup=inlinekeyboardbuttonlinks(links))
             await User_state.register.set()
 
-
-async def register(m: m, state: s):
-    if m.text == "Ro'yxatdan o'tish":
-        await m.answer("Ro'yxatdan o'tish uchun iltimos ism familiyangizni yozib yuboring:", reply_markup=
-        ReplyKeyboardRemove())
-        await User_state.fullname.set()
+async def register(message: m, state: s):
+    if message.text == "Tekshirish":
+        tt = await message.answer("Tekshirilmoqda")
+        user_id = message.chat.id
+        if await check_join(user_id):
+            await message.answer("Telefon raqamingizni yuboring:", reply_markup=share_contact_button)
+            await User_state.phone_number.set()
+            ReplyKeyboardRemove()
+        else:
+            await message.answer("Iltimos guruhlarga qo'shilganingizga ishonch hosil qiling!")
+        await tt.delete()
     else:
-        await m.answer("Botdan foydalanish uchun iltimos ro'yxatdan o'ting!", reply_markup=keyboardbutton(["Ro'yxatdan o'tish"]))
+        await message.answer("Botdan foydalanish uchun iltimos kanallarga a'zo bo'ling!")
 
-
-async def fullname(m: m, state: s):
-    fullname = m.text
+async def fullname(message: m, state: s):
+    fullname = message.text
     await state.update_data(fullname=fullname)
-    await m.answer("Telefon raqaqamingizni yuboring:", reply_markup=share_contact_button)
+    await message.answer("Telefon raqaqamingizni yuboring:", reply_markup=share_contact_button)
     await User_state.phone_number.set()
 
-
-async def phone_number(m: m, state: s):
-    if m.text:
-        phone_number = m.text
-    elif m.contact:
-        phone_number = m.contact.phone_number
+async def phone_number(message: m, state: s):
+    if message.text:
+        phone_number = message.text
+    elif message.contact:
+        phone_number = message.contact.phone_number
     else:
         phone_number = False
-        await m.answer("Iltimos telefon raqamingizni yuboring:", reply_markup=share_contact_button)
+        await message.answer("Iltimos telefon raqamingizni yuboring:", reply_markup=share_contact_button)
     if phone_number:
+        fullname = message.from_user.full_name
+        add_user(tg_id=message.from_user.id, fullname=fullname, phone_number=phone_number)
+        add_uc(message.from_user.id, int(get_setting("starter_uc")))
+        add_invite(message.from_user.id, 0)
         data = await state.get_data()
-        fullname = data.get("fullname")
-        add_user(tg_id=m.from_user.id, fullname=fullname, phone_number=phone_number)
-        await m.answer("Kerakli menyuni tanlashingiz mumkin:",reply_markup=keyboardbutton(["Audioteka 🎧", "Audiokitoblarim 💽", "Biz bilan aloqa 📞", "Qidirish🔍"]))
+        if user_exists(data.get("promocode")):
+            uc = get_uc(data.get("promocode"))
+            update_uc(data.get("promocode"), int(uc)+get_setting("add_man_uc"))
+            invite = get_invite(data.get("promocode"))
+            update_invite(data.get("promocode"), int(invite)+1)
+            await bot.send_message(data.get("promocode"), f"Siz taklif qilgan havola orqali {fullname} ismli foydalanuvchi ro'yxatdan o'tdi!")
+        await message.answer("Kerakli menyuni tanlashingiz mumkin:",reply_markup=keyboardbutton(["Taklif qilish📣", "Chiqarish✅", "Takliflar🫂", "Bot haqida🤖"]))
         await User_state.main_menu.set()
-

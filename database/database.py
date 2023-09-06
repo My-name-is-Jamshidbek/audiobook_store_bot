@@ -126,550 +126,6 @@ def user_exists(tg_id):
     return user_exist
 
 
-# books functions
-def create_book_table():
-    conn = sqlite3.connect(DATABASE_NAME)
-    c = conn.cursor()
-
-    # Create the book table if it doesn't exist
-    c.execute('''CREATE TABLE IF NOT EXISTS free_books
-                 (id INTEGER PRIMARY KEY AUTOINCREMENT,
-                 book_name TEXT NOT NULL,
-                 audiobook_address TEXT NOT NULL,
-                 book_description TEXT NOT NULL,
-                 book_photo TEXT NOT NULL)''')
-
-
-    # Create the book table if it doesn't exist
-    c.execute('''CREATE TABLE IF NOT EXISTS premium_books
-                 (id INTEGER PRIMARY KEY AUTOINCREMENT,
-                 book_name TEXT NOT NULL,
-                 audiobook_price TEXT NOT NULL,
-                 audiobook_photo TEXT NOT NULL,
-                 audiobook_address TEXT NOT NULL,
-                 audibook_description TEXT NOT NULL,
-                 book_price TEXT NOT NULL,
-                 book_photo TEXT NOT NULL,
-                 book_address TEXT NOT NULL,
-                 book_description TEXT NOT NULL)''')
-
-    conn.commit()
-    conn.close()
-
-
-"""
-PREMIUM BOOKS
-"""
-
-
-def get_premium_books():
-    conn = sqlite3.connect(DATABASE_NAME)
-    c = conn.cursor()
-
-    c.execute("SELECT book_name FROM premium_books")
-    book_names = [row[0] for row in c.fetchall()]
-
-    conn.close()
-
-    return book_names
-
-
-def get_premium_book_photo(book_name):
-    conn = sqlite3.connect(DATABASE_NAME)
-    c = conn.cursor()
-
-    c.execute("SELECT book_photo FROM premium_books WHERE book_name = ?", (book_name,))
-    photo_address = c.fetchone()
-
-    conn.close()
-
-    if photo_address:
-        return photo_address[0]
-    else:
-        return None
-
-
-def add_premium_book(book_name, audiobook_price, audiobook_photo, audiobook_address, audiobook_description,
-                     book_price, book_photo, book_address, book_description):
-    conn = sqlite3.connect(DATABASE_NAME)
-    c = conn.cursor()
-
-    c.execute("INSERT INTO premium_books (book_name, audiobook_price, audiobook_photo, audiobook_address, audibook_description, book_price, book_photo, book_address, book_description) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-              (book_name, audiobook_price, audiobook_photo, audiobook_address, audiobook_description, book_price, book_photo, book_address, book_description))
-    
-    conn.commit()
-    conn.close()
-
-
-def get_premium_book_description(book_name):
-    conn = sqlite3.connect(DATABASE_NAME)
-    c = conn.cursor()
-
-    c.execute("SELECT book_description FROM premium_books WHERE book_name = ?", (book_name,))
-    description = c.fetchone()
-
-    conn.close()
-
-    if description:
-        return description[0]
-    else:
-        return None
-
-
-def get_premium_book_price(book_name):
-    conn = sqlite3.connect(DATABASE_NAME)
-    c = conn.cursor()
-
-    c.execute("SELECT book_price FROM premium_books WHERE book_name = ?", (book_name,))
-    price = c.fetchone()
-
-    conn.close()
-    price = price[0]
-    if price:
-        if int(price) > 999:
-            price = int(price)
-            formatted_price = '{:.3f}'.format(price / 1000)
-        else:
-            formatted_price = price  # Format for values less than 1000
-        return formatted_price
-    else:
-        return None
-    
-
-def get_premium_book_file(book_name):
-    conn = sqlite3.connect(DATABASE_NAME)
-    c = conn.cursor()
-
-    c.execute("SELECT book_address FROM premium_books WHERE book_name = ?", (book_name,))
-    audiobook_address = c.fetchone()
-
-    conn.close()
-
-    if audiobook_address:
-        return audiobook_address[0]
-    else:
-        return None
-    
-
-def get_premium_audiobook_description(book_name):
-    conn = sqlite3.connect(DATABASE_NAME)
-    c = conn.cursor()
-
-    c.execute("SELECT audibook_description FROM premium_books WHERE book_name = ?", (book_name,))
-    audiobook_description = c.fetchone()
-
-    conn.close()
-
-    if audiobook_description:
-        return audiobook_description[0]
-    else:
-        return None
-
-
-def get_premium_audiobook_price(book_name):
-    conn = sqlite3.connect(DATABASE_NAME)
-    c = conn.cursor()
-
-    c.execute("SELECT audiobook_price FROM premium_books WHERE book_name = ?", (book_name,))
-    audiobook_price = c.fetchone()
-
-    conn.close()
-    price = audiobook_price[0]
-    if price:
-        if int(price) > 999:
-            price = int(price)
-            formatted_price = '{:.3f}'.format(price / 1000)
-        else:
-            formatted_price = price  # Format for values less than 1000
-        return formatted_price
-    else:
-        return None
-
-def get_premium_audiobook_photo(book_name):
-    conn = sqlite3.connect(DATABASE_NAME)
-    c = conn.cursor()
-
-    c.execute("SELECT audiobook_photo FROM premium_books WHERE book_name = ?", (book_name,))
-    audiobook_photo = c.fetchone()
-
-    conn.close()
-
-    if audiobook_photo:
-        return audiobook_photo[0]
-    else:
-        return None
-    
-
-def get_premium_audiobook_address(book_name):
-    conn = sqlite3.connect(DATABASE_NAME)
-    c = conn.cursor()
-
-    c.execute("SELECT audiobook_address FROM premium_books WHERE book_name = ?", (book_name,))
-    audiobook_address = c.fetchone()
-
-    conn.close()
-
-    if audiobook_address:
-        return audiobook_address[0]
-    else:
-        return None
-    
-    
-def get_premium_book_address(book_name):
-    conn = sqlite3.connect(DATABASE_NAME)
-    c = conn.cursor()
-
-    c.execute("SELECT book_address FROM premium_books WHERE book_name = ?", (book_name,))
-    audiobook_address = c.fetchone()
-
-    conn.close()
-
-    if audiobook_address:
-        return audiobook_address[0]
-    else:
-        return None
-    
-
-def delete_premium_book(book_name):
-    conn = sqlite3.connect(DATABASE_NAME)
-    c = conn.cursor()
-
-    c.execute("DELETE FROM premium_books WHERE book_name = ?", (book_name,))
-    conn.commit()
-
-    conn.close()
-
-
-
-def get_premium_book_name_by_id(book_id):
-    conn = sqlite3.connect(DATABASE_NAME)
-    c = conn.cursor()
-
-    c.execute("SELECT book_name FROM premium_books WHERE id = ?", (book_id,))
-    book_name = c.fetchone()
-
-    conn.close()
-
-    if book_name:
-        return book_name[0]
-    else:
-        return None
-
-def get_premium_book_description_by_id(book_id):
-    conn = sqlite3.connect(DATABASE_NAME)
-    c = conn.cursor()
-
-    c.execute("SELECT book_description FROM premium_books WHERE id = ?", (book_id,))
-    description = c.fetchone()
-
-    conn.close()
-
-    if description:
-        return description[0]
-    else:
-        return None
-
-def get_premium_book_price_by_id(book_id):
-    conn = sqlite3.connect(DATABASE_NAME)
-    c = conn.cursor()
-
-    c.execute("SELECT book_price FROM premium_books WHERE id = ?", (book_id,))
-    price = c.fetchone()
-
-    conn.close()
-
-    if price:
-        formatted_price = int(price[0])
-        return formatted_price
-    else:
-        return None
-
-def get_premium_audiobook_description_by_id(book_id):
-    conn = sqlite3.connect(DATABASE_NAME)
-    c = conn.cursor()
-
-    c.execute("SELECT audiobook_description FROM premium_books WHERE id = ?", (book_id,))
-    description = c.fetchone()
-
-    conn.close()
-
-    if description:
-        return description[0]
-    else:
-        return None
-
-
-def get_premium_audiobook_price_by_id(book_id):
-    conn = sqlite3.connect(DATABASE_NAME)
-    c = conn.cursor()
-
-    c.execute("SELECT audiobook_price FROM premium_books WHERE id = ?", (book_id,))
-    price = c.fetchone()
-
-    conn.close()
-
-    if price:
-        formatted_price = int(price[0])
-        return formatted_price
-    else:
-        return None
-
-
-def get_premium_book_id(book_name):
-    conn = sqlite3.connect(DATABASE_NAME)
-    c = conn.cursor()
-
-    c.execute("SELECT id FROM premium_books WHERE book_name = ?", (book_name,))
-    book_id = c.fetchone()
-
-    conn.close()
-
-    if book_id:
-        return book_id[0]
-    else:
-        return None
-
-
-def get_all_premium_audiobook_address():
-    conn = sqlite3.connect(DATABASE_NAME)
-    c = conn.cursor()
-
-    c.execute("SELECT audiobook_address FROM premium_books")
-    addresses = c.fetchall()
-
-    conn.close()
-    links = []
-    for addres in addresses:
-        for i in addres:links.append(i)
-    return links
-
-    
-def get_all_premium_book_address():
-    conn = sqlite3.connect(DATABASE_NAME)
-    c = conn.cursor()
-
-    c.execute("SELECT book_address FROM premium_books")
-    addresses = c.fetchall()
-
-    conn.close()
-    links = []
-    for addres in addresses:
-        for i in addres:links.append(i)
-    return links
-    
-
-def update_premium_book_name(old_name, new_name):
-    conn = sqlite3.connect(DATABASE_NAME)
-    c = conn.cursor()
-
-    c.execute("UPDATE premium_books SET book_name = ? WHERE book_name = ?", (new_name, old_name))
-    conn.commit()
-
-    conn.close()
-
-
-def update_premium_audiobook_price(book_name, new_price):
-    conn = sqlite3.connect(DATABASE_NAME)
-    c = conn.cursor()
-
-    c.execute("UPDATE premium_books SET audiobook_price = ? WHERE book_name = ?", (new_price, book_name))
-    conn.commit()
-
-    conn.close()
-
-
-def update_premium_book_price(book_name, new_price):
-    conn = sqlite3.connect(DATABASE_NAME)
-    c = conn.cursor()
-
-    c.execute("UPDATE premium_books SET book_price = ? WHERE book_name = ?", (new_price, book_name))
-    conn.commit()
-
-    conn.close()
-
-
-def update_premium_audiobook_photo_type(book_name, audiobook_photo):
-    conn = sqlite3.connect(DATABASE_NAME)
-    c = conn.cursor()
-
-    c.execute("UPDATE premium_books SET audiobook_photo = ? WHERE book_name = ?", (audiobook_photo, book_name))
-    conn.commit()
-
-    conn.close()
-
-
-def update_premium_book_photo_type(book_name, book_photo):
-    conn = sqlite3.connect(DATABASE_NAME)
-    c = conn.cursor()
-
-    c.execute("UPDATE premium_books SET book_photo = ? WHERE book_name = ?", (book_photo, book_name))
-    conn.commit()
-
-    conn.close()
-
-
-def update_premium_audiobook_description(book_name, new_description):
-    conn = sqlite3.connect(DATABASE_NAME)
-    c = conn.cursor()
-
-    c.execute("UPDATE premium_books SET audibook_description = ? WHERE book_name = ?", (new_description, book_name))
-    conn.commit()
-
-    conn.close()
-
-
-def update_premium_book_description(book_name, new_description):
-    conn = sqlite3.connect(DATABASE_NAME)
-    c = conn.cursor()
-
-    c.execute("UPDATE premium_books SET book_description = ? WHERE book_name = ?", (new_description, book_name))
-    conn.commit()
-
-    conn.close()
-
-
-def update_premium_book_file(book_name, audiobook_address):
-    conn = sqlite3.connect(DATABASE_NAME)
-    c = conn.cursor()
-
-    c.execute("UPDATE premium_books SET book_address = ? WHERE book_name = ?", (audiobook_address, book_name))
-    conn.commit()
-
-    conn.close()
-
-
-def update_premium_audiobook_audio(book_name, new_audiobook_address):
-    conn = sqlite3.connect(DATABASE_NAME)
-    c = conn.cursor()
-
-    c.execute("UPDATE premium_books SET audiobook_address = ? WHERE book_name = ?", (new_audiobook_address, book_name))
-    conn.commit()
-
-    conn.close()
-
-
-"""
-FREE BOOKS
-"""
-
-def get_free_books():
-    conn = sqlite3.connect(DATABASE_NAME)
-    c = conn.cursor()
-
-    c.execute("SELECT book_name FROM free_books")
-    book_names = [row[0] for row in c.fetchall()]
-
-    conn.close()
-
-    return book_names
-
-
-def get_free_book_description(book_name):
-    conn = sqlite3.connect(DATABASE_NAME)
-    c = conn.cursor()
-
-    c.execute("SELECT book_description FROM free_books WHERE book_name = ?", (book_name,))
-    description = c.fetchone()
-
-    conn.close()
-
-    if description:
-        return description[0]
-    else:
-        return None
-
-
-def get_free_book_photo(book_name):
-    conn = sqlite3.connect(DATABASE_NAME)
-    c = conn.cursor()
-
-    c.execute("SELECT book_photo FROM free_books WHERE book_name = ?", (book_name,))
-    photo_address = c.fetchone()
-
-    conn.close()
-
-    if photo_address:
-        return photo_address[0]
-    else:
-        return None
-
-
-def get_free_book_address(book_name):
-    conn = sqlite3.connect(DATABASE_NAME)
-    c = conn.cursor()
-
-    c.execute("SELECT audiobook_address FROM free_books WHERE book_name = ?", (book_name,))
-    address = c.fetchone()
-
-    conn.close()
-
-    if address:
-        return address[0]
-    else:
-        return None
-
-
-def update_free_book_photo_type(book_name, book_photo):
-    conn = sqlite3.connect(DATABASE_NAME)
-    c = conn.cursor()
-
-    c.execute("UPDATE free_books SET book_photo = ? WHERE book_name = ?", (book_photo, book_name))
-    conn.commit()
-
-    conn.close()
-
-
-def update_free_book_description(book_name, new_description):
-    conn = sqlite3.connect(DATABASE_NAME)
-    c = conn.cursor()
-
-    c.execute("UPDATE free_books SET book_description = ? WHERE book_name = ?", (new_description, book_name))
-    conn.commit()
-
-    conn.close()
-
-
-def update_free_book_name(book_name, new_name):
-    conn = sqlite3.connect(DATABASE_NAME)
-    c = conn.cursor()
-
-    c.execute("UPDATE free_books SET book_name = ? WHERE book_name = ?", (new_name, book_name))
-    conn.commit()
-
-    conn.close()
-
-
-def update_free_book_address(book_name, new_address):
-    conn = sqlite3.connect(DATABASE_NAME)
-    c = conn.cursor()
-
-    c.execute("UPDATE free_books SET audiobook_address = ? WHERE book_name = ?", (new_address, book_name))
-    conn.commit()
-
-    conn.close()
-
-
-def delete_free_book(book_name):
-    conn = sqlite3.connect(DATABASE_NAME)
-    c = conn.cursor()
-
-    c.execute("DELETE FROM free_books WHERE book_name = ?", (book_name,))
-    conn.commit()
-
-    conn.close()
-
-
-def add_free_book(book_name, audiobook_address, book_description, book_photo):
-    conn = sqlite3.connect(DATABASE_NAME)
-    c = conn.cursor()
-
-    c.execute("INSERT INTO free_books (book_name, audiobook_address, book_description, book_photo) VALUES (?, ?, ?, ?)",
-              (book_name, audiobook_address, book_description, book_photo))
-    
-    conn.commit()
-    conn.close()
-
-
 # contact us
 def create_contact_table():
     conn = sqlite3.connect(DATABASE_NAME)
@@ -712,203 +168,227 @@ def get_latest_contact_message():
         return "NO CONTACT"
 
 
-def search_book(keyword):
+def create_uc_table():
     conn = sqlite3.connect(DATABASE_NAME)
     c = conn.cursor()
 
-    query = f'''
-        SELECT * FROM free_books
-        WHERE book_name LIKE ? OR book_description LIKE ?
-    '''
-
-    keyword_with_wildcard = f"%{keyword}%"
-    params = (keyword_with_wildcard, keyword_with_wildcard,)
-
-    c.execute(query, params)
-    results = c.fetchall()
-
-    query = f'''
-        SELECT * FROM premium_books
-        WHERE book_name LIKE ? OR book_description LIKE ? OR audibook_description LIKE ?
-    '''
-
-    keyword_with_wildcard = f"%{keyword}%"
-    params = (keyword_with_wildcard, keyword_with_wildcard, keyword_with_wildcard)
-
-    c.execute(query, params)
-    results += c.fetchall()
-
-    conn.close()
-
-    return results
-
-
-def create_user_premium_book_table():
-    conn = sqlite3.connect(DATABASE_NAME)
-    c = conn.cursor()
-
-
-    # Create the user_premium_books table if it doesn't exist
-    c.execute('''CREATE TABLE IF NOT EXISTS user_premium_books
+    # Create the UC table if it doesn't exist
+    c.execute('''CREATE TABLE IF NOT EXISTS uc
                  (id INTEGER PRIMARY KEY AUTOINCREMENT,
-                 tg_id INTEGER NOT NULL,
-                 book_id INTEGER NOT NULL,
-                 FOREIGN KEY(tg_id) REFERENCES users(tg_id),
-                 FOREIGN KEY(book_id) REFERENCES books(id))''')
+                 user_id INTEGER NOT NULL,
+                 amount REAL NOT NULL)''')
 
     conn.commit()
     conn.close()
 
 
-def delete_all_user_premium_books():
+def update_uc(user_id, new_amount):
     conn = sqlite3.connect(DATABASE_NAME)
     c = conn.cursor()
 
-    # Delete all rows from the user_premium_books table
-    c.execute("DELETE FROM user_premium_audiobooks")
+    # Update the UC amount for the specified user
+    c.execute("UPDATE uc SET amount = ? WHERE user_id = ?", (new_amount, user_id))
 
     conn.commit()
     conn.close()
 
 
-def add_user_premium_book(tg_id, book_id):
+def get_uc(user_id):
     conn = sqlite3.connect(DATABASE_NAME)
     c = conn.cursor()
 
-    # Insert a new user_premium_book into the database
-    c.execute("INSERT INTO user_premium_books (tg_id, book_id) VALUES (?, ?)", (tg_id, book_id))
+    # Retrieve UC data for the specified user
+    c.execute("SELECT * FROM uc WHERE user_id = ?", (user_id,))
+    uc_data = c.fetchone()
+
+    conn.close()
+
+    return int(uc_data[2])
+
+
+def add_uc(user_id, amount):
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    # Insert a new UC record into the database
+    c.execute("INSERT INTO uc (user_id, amount) VALUES (?, ?)", (user_id, amount))
 
     conn.commit()
     conn.close()
 
-
-def get_user_premium_books(tg_id):
+def create_invite_table():
     conn = sqlite3.connect(DATABASE_NAME)
     c = conn.cursor()
 
-    # Retrieve premium books for a specific user from the database
-    c.execute("SELECT premium_books.* FROM premium_books INNER JOIN user_premium_books ON premium_books.id = user_premium_books.book_id WHERE user_premium_books.tg_id=?", (tg_id,))
-    premium_books = c.fetchall()
-
-    conn.close()
-
-    pb = [i[1] for i in premium_books]
-
-    return pb
-
-
-def get_user_premium_books_address(tg_id):
-    conn = sqlite3.connect(DATABASE_NAME)
-    c = conn.cursor()
-
-    # Retrieve premium books for a specific user from the database
-    c.execute("SELECT premium_books.book_address FROM premium_books INNER JOIN user_premium_books ON premium_books.id = user_premium_books.book_id WHERE user_premium_books.tg_id=?", (tg_id,))
-    premium_books = c.fetchall()
-
-    conn.close()
-    pb = [i[0] for i in premium_books]
-
-    return pb
-
-
-def create_user_premium_audiobook_table():
-    conn = sqlite3.connect(DATABASE_NAME)
-    c = conn.cursor()
-
-    # Create the user_premium_books table if it doesn't exist
-    c.execute('''CREATE TABLE IF NOT EXISTS user_premium_audiobooks
+    # Create the invite table if it doesn't exist
+    c.execute('''CREATE TABLE IF NOT EXISTS invite
                  (id INTEGER PRIMARY KEY AUTOINCREMENT,
-                 tg_id INTEGER NOT NULL,
-                 book_id INTEGER NOT NULL,
-                 FOREIGN KEY(tg_id) REFERENCES users(tg_id),
-                 FOREIGN KEY(book_id) REFERENCES books(id))''')
-
-    conn.commit()
-    conn.close()
-
-def add_user_premium_audiobook(tg_id, book_id):
-    conn = sqlite3.connect(DATABASE_NAME)
-    c = conn.cursor()
-
-    # Insert a new user_premium_book into the database
-    c.execute("INSERT INTO user_premium_audiobooks (tg_id, book_id) VALUES (?, ?)", (tg_id, book_id))
+                 user_id INTEGER NOT NULL,
+                 amount REAL NOT NULL)''')
 
     conn.commit()
     conn.close()
 
 
-def get_user_premium_audiobooks(tg_id):
+def update_invite(user_id, new_amount):
     conn = sqlite3.connect(DATABASE_NAME)
     c = conn.cursor()
 
-    # Retrieve premium books for a specific user from the database
-    c.execute("SELECT premium_books.* FROM premium_books INNER JOIN user_premium_audiobooks ON premium_books.id = user_premium_audiobooks.book_id WHERE user_premium_audiobooks.tg_id=?", (tg_id,))
-    premium_books = c.fetchall()
+    # Update the invite amount for the specified user
+    c.execute("UPDATE invite SET amount = ? WHERE user_id = ?", (new_amount, user_id))
 
+    conn.commit()
     conn.close()
 
-    pb = [i[1] for i in premium_books]
 
-    return pb
-
-
-def get_user_premium_audiobooks_address(tg_id):
+def get_invite(user_id):
     conn = sqlite3.connect(DATABASE_NAME)
     c = conn.cursor()
 
-    # Retrieve premium books for a specific user from the database
-    c.execute("SELECT premium_books.audiobook_address FROM premium_books INNER JOIN user_premium_audiobooks ON premium_books.id = user_premium_audiobooks.book_id WHERE user_premium_audiobooks.tg_id=?", (tg_id,))
-    premium_books = c.fetchall()
+    # Retrieve invite data for the specified user
+    c.execute("SELECT * FROM invite WHERE user_id = ?", (user_id,))
+    invite_data = c.fetchone()
 
     conn.close()
-    pb = [i[0] for i in premium_books]
 
-    return pb
+    return int(invite_data[2])
 
 
-def all_users_premium_audiobooks_count():
+def add_invite(user_id, amount):
     conn = sqlite3.connect(DATABASE_NAME)
     c = conn.cursor()
 
-    c.execute("SELECT SUM((SELECT COUNT(*) FROM user_premium_audiobooks WHERE user_premium_audiobooks.tg_id = users.tg_id)) FROM users")
-    count = c.fetchone()[0]
+    # Insert a new invite record into the database
+    c.execute("INSERT INTO invite (user_id, amount) VALUES (?, ?)", (user_id, amount))
 
+    conn.commit()
     conn.close()
 
-    return count
 
-
-def all_users_premium_books_count():
+def create_settings_table():
     conn = sqlite3.connect(DATABASE_NAME)
     c = conn.cursor()
 
-    c.execute("SELECT SUM((SELECT COUNT(*) FROM user_premium_books WHERE user_premium_books.tg_id = users.tg_id)) FROM users")
-    count = c.fetchone()[0]
+    # Create the settings table if it doesn't exist
+    c.execute('''CREATE TABLE IF NOT EXISTS settings
+                 (id INTEGER PRIMARY KEY AUTOINCREMENT,
+                 name TEXT NOT NULL,
+                 value TEXT NOT NULL)''')
 
+    conn.commit()
     conn.close()
 
-    return count
+# Settings functions
 
-
-def all_premium_books_users_tg_id():
+def update_setting(name, value):
     conn = sqlite3.connect(DATABASE_NAME)
     c = conn.cursor()
 
-    c.execute("SELECT DISTINCT tg_id FROM user_premium_books")
-    tg_ids = [row[0] for row in c.fetchall()]
+    # Update a setting in the database based on its name
+    c.execute("UPDATE settings SET value=? WHERE name=?", (value, name))
 
-    c.execute("SELECT DISTINCT tg_id FROM user_premium_audiobooks")
-    tg_ids += [row[0] for row in c.fetchall()]
-    
+    conn.commit()
     conn.close()
 
-    return tg_ids
+
+def get_setting(name):
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    # Retrieve a setting from the database based on its name
+    c.execute("SELECT value FROM settings WHERE name=?", (name,))
+    setting = c.fetchone()
+
+    conn.close()
+
+    if setting:
+        return setting[0]
+    else:
+        return None
+
+
+def add_setting(name, value):
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    # Insert a new setting into the database
+    c.execute("INSERT INTO settings (name, value) VALUES (?, ?)", (name, value))
+
+    conn.commit()
+    conn.close()
+
+
+# Channels functions
+
+def create_channels_table():
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    # Create the channels table if it doesn't exist
+    c.execute('''CREATE TABLE IF NOT EXISTS channels
+                 (id INTEGER PRIMARY KEY AUTOINCREMENT,
+                 name TEXT NOT NULL,
+                 url TEXT NOT NULL)''')
+
+    conn.commit()
+    conn.close()
+
+def add_channel(name, url):
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    # Insert a new channel into the database
+    c.execute("INSERT INTO channels (name, url) VALUES (?, ?)", (name, url))
+
+    conn.commit()
+    conn.close()
+
+def get_all_channels():
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    # Retrieve all channels from the database
+    c.execute("SELECT name, url FROM channels")
+    channels = c.fetchall()
+
+    conn.close()
+
+    return channels
+
+
+# Delete a channel by name
+def delete_channel(name):
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    # Delete the channel from the database based on its name
+    c.execute("DELETE FROM channels WHERE name=?", (name,))
+
+    conn.commit()
+    conn.close()
+
+
+def get_channels_names():
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    # Retrieve all channel names from the database
+    c.execute("SELECT name FROM channels")
+    channel_names = [row[0] for row in c.fetchall()]
+
+    conn.close()
+
+    return channel_names
 
 
 def create_database():
-    create_book_table()
     create_contact_table()
     create_user_table()
-    create_user_premium_book_table()
-    create_user_premium_audiobook_table()
     create_starters_table()
+    create_invite_table()
+    create_uc_table()
+    create_settings_table()
+    add_setting("min_release_uc", "5")
+    add_setting("add_man_uc", "1")
+    add_setting("starter_uc", "5")
+    create_channels_table()
