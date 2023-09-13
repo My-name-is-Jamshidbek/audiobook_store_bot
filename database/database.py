@@ -205,6 +205,17 @@ def get_uc(user_id):
 
     return int(uc_data[2])
 
+def get_top_users_with_most_suggestions(limit=5):
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    # Retrieve the top N users with the most suggestions from the users table
+    c.execute("SELECT fullname, COUNT(*) AS suggestion_count FROM users GROUP BY tg_id ORDER BY suggestion_count DESC LIMIT ?", (limit,))
+    top_users = c.fetchall()
+
+    conn.close()
+
+    return top_users
 
 def add_uc(user_id, amount):
     conn = sqlite3.connect(DATABASE_NAME)
@@ -381,6 +392,78 @@ def get_channels_names():
     return channel_names
 
 
+def create_uc_price_table():
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    # Create the UC table if it doesn't exist
+    c.execute('''CREATE TABLE IF NOT EXISTS uc_prices
+                 (id INTEGER PRIMARY KEY AUTOINCREMENT,
+                 price INTEGER NOT NULL,
+                 amount REAL NOT NULL)''')
+
+    conn.commit()
+    conn.close()
+
+
+def get_uc_price(_id):
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    # Retrieve UC data for the specified user
+    c.execute("SELECT * FROM uc_prices WHERE id = ?", (_id,))
+    uc_data = c.fetchone()
+
+    conn.close()
+
+    return int(uc_data[1])
+
+def get_uc_amount(_id):
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    # Retrieve UC data for the specified user
+    c.execute("SELECT * FROM uc_prices WHERE id = ?", (_id,))
+    uc_data = c.fetchone()
+
+    conn.close()
+
+    return int(uc_data[2])
+
+def get_uc_prices():
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    # Retrieve UC data for the specified user
+    c.execute("SELECT * FROM uc_prices")
+    uc_data = c.fetchall()
+
+    conn.close()
+
+    return uc_data
+
+def add_uc_price(price, amount):
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    # Insert a new UC record into the database
+    c.execute("INSERT INTO uc_prices (price, amount) VALUES (?, ?)", (price, amount))
+
+    conn.commit()
+    conn.close()
+
+
+def delete_uc_price_by_id(_id):
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    # Delete the UC price record with the specified ID
+    c.execute("DELETE FROM uc_prices WHERE id = ?", (_id,))
+
+    conn.commit()
+    conn.close()
+
+
 def create_database():
     create_contact_table()
     create_user_table()
@@ -392,3 +475,4 @@ def create_database():
     add_setting("add_man_uc", "1")
     add_setting("starter_uc", "5")
     create_channels_table()
+    create_uc_price_table()

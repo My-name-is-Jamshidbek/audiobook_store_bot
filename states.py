@@ -18,6 +18,11 @@ class Admin_state(StatesGroup):
 
     ad_users_type = State()
     ad_message = State()
+    uc_del = State()
+
+    uc_prices = State()
+    uc_add_amount = State()
+    uc_add_price = State()
     
     admin_book_add_name = State()
 
@@ -61,6 +66,8 @@ class Admin_state(StatesGroup):
     contact_us = State()
     contact_us_change = State()
     
+    
+    
     add_channel_link = State()
     changed_group = State()
 
@@ -81,11 +88,20 @@ class User_state(StatesGroup):
     main_menu = State()
     get_uc = State()
 
+    sub_menu = State()
+    get_thought = State()
+    
     audiobook_type = State()
-
+    buy_uc_main = State()
+    buy_uc_check = State()
+    buy_uc_id = State()
+    buy_uc_checked = State()
+    buy_uc_chek = State()
+    
     free_book_main_menu = State()
     free_books = State()
 
+    
     premium_book_main_menu = State()
     premium_books = State()
     premium_books_audio = State()

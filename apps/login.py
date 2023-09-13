@@ -19,16 +19,17 @@ async def check_join(user_id):
         return False
 
 async def cmd_start(message: m, state: s):
-    # create_database()
+    create_database()
     if message.from_user.id in ADMIN_IDS:
         await message.answer(
             "Assalomu aleykum admin\nBotga hush kelibsiz\nKerakli menyuni tanlashiniz mumkin.",
-            reply_markup=keyboardbutton(["Biz bilan aloqa 📞", "Statistika 📊", "UC Chiqarish", "Boshlang'ich uc", "Odam qo'shish", "Reklama", "Kanallar"], row=2)
+            reply_markup=keyboardbutton(["Biz bilan aloqa 📞", "Statistika 📊", "UC Chiqarish", "Boshlang'ich uc", "Odam qo'shish", "Reklama", "Kanallar", "UC narxlar"], row=2)
         )
         await Admin_state.main_menu.set()
     else:
-        if user_exists(message.from_user.id) and check_join(m.from_user.id):
-            await message.answer(f"Assalomu aleykum! Hush kelibsiz", reply_markup=keyboardbutton(["Taklif qilish📣", "Chiqarish✅", "Takliflar🫂", "Bot haqida🤖"]))
+        if user_exists(message.from_user.id) and await check_join(message.from_user.id):
+            await message.answer(f"Assalomu aleykum! Xush kelibsiz")
+            await message.answer("🎛 Siz asosiy menyudasiz.",reply_markup=keyboardbutton(["💸 UC ishlash", "💸 UC OLISH 💸", "📊 Statistika", "🏆 Top reyting", "📞 Murojaat", "✅ Ma'lumot", "💬 Fikr bildirish"], row=2))
             await User_state.main_menu.set()
         else:
             await message.answer(f"Assalomu aleykum! Hush kelibsiz", reply_markup=keyboardbutton(["Tekshirish"]))
@@ -82,9 +83,9 @@ async def phone_number(message: m, state: s):
         data = await state.get_data()
         if user_exists(data.get("promocode")):
             uc = get_uc(data.get("promocode"))
-            update_uc(data.get("promocode"), int(uc)+get_setting("add_man_uc"))
+            update_uc(data.get("promocode"), int(uc)+int(get_setting("add_man_uc")))
             invite = get_invite(data.get("promocode"))
             update_invite(data.get("promocode"), int(invite)+1)
             await bot.send_message(data.get("promocode"), f"Siz taklif qilgan havola orqali {fullname} ismli foydalanuvchi ro'yxatdan o'tdi!")
-        await message.answer("Kerakli menyuni tanlashingiz mumkin:",reply_markup=keyboardbutton(["Taklif qilish📣", "Chiqarish✅", "Takliflar🫂", "Bot haqida🤖"]))
+        await message.answer("🎛 Siz asosiy menyudasiz.",reply_markup=keyboardbutton(["💸 UC ishlash", "📊 Statistika", "🏆 Top reyting", "📞 Murojaat", "✅ Ma'lumot", "💬 Fikr bildirish"], row=2))
         await User_state.main_menu.set()

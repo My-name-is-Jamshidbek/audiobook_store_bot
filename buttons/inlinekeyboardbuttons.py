@@ -8,7 +8,7 @@ def create_inline_keyboard(btns: List[Dict[str, str]]) -> InlineKeyboardMarkup:
     Each button dictionary should have 'text' and 'data' keys.
     Returns an InlineKeyboardMarkup object.
     """
-    keyboard = InlineKeyboardMarkup(row_width=2)
+    keyboard = InlineKeyboardMarkup(row_width=1)
     buttons = [InlineKeyboardButton(text=btn["text"], callback_data=btn["data"]) for btn in btns]
     keyboard.add(*buttons)
     return keyboard

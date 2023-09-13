@@ -66,12 +66,26 @@ dp.register_message_handler(admin_changed_group, content_types=[ct.TEXT], state=
 dp.register_message_handler(admin_add_group_name, content_types=[ct.TEXT], state=Admin_state.add_group_name)
 dp.register_message_handler(admin_add_channel_link, content_types=[ct.TEXT], state=Admin_state.add_channel_link)
 
+# Uc price
+dp.register_message_handler(admin_uc_prices, content_types=[ct.TEXT], state=Admin_state.uc_prices)
+dp.register_message_handler(admin_add_uc_amount, content_types=[ct.TEXT], state=Admin_state.uc_add_amount)
+dp.register_message_handler(admin_add_uc_price, content_types=[ct.TEXT], state=Admin_state.uc_add_price)
+dp.register_message_handler(Admin_uc_del, content_types=[ct.TEXT], state=Admin_state.uc_del)
+
 """
 USER APPS
 """
 
 dp.register_message_handler(user_main_menu, content_types=[ct.TEXT], state=User_state.main_menu)
 dp.register_message_handler(user_get_uc, content_types=[ct.TEXT], state=User_state.get_uc)
+dp.register_message_handler(user_sub_menu, content_types=[ct.TEXT], state=User_state.sub_menu)
+dp.register_message_handler(user_get_thought, content_types=[ct.TEXT], state=User_state.get_thought)
+
+dp.register_callback_query_handler(user_buy_uc, state=User_state.buy_uc_main)
+dp.register_callback_query_handler(user_buy_check, state=User_state.buy_uc_check)
+
+dp.register_message_handler(user_buy_id, content_types=[ct.TEXT], state=User_state.buy_uc_id)
+dp.register_message_handler(user_buy_uc_chek, content_types=[ct.DOCUMENT, ct.PHOTO, ct.TEXT], state=User_state.buy_uc_chek)
 
 """
 
