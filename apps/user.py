@@ -4,12 +4,12 @@ user app
 from aiogram.types import Message as m, InputFile, ReplyKeyboardRemove
 from aiogram.dispatcher import FSMContext as s
 from aiogram.types import CallbackQuery
-
+import os
 
 from buttons.keyboardbuttons import keyboardbutton
 from buttons.inlinekeyboardbuttons import create_inline_keyboard as inlinekeyboardbutton, get_group_link_button, inlinekeyboardbuttonlinks
 from database.database import *
-from loader import bot
+from loader import bot, pay_bot
 from states import *
 # from .payment_helper import get_price_label
 from config import ADMIN_IDS, BOT_LINK, ADMIN_ID
@@ -46,7 +46,7 @@ async def user_main_menu(m: m, state: s):
         await User_state.buy_uc_main.set()
     else:
         await m.answer("Bunday menyu mavjud emas!")
-        await m.answer("Kerakli menyuni tanlashingiz mumkin:",reply_markup=keyboardbutton(["💸 UC ishlash", "📊 Statistika", "🏆 Top reyting", "📞 Murojaat", "✅ Ma'lumot", "💬 Fikr bildirish"], row=2))
+        await m.answer("Kerakli menyuni tanlashingiz mumkin:",reply_markup=keyboardbutton(["💸 UC ishlash", "💸 UC OLISH 💸", "📊 Statistika", "🏆 Top reyting", "📞 Murojaat", "✅ Ma'lumot", "💬 Fikr bildirish"], row=2))
         await User_state.main_menu.set()
 
 
@@ -97,13 +97,42 @@ async def user_buy_id(m: m, state: s):
         await User_state.buy_uc_chek.set()  
 
 async def user_buy_uc_chek(m: m, state: s):
-    if m.photo or m.document:
+    download_dir = "database/media/"
+    if m.photo:
         data = await state.get_data()
-        _id = await bot.forward_message(ADMIN_ID, m.from_user.id, m.message_id)
-        await _id.reply(f"UC: {get_uc_amount(data.get('buy_uc_id'))}\nNARX: {get_uc_price(data.get('buy_uc_id'))}\nPUBG ID: {data.get('buy_uc_pubg_id')}")
-        await m.answer("Xurmatli Mijoz🤝\n\nUC sotib olish uchun bergan arizangiz qabul qilindi, ariza 5-15daqiqa ichida ko‘rib chiqiladi⚖️\nAgarda siz, Botga yolgon(fake/montaj) yo‘llar bilan Chek tashlagan bo‘lsangiz botdan ban olish ehtimolingiz bor🙌")
+        buy_uc_id = buy_uc(data.get('buy_uc_id'), m.from_user.id)
+
+        for photo in m.photo:
+            file_id = photo.file_id
+            file = await bot.download_file_by_id(file_id)
+            file_path = os.path.join(download_dir, f"{file_id}.jpg")
+            with open(file_path, 'wb') as new_file:
+                new_file.write(file.read())
+            _id = await pay_bot.send_photo(chat_id=ADMIN_ID, photo=InputFile(file_path), caption=f"ORDER ID: {buy_uc_id}")
+        await pay_bot.send_message(ADMIN_ID, f"UC: {get_uc_amount(data.get('buy_uc_id'))}\nNARX: {get_uc_price(data.get('buy_uc_id'))}\nPUBG ID: {data.get('buy_uc_pubg_id')}\nORDER ID: {buy_uc_id}", reply_markup=inlinekeyboardbutton([{"text":"✅", "data":f"check_{buy_uc_id}"}, {"text":"🚫", "data":f"close_{buy_uc_id}"}]), reply_to_message_id=_id.message_id)
+        
+        
+        await m.answer(f"Xurmatli Mijoz🤝\n\nUC sotib olish uchun bergan arizangiz qabul qilindi, ariza 5-15daqiqa ichida ko‘rib chiqiladi⚖️\nAgarda siz, Botga yolgon(fake/montaj) yo‘llar bilan Chek tashlagan bo‘lsangiz botdan ban olish ehtimolingiz bor🙌\n\nBuyurtma raqami: {buy_uc_id}")
         await bot.send_message(m.from_user.id, "🎛 Siz asosiy menyudasiz.",reply_markup=keyboardbutton(["💸 UC ishlash", "💸 UC OLISH 💸", "📊 Statistika", "🏆 Top reyting", "📞 Murojaat", "✅ Ma'lumot", "💬 Fikr bildirish"], row=2))
         await User_state.main_menu.set()
+    
+    elif m.document:
+        data = await state.get_data()
+        buy_uc_id = buy_uc(data.get('buy_uc_id'), m.from_user.id)
+
+        file_id = m.document.file_id
+        file = await bot.download_file_by_id(file_id)
+        file_path = os.path.join(download_dir, m.document.file_name)
+        with open(file_path, 'wb') as new_file:
+            new_file.write(file.read())
+        
+        _id = await pay_bot.send_document(chat_id=ADMIN_ID, document=InputFile(file_path), caption=f"ORDER ID: {buy_uc_id}")
+        await pay_bot.send_message(ADMIN_ID, f"UC: {get_uc_amount(data.get('buy_uc_id'))}\nNARX: {get_uc_price(data.get('buy_uc_id'))}\nPUBG ID: {data.get('buy_uc_pubg_id')}\nORDER ID: {buy_uc_id}", reply_markup=inlinekeyboardbutton([{"text":"✅", "data":f"check_{buy_uc_id}"}, {"text":"🚫", "data":f"close_{buy_uc_id}"}]), reply_to_message_id=_id.message_id)
+        
+        await m.answer(f"Xurmatli Mijoz🤝\n\nUC sotib olish uchun bergan arizangiz qabul qilindi, ariza 5-15daqiqa ichida ko‘rib chiqiladi⚖️\nAgarda siz, Botga yolgon(fake/montaj) yo‘llar bilan Chek tashlagan bo‘lsangiz botdan ban olish ehtimolingiz bor🙌\n\nBuyurtma raqami: {buy_uc_id}")
+        await bot.send_message(m.from_user.id, "🎛 Siz asosiy menyudasiz.",reply_markup=keyboardbutton(["💸 UC ishlash", "💸 UC OLISH 💸", "📊 Statistika", "🏆 Top reyting", "📞 Murojaat", "✅ Ma'lumot", "💬 Fikr bildirish"], row=2))
+        await User_state.main_menu.set()
+    
     elif m.text:
         if m.text == "Orqaga qaytish 🔙":
             await bot.send_message(m.from_user.id, "🎛 Siz asosiy menyudasiz.",reply_markup=keyboardbutton(["💸 UC ishlash", "💸 UC OLISH 💸", "📊 Statistika", "🏆 Top reyting", "📞 Murojaat", "✅ Ma'lumot", "💬 Fikr bildirish"], row=2))
@@ -114,7 +143,7 @@ async def user_buy_uc_chek(m: m, state: s):
     
 async def user_sub_menu(m: m, state: s):
     if m.text in ["🔙 Orqaga", "🔝 Asosiy Menyu"]:
-        await m.answer("🎛 Siz asosiy menyudasiz.",reply_markup=keyboardbutton(["💸 UC ishlash", "📊 Statistika", "🏆 Top reyting", "📞 Murojaat", "✅ Ma'lumot", "💬 Fikr bildirish"], row=2))
+        await m.answer("🎛 Siz asosiy menyudasiz.",reply_markup=keyboardbutton(["💸 UC ishlash", "💸 UC OLISH 💸", "📊 Statistika", "🏆 Top reyting", "📞 Murojaat", "✅ Ma'lumot", "💬 Fikr bildirish"], row=2))
         await User_state.main_menu.set()
     elif m.text == "🗣 Taklif qilish":    
         await m.answer(f"🗣 Har bir taklif qilgan do'stingiz uchun sizga {get_setting('add_man_uc')} UC taqdim etiladi!\n\n👇🏻 Sizning refereal havolangiz: {BOT_LINK}?start=taklif_id={m.from_user.id}")
@@ -133,18 +162,18 @@ async def user_sub_menu(m: m, state: s):
     
 async def user_get_thought(m: m, state: s):
     if m.text == "🚫 Bekor qilish":
-        await m.answer("🎛 Siz asosiy menyudasiz.",reply_markup=keyboardbutton(["💸 UC ishlash", "📊 Statistika", "🏆 Top reyting", "📞 Murojaat", "✅ Ma'lumot", "💬 Fikr bildirish"], row=2))
+        await m.answer("🎛 Siz asosiy menyudasiz.",reply_markup=keyboardbutton(["💸 UC ishlash", "💸 UC OLISH 💸", "📊 Statistika", "🏆 Top reyting", "📞 Murojaat", "✅ Ma'lumot", "💬 Fikr bildirish"], row=2))
         await User_state.main_menu.set()
     elif m.text:
         await bot.send_message(ADMIN_ID, m.text)
         await m.answer("Fikr bildirganingiz uchun tashakkur.")
-        await m.answer("🎛 Siz asosiy menyudasiz.",reply_markup=keyboardbutton(["💸 UC ishlash", "📊 Statistika", "🏆 Top reyting", "📞 Murojaat", "✅ Ma'lumot", "💬 Fikr bildirish"], row=2))
+        await m.answer("🎛 Siz asosiy menyudasiz.",reply_markup=keyboardbutton(["💸 UC ishlash", "💸 UC OLISH 💸", "📊 Statistika", "🏆 Top reyting", "📞 Murojaat", "✅ Ma'lumot", "💬 Fikr bildirish"], row=2))
         await User_state.main_menu.set()
 
 
 async def user_get_pubg_id(m: m, state: s):
     if m.text == "🚫 Bekor qilish":
-        await m.answer("🎛 Siz asosiy menyudasiz.",reply_markup=keyboardbutton(["💸 UC ishlash", "📊 Statistika", "🏆 Top reyting", "📞 Murojaat", "✅ Ma'lumot", "💬 Fikr bildirish"], row=2))
+        await m.answer("🎛 Siz asosiy menyudasiz.",reply_markup=keyboardbutton(["💸 UC ishlash", "💸 UC OLISH 💸", "📊 Statistika", "🏆 Top reyting", "📞 Murojaat", "✅ Ma'lumot", "💬 Fikr bildirish"], row=2))
         await User_state.main_menu.set()
     elif m.text == "💸 UC Chiqarish":
         await m.answer("🔹\"PUBG MOBILE\" ID raqamingizni yozib qoldiring. Barcha ishlagan UC laringizni shu ID ga chiqarib olishingiz mumkin bo'ladi.", reply_markup=keyboardbutton(["🚫 Bekor qilish"]))
@@ -152,11 +181,11 @@ async def user_get_pubg_id(m: m, state: s):
 
 async def user_get_uc(m: m, state: s):
     if m.text == "🚫 Bekor qilish":
-        await m.answer("Kerakli menyuni tanlashingiz mumkin:",reply_markup=keyboardbutton(["💸 UC ishlash", "📊 Statistika", "🏆 Top reyting", "📞 Murojaat", "✅ Ma'lumot", "💬 Fikr bildirish"], row=2))
+        await m.answer("Kerakli menyuni tanlashingiz mumkin:",reply_markup=keyboardbutton(["💸 UC ishlash", "💸 UC OLISH 💸", "📊 Statistika", "🏆 Top reyting", "📞 Murojaat", "✅ Ma'lumot", "💬 Fikr bildirish"], row=2))
         await User_state.main_menu.set()
     elif m.text:
         await bot.send_message(ADMIN_ID, f"PUBG ID: {m.text},\nUC: {get_uc(m.from_user.id)}\nTG_ID: {m.from_user.id}")
         update_uc(m.from_user.id, 0)
         await m.answer("Hisobingizdagi UC larni chiqarish uchun adminga habar yuborildi tez orada UC lar PUBG hisobingizga tashlab beriladi!")
-        await m.answer("Kerakli menyuni tanlashingiz mumkin:",reply_markup=keyboardbutton(["💸 UC ishlash", "📊 Statistika", "🏆 Top reyting", "📞 Murojaat", "✅ Ma'lumot", "💬 Fikr bildirish"], row=2))
+        await m.answer("Kerakli menyuni tanlashingiz mumkin:",reply_markup=keyboardbutton(["💸 UC ishlash", "💸 UC OLISH 💸", "📊 Statistika", "🏆 Top reyting", "📞 Murojaat", "✅ Ma'lumot", "💬 Fikr bildirish"], row=2))
         await User_state.main_menu.set()

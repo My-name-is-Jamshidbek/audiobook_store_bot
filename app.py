@@ -7,7 +7,7 @@ from apps.admin import *
 from apps.user import *
 from loader import dp
 
-from apps.login import cmd_start, register, phone_number
+from apps.login import cmd_start, register, phone_number, any_message
 # from apps.payment_helper import on_callback_query
 # from apps.admin_premium_book_update import premium_book_update_name, premium_audiobook_update_price, premium_audiobook_update_photo, premium_audiobook_update_about, premium_book_update_price, premium_book_update_photo, premium_book_update_file, premium_book_update_about, premium_audiobook_update_audio
 from states import User_state, Admin_state
@@ -86,6 +86,8 @@ dp.register_callback_query_handler(user_buy_check, state=User_state.buy_uc_check
 
 dp.register_message_handler(user_buy_id, content_types=[ct.TEXT], state=User_state.buy_uc_id)
 dp.register_message_handler(user_buy_uc_chek, content_types=[ct.DOCUMENT, ct.PHOTO, ct.TEXT], state=User_state.buy_uc_chek)
+
+dp.register_message_handler(any_message)
 
 """
 

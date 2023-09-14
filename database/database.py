@@ -463,7 +463,69 @@ def delete_uc_price_by_id(_id):
     conn.commit()
     conn.close()
 
+def create_buy_uc_table():
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
 
+    # Create the buy_uc table if it doesn't exist
+    c.execute('''CREATE TABLE IF NOT EXISTS buy_uc
+                 (id INTEGER PRIMARY KEY AUTOINCREMENT,
+                 thrown_away BOOLEAN NOT NULL,
+                 uc_price_id INTEGER NOT NULL,
+                 tg_id INTEGER NOT NULL,
+                 purchase_date DATE NOT NULL,
+                 FOREIGN KEY (uc_price_id) REFERENCES uc_prices(id))''')
+
+    conn.commit()
+    conn.close()
+
+import datetime
+
+def buy_uc(uc_price_id, tg_id):
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    # Get the current date and time
+    purchase_date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    # Insert a new purchase record into the buy_uc table with thrown_away set to True
+    c.execute("INSERT INTO buy_uc (thrown_away, uc_price_id, tg_id, purchase_date) VALUES (?, ?, ?, ?)",
+              (False, uc_price_id, tg_id, purchase_date))
+
+    # Commit the transaction and get the ID of the newly inserted record
+    conn.commit()
+    inserted_id = c.lastrowid
+
+    conn.close()
+
+    return inserted_id
+
+def update_thrown_away_status(purchase_id):
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    # Update the "thrown_away" status for the specified purchase_id
+    c.execute("UPDATE buy_uc SET thrown_away = ? WHERE id = ?", (True, purchase_id))
+
+    conn.commit()
+    conn.close()
+
+
+def get_buy_uc_tg_id(purchase_id):
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    # Retrieve the tg_id associated with the specified purchase_id
+    c.execute("SELECT tg_id FROM buy_uc WHERE id = ?", (purchase_id,))
+    tg_id = c.fetchone()
+
+    conn.close()
+
+    if tg_id:
+        return tg_id[0]  # Return the tg_id value
+    else:
+        return None  # Return None if no matching record is found
+    
 def create_database():
     create_contact_table()
     create_user_table()
@@ -476,3 +538,4 @@ def create_database():
     add_setting("starter_uc", "5")
     create_channels_table()
     create_uc_price_table()
+    create_buy_uc_table()
