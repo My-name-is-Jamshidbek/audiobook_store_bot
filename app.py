@@ -54,6 +54,9 @@ dp.register_message_handler(admin_contact_us, content_types=[ct.TEXT], state=Adm
 # Admin contact us change
 dp.register_message_handler(admin_contact_us_change, content_types=[ct.TEXT], state=Admin_state.contact_us_change)
 
+# Admin get user
+dp.register_message_handler(admin_get_user, content_types=[ct.TEXT], state=Admin_state.get_user)
+
 # AD
 
 dp.register_message_handler(Admin_ad_message, content_types=ct.all(), state=Admin_state.ad_message)
@@ -87,7 +90,7 @@ dp.register_callback_query_handler(user_buy_check, state=User_state.buy_uc_check
 dp.register_message_handler(user_buy_id, content_types=[ct.TEXT], state=User_state.buy_uc_id)
 dp.register_message_handler(user_buy_uc_chek, content_types=[ct.DOCUMENT, ct.PHOTO, ct.TEXT], state=User_state.buy_uc_chek)
 
-dp.register_message_handler(any_message)
+#dp.register_message_handler(any_message)
 
 """
 

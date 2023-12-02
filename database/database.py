@@ -205,17 +205,30 @@ def get_uc(user_id):
 
     return int(uc_data[2])
 
-def get_top_users_with_most_suggestions(limit=5):
+
+def get_maximum_amount_users(limit):
     conn = sqlite3.connect(DATABASE_NAME)
     c = conn.cursor()
 
-    # Retrieve the top N users with the most suggestions from the users table
-    c.execute("SELECT fullname, COUNT(*) AS suggestion_count FROM users GROUP BY tg_id ORDER BY suggestion_count DESC LIMIT ?", (limit,))
-    top_users = c.fetchall()
+    # Retrieve users with the maximum "amount" value, limited by the specified limit
+    c.execute("SELECT user_id, MAX(amount) FROM invite GROUP BY user_id ORDER BY MAX(amount) DESC LIMIT ?", (limit,))
+    maximum_amount_users = c.fetchall()
 
     conn.close()
 
-    return top_users
+    return maximum_amount_users
+
+def get_user_name_by_id(user_id):
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    # user_id'ga mos keladigan foydalanuvchi nomini topadi
+    c.execute("SELECT fullname FROM users WHERE tg_id = ?", (user_id,))
+    user_name = c.fetchone()
+
+    conn.close()
+
+    return user_name[0] if user_name else None
 
 def add_uc(user_id, amount):
     conn = sqlite3.connect(DATABASE_NAME)
@@ -526,6 +539,46 @@ def get_buy_uc_tg_id(purchase_id):
     else:
         return None  # Return None if no matching record is found
     
+    
+def get_fullname_user_by_tg_id(tg_id):
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    # Retrieve the fullname of a user based on their tg_id
+    c.execute("SELECT fullname FROM users WHERE tg_id = ?", (tg_id,))
+    fullname = c.fetchone()
+
+    conn.close()
+
+    return fullname[0] if fullname else None
+
+
+def get_uc_amount_by_tg_id(tg_id):
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    # Retrieve the UC amount of a user based on their tg_id
+    c.execute("SELECT uc.amount FROM uc INNER JOIN users ON uc.user_id = users.id WHERE users.tg_id = ?", (tg_id,))
+    uc_amount = c.fetchone()
+
+    conn.close()
+
+    return uc_amount[0] if uc_amount else None
+
+
+def get_invited_people_by_tg_id(tg_id):
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+
+    # Retrieve the list of people invited by a user based on their tg_id
+    c.execute("SELECT users.fullname FROM users INNER JOIN invite ON users.id = invite.user_id WHERE invite.user_id = (SELECT id FROM users WHERE tg_id = ?)", (tg_id,))
+    invited_people = c.fetchall()
+
+    conn.close()
+
+    return [invite[0] for invite in invited_people] if invited_people else []
+
+
 def create_database():
     create_contact_table()
     create_user_table()

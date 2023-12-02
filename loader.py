@@ -1,6 +1,6 @@
 from aiogram import Bot, Dispatcher
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
-from config import TOKEN, UC_PAY_BOT_TOKEN
+from config import TOKEN, UC_PAY_BOT_TOKEN, TEST_TOKEN
 
 storage = MemoryStorage()
 

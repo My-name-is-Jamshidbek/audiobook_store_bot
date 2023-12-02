@@ -53,11 +53,37 @@ async def admin_main_menu(m: m, state: s):
         for i in data:f+=f"\n{i[0]}. {i[1]} so'm {int(i[2])} uc"
         await m.answer("UC narxlari:"+f, reply_markup=keyboardbutton(["O'chirish", "Qo'shish", "Chiqish"]))
         await Admin_state.uc_prices.set()
+    elif m.text == "Foydalanuvchi":
+        await m.answer("Foydalanuchining telegram idsini kiriting:", reply_markup=keyboardbutton(["Chiqish"]))
+        await Admin_state.get_user.set()
 
+
+async def admin_get_user(m: m, state: s):
+    if m.text == "Chiqish":
+        await m.answer("Chiqildi!", reply_markup=keyboardbutton([ "Biz bilan aloqa 📞", "Statistika 📊", "UC Chiqarish", "Boshlang'ich uc", "Odam qo'shish", "Reklama", "Kanallar", "UC narxlar", "Foydalanuvchi"], row=2))
+        await Admin_state.main_menu.set()
+    elif user_exists(m.text):
+        tg_id = m.text
+        try: 
+            fullname = get_fullname_user_by_tg_id(tg_id)
+        except:
+            fullname = "Aniqlanmadi"
+        try:
+            uc_amount = get_uc(tg_id)
+        except:
+            uc_amount = "Aniqlanmadi"
+        try:
+            invited_people = get_invite(tg_id)
+        except:
+            invited_people = "Aniqlanmadi"
+        f = f"Foydalanuvchi malumotlari:\n\nTO'LIQ ISMI: {fullname}\nHISOB: {uc_amount}\nTAKLIFLAR: {invited_people}"
+        await m.answer(f)
+    else:
+        await m.answer("Foydalanuvchi topilmadi!")
 
 async def admin_uc_prices(m: m, state: s):
     if m.text == "Chiqish":
-        await m.answer("Chiqildi!", reply_markup=keyboardbutton([ "Biz bilan aloqa 📞", "Statistika 📊", "UC Chiqarish", "Boshlang'ich uc", "Odam qo'shish", "Reklama", "Kanallar", "UC narxlar"], row=2))
+        await m.answer("Chiqildi!", reply_markup=keyboardbutton([ "Biz bilan aloqa 📞", "Statistika 📊", "UC Chiqarish", "Boshlang'ich uc", "Odam qo'shish", "Reklama", "Kanallar", "UC narxlar", "Foydalanuvchi"], row=2))
         await Admin_state.main_menu.set()
     elif m.text == "O'chirish":
         btns = [f"{i[0]}" for i in get_uc_prices()]
@@ -71,18 +97,18 @@ async def admin_uc_prices(m: m, state: s):
 async def Admin_uc_del(m: m, state: s):
     btns = [f"{i[0]}" for i in get_uc_prices()]
     if m.text == "Chiqish":
-        await m.answer("Chiqildi!", reply_markup=keyboardbutton([ "Biz bilan aloqa 📞", "Statistika 📊", "UC Chiqarish", "Boshlang'ich uc", "Odam qo'shish", "Reklama", "Kanallar", "UC narxlar"], row=2))
+        await m.answer("Chiqildi!", reply_markup=keyboardbutton([ "Biz bilan aloqa 📞", "Statistika 📊", "UC Chiqarish", "Boshlang'ich uc", "Odam qo'shish", "Reklama", "Kanallar", "UC narxlar", "Foydalanuvchi"], row=2))
         await Admin_state.main_menu.set()
     elif m.text in btns:
         delete_uc_price_by_id(m.text)
-        await m.answer("O'chirildi!", reply_markup=keyboardbutton([ "Biz bilan aloqa 📞", "Statistika 📊", "UC Chiqarish", "Boshlang'ich uc", "Odam qo'shish", "Reklama", "Kanallar", "UC narxlar"], row=2))
+        await m.answer("O'chirildi!", reply_markup=keyboardbutton([ "Biz bilan aloqa 📞", "Statistika 📊", "UC Chiqarish", "Boshlang'ich uc", "Odam qo'shish", "Reklama", "Kanallar", "UC narxlar", "Foydalanuvchi"], row=2))
         await Admin_state.main_menu.set()
     
 
 
 async def admin_add_uc_amount(m: m, state: s):
     if m.text == "Chiqish":
-        await m.answer("Chiqildi!", reply_markup=keyboardbutton([ "Biz bilan aloqa 📞", "Statistika 📊", "UC Chiqarish", "Boshlang'ich uc", "Odam qo'shish", "Reklama", "Kanallar", "UC narxlar"], row=2))
+        await m.answer("Chiqildi!", reply_markup=keyboardbutton([ "Biz bilan aloqa 📞", "Statistika 📊", "UC Chiqarish", "Boshlang'ich uc", "Odam qo'shish", "Reklama", "Kanallar", "UC narxlar", "Foydalanuvchi"], row=2))
         await Admin_state.main_menu.set()
     elif m.text:
         await m.answer("Narxni kiriting:")
@@ -92,18 +118,18 @@ async def admin_add_uc_amount(m: m, state: s):
 
 async def admin_add_uc_price(m: m, state: s):
     if m.text == "Chiqish":
-        await m.answer("Chiqildi!", reply_markup=keyboardbutton([ "Biz bilan aloqa 📞", "Statistika 📊", "UC Chiqarish", "Boshlang'ich uc", "Odam qo'shish", "Reklama", "Kanallar", "UC narxlar"], row=2))
+        await m.answer("Chiqildi!", reply_markup=keyboardbutton([ "Biz bilan aloqa 📞", "Statistika 📊", "UC Chiqarish", "Boshlang'ich uc", "Odam qo'shish", "Reklama", "Kanallar", "UC narxlar", "Foydalanuvchi"], row=2))
         await Admin_state.main_menu.set()
     elif m.text:
         data = await state.get_data()
         add_uc_price(price=m.text, amount=data.get("amount"))
-        await m.answer("Muvaffaqiyatli qo'shildi", reply_markup=keyboardbutton([ "Biz bilan aloqa 📞", "Statistika 📊", "UC Chiqarish", "Boshlang'ich uc", "Odam qo'shish", "Reklama", "Kanallar", "UC narxlar"], row=2))
+        await m.answer("Muvaffaqiyatli qo'shildi", reply_markup=keyboardbutton([ "Biz bilan aloqa 📞", "Statistika 📊", "UC Chiqarish", "Boshlang'ich uc", "Odam qo'shish", "Reklama", "Kanallar", "UC narxlar", "Foydalanuvchi"], row=2))
         await Admin_state.main_menu.set()
     
 
 async def admin_change_group(m: m, state: s):
     if m.text == "Chiqish":
-        await m.answer("Chiqildi!", reply_markup=keyboardbutton([ "Biz bilan aloqa 📞", "Statistika 📊", "UC Chiqarish", "Boshlang'ich uc", "Odam qo'shish", "Reklama", "Kanallar", "UC narxlar"], row=2))
+        await m.answer("Chiqildi!", reply_markup=keyboardbutton([ "Biz bilan aloqa 📞", "Statistika 📊", "UC Chiqarish", "Boshlang'ich uc", "Odam qo'shish", "Reklama", "Kanallar", "UC narxlar", "Foydalanuvchi"], row=2))
         await Admin_state.main_menu.set()
     elif m.text in get_channels_names():
         await state.update_data(changed_group = m.text)
@@ -154,7 +180,7 @@ async def admin_changed_group(m: m, state: s):
             
 async def Admin_ad_message(m: m, state: s):
     if m.text == "Chiqish":
-        await m.answer("Chiqildi!", reply_markup=keyboardbutton([ "Biz bilan aloqa 📞", "Statistika 📊", "UC Chiqarish", "Boshlang'ich uc", "Odam qo'shish", "Reklama", "Kanallar", "UC narxlar"], row=2))
+        await m.answer("Chiqildi!", reply_markup=keyboardbutton([ "Biz bilan aloqa 📞", "Statistika 📊", "UC Chiqarish", "Boshlang'ich uc", "Odam qo'shish", "Reklama", "Kanallar", "UC narxlar", "Foydalanuvchi"], row=2))
         await Admin_state.main_menu.set()
     else:
         m_id = m.message_id
@@ -177,7 +203,7 @@ async def send_ad(A_ID, m_id, users):
 
 async def Admin_ad_message_type(m: m, state: s):
     if m.text == "Chiqish":
-        await m.answer("Chiqildi!", reply_markup=keyboardbutton([ "Biz bilan aloqa 📞", "Statistika 📊", "UC Chiqarish", "Boshlang'ich uc", "Odam qo'shish", "Reklama", "Kanallar", "UC narxlar"], row=2))
+        await m.answer("Chiqildi!", reply_markup=keyboardbutton([ "Biz bilan aloqa 📞", "Statistika 📊", "UC Chiqarish", "Boshlang'ich uc", "Odam qo'shish", "Reklama", "Kanallar", "UC narxlar", "Foydalanuvchi"], row=2))
         await Admin_state.main_menu.set()
     else:
         data = await state.get_data()
@@ -189,7 +215,7 @@ async def Admin_ad_message_type(m: m, state: s):
             users = get_all_users_tg_id()
         users = list(set(list(map(int, users))))
         await send_ad(A_ID=A_ID, m_id=m_id, users=users)
-        await m.answer("Asosiy menyu", reply_markup=keyboardbutton([ "Biz bilan aloqa 📞", "Statistika 📊", "UC Chiqarish", "Boshlang'ich uc", "Odam qo'shish", "Reklama", "Kanallar", "UC narxlar"], row=2))
+        await m.answer("Asosiy menyu", reply_markup=keyboardbutton([ "Biz bilan aloqa 📞", "Statistika 📊", "UC Chiqarish", "Boshlang'ich uc", "Odam qo'shish", "Reklama", "Kanallar", "UC narxlar", "Foydalanuvchi"], row=2))
         await Admin_state.main_menu.set()
 
 
@@ -203,13 +229,13 @@ async def admin_contact_us(m: m, state: s):
         elif int(change)==4:await m.answer("Yangi foydalanuvchilarga beriladigan uc miqdorini kiriting:", reply_markup=keyboardbutton(["Chiqish"]))
         await Admin_state.contact_us_change.set()
     elif m.text == "Chiqish":
-        await m.answer("Chiqildi!", reply_markup=keyboardbutton([ "Biz bilan aloqa 📞", "Statistika 📊", "UC Chiqarish", "Boshlang'ich uc", "Odam qo'shish", "Reklama", "Kanallar", "UC narxlar"], row=2))
+        await m.answer("Chiqildi!", reply_markup=keyboardbutton([ "Biz bilan aloqa 📞", "Statistika 📊", "UC Chiqarish", "Boshlang'ich uc", "Odam qo'shish", "Reklama", "Kanallar", "UC narxlar", "Foydalanuvchi"], row=2))
         await Admin_state.main_menu.set()
 
 
 async def admin_contact_us_change(m: m, state: s):
     if m.text == "Chiqish":
-        await m.answer("Chiqildi!", reply_markup=keyboardbutton([ "Biz bilan aloqa 📞", "Statistika 📊", "UC Chiqarish", "Boshlang'ich uc", "Odam qo'shish", "Reklama", "Kanallar", "UC narxlar"], row=2))
+        await m.answer("Chiqildi!", reply_markup=keyboardbutton([ "Biz bilan aloqa 📞", "Statistika 📊", "UC Chiqarish", "Boshlang'ich uc", "Odam qo'shish", "Reklama", "Kanallar", "UC narxlar", "Foydalanuvchi"], row=2))
         await Admin_state.main_menu.set()
     elif m.text:
         data = await state.get_data()
@@ -218,6 +244,6 @@ async def admin_contact_us_change(m: m, state: s):
         elif int(change)==2:update_setting("min_release_uc", m.text)
         elif int(change)==3:update_setting("add_man_uc", m.text)
         elif int(change)==4:update_setting("starter_uc", m.text)
-        await m.answer("Yangilandi!", reply_markup=keyboardbutton([ "Biz bilan aloqa 📞", "Statistika 📊", "UC Chiqarish", "Boshlang'ich uc", "Odam qo'shish", "Reklama", "Kanallar", "UC narxlar"], row=2))
+        await m.answer("Yangilandi!", reply_markup=keyboardbutton([ "Biz bilan aloqa 📞", "Statistika 📊", "UC Chiqarish", "Boshlang'ich uc", "Odam qo'shish", "Reklama", "Kanallar", "UC narxlar", "Foydalanuvchi"], row=2))
         await Admin_state.main_menu.set()
 

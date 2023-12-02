@@ -66,6 +66,7 @@ class Admin_state(StatesGroup):
     contact_us = State()
     contact_us_change = State()
     
+    get_user = State()
     
     
     add_channel_link = State()
@@ -88,6 +89,7 @@ class User_state(StatesGroup):
     main_menu = State()
     get_uc = State()
 
+    
     sub_menu = State()
     get_thought = State()
     

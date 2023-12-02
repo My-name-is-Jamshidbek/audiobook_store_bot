@@ -19,12 +19,14 @@ async def user_main_menu(m: m, state: s):
     if m.text == "📞 Murojaat":
         await m.answer("👨🏻‍💻 Adminga murojaat qilish uchun pastdagi tugmani bosing.", reply_markup=inlinekeyboardbuttonlinks([{"text":"↗️ Bog'lanish", "link":"https://t.me/vooALISHER"}]))
     elif m.text == "📊 Statistika":
-        await m.answer(f"👥 Bot foydalanuvchilari: {count_starters_users()} nafar\n\n🗣 Siz taklif qilganlar: {get_invite(m.from_user.id)}")
+        await m.answer(f"👥 Bot foydalanuvchilari: 5 ming +\n\n🗣 Siz taklif qilganlar: {get_invite(m.from_user.id)}")
     elif m.text == "🏆 Top reyting":
         f = ""
-        top_users = get_top_users_with_most_suggestions()
+        top_users = get_maximum_amount_users(limit=5)
         for index, user in enumerate(top_users, start=1):
-            f+=(f"{index}. {user[0]} takliflar {user[1]}\n")
+            user_id, max_amount = user
+            user_name = get_user_name_by_id(user_id)
+            f+=(f"{index}. {user_name} takliflar {int(max_amount)}\n")
         await m.answer(f)
     elif m.text == "✅ Ma'lumot":
         await m.answer(get_latest_contact_message())
@@ -108,7 +110,7 @@ async def user_buy_uc_chek(m: m, state: s):
             file_path = os.path.join(download_dir, f"{file_id}.jpg")
             with open(file_path, 'wb') as new_file:
                 new_file.write(file.read())
-            _id = await pay_bot.send_photo(chat_id=ADMIN_ID, photo=InputFile(file_path), caption=f"ORDER ID: {buy_uc_id}")
+        _id = await pay_bot.send_photo(chat_id=ADMIN_ID, photo=InputFile(file_path), caption=f"ORDER ID: {buy_uc_id}")
         await pay_bot.send_message(ADMIN_ID, f"UC: {get_uc_amount(data.get('buy_uc_id'))}\nNARX: {get_uc_price(data.get('buy_uc_id'))}\nPUBG ID: {data.get('buy_uc_pubg_id')}\nORDER ID: {buy_uc_id}", reply_markup=inlinekeyboardbutton([{"text":"✅", "data":f"check_{buy_uc_id}"}, {"text":"🚫", "data":f"close_{buy_uc_id}"}]), reply_to_message_id=_id.message_id)
         
         

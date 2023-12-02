@@ -19,11 +19,11 @@ async def check_join(user_id):
         return False
 
 async def cmd_start(message: m, state: s):
-    create_database()
+   # create_database()
     if message.from_user.id in ADMIN_IDS:
         await message.answer(
             "Assalomu aleykum admin\nBotga hush kelibsiz\nKerakli menyuni tanlashiniz mumkin.",
-            reply_markup=keyboardbutton(["Biz bilan aloqa 📞", "Statistika 📊", "UC Chiqarish", "Boshlang'ich uc", "Odam qo'shish", "Reklama", "Kanallar", "UC narxlar"], row=2)
+            reply_markup=keyboardbutton(["Biz bilan aloqa 📞", "Statistika 📊", "UC Chiqarish", "Boshlang'ich uc", "Odam qo'shish", "Reklama", "Kanallar", "UC narxlar", "Foydalanuvchi"], row=2)
         )
         await Admin_state.main_menu.set()
     else:
@@ -77,9 +77,10 @@ async def phone_number(message: m, state: s):
         await message.answer("Iltimos telefon raqamingizni yuboring:", reply_markup=share_contact_button)
     if phone_number:
         fullname = message.from_user.full_name
-        add_user(tg_id=message.from_user.id, fullname=fullname, phone_number=phone_number)
-        add_uc(message.from_user.id, int(get_setting("starter_uc")))
-        add_invite(message.from_user.id, 0)
+        if not user_exists(message.from_user.id):
+            add_user(tg_id=message.from_user.id, fullname=fullname, phone_number=phone_number)
+            add_uc(message.from_user.id, int(get_setting("starter_uc")))
+            add_invite(message.from_user.id, 0)
         data = await state.get_data()
         if user_exists(data.get("promocode")):
             uc = get_uc(data.get("promocode"))
@@ -87,14 +88,14 @@ async def phone_number(message: m, state: s):
             invite = get_invite(data.get("promocode"))
             update_invite(data.get("promocode"), int(invite)+1)
             await bot.send_message(data.get("promocode"), f"Siz taklif qilgan havola orqali {fullname} ismli foydalanuvchi ro'yxatdan o'tdi!")
-        await message.answer("🎛 Siz asosiy menyudasiz.",reply_markup=keyboardbutton(["💸 UC ishlash", "📊 Statistika", "🏆 Top reyting", "📞 Murojaat", "✅ Ma'lumot", "💬 Fikr bildirish"], row=2))
+        await message.answer("🎛 Siz asosiy menyudasiz.",reply_markup=keyboardbutton(["💸 UC ishlash", "💸 UC OLISH 💸", "📊 Statistika", "🏆 Top reyting", "📞 Murojaat", "✅ Ma'lumot", "💬 Fikr bildirish"], row=2))
         await User_state.main_menu.set()
 
 async def any_message(message: m, state: s):
     if message.from_user.id in ADMIN_IDS:
         await message.answer(
             "Assalomu aleykum admin\nBotga hush kelibsiz\nKerakli menyuni tanlashiniz mumkin.",
-            reply_markup=keyboardbutton(["Biz bilan aloqa 📞", "Statistika 📊", "UC Chiqarish", "Boshlang'ich uc", "Odam qo'shish", "Reklama", "Kanallar", "UC narxlar"], row=2)
+            reply_markup=keyboardbutton(["Biz bilan aloqa 📞", "Statistika 📊", "UC Chiqarish", "Boshlang'ich uc", "Odam qo'shish", "Reklama", "Kanallar", "UC narxlar", "Foydalanuvchi"], row=2)
         )
         await Admin_state.main_menu.set()
     else:
