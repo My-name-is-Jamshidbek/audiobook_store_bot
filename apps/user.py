@@ -11,15 +11,16 @@ from buttons.inlinekeyboardbuttons import create_inline_keyboard as inlinekeyboa
 from database.database import *
 from loader import bot, pay_bot
 from states import *
+from apps.login import *
 # from .payment_helper import get_price_label
 from config import ADMIN_IDS, BOT_LINK, ADMIN_ID
 
 
 async def user_main_menu(m: m, state: s):
     if m.text == "📞 Murojaat":
-        await m.answer("👨🏻‍💻 Adminga murojaat qilish uchun pastdagi tugmani bosing.", reply_markup=inlinekeyboardbuttonlinks([{"text":"↗️ Bog'lanish", "link":"https://t.me/vooALISHER"}]))
+        await m.answer("👨🏻‍💻 Adminga murojaat qilish uchun pastdagi tugmani bosing.", reply_markup=inlinekeyboardbuttonlinks([{"text":"↗️ Bog'lanish", "link":"https://t.me/vooADMIN"}]))
     elif m.text == "📊 Statistika":
-        await m.answer(f"👥 Bot foydalanuvchilari: 5 ming +\n\n🗣 Siz taklif qilganlar: {get_invite(m.from_user.id)}")
+        await m.answer(f"👥 Bot foydalanuvchilari: {all_users_count()}\n\n🗣 Siz taklif qilganlar: {get_invite(m.from_user.id)}")
     elif m.text == "🏆 Top reyting":
         f = ""
         top_users = get_maximum_amount_users(limit=5)
@@ -29,7 +30,10 @@ async def user_main_menu(m: m, state: s):
             f+=(f"{index}. {user_name} takliflar {int(max_amount)}\n")
         await m.answer(f)
     elif m.text == "✅ Ma'lumot":
-        await m.answer(get_latest_contact_message())
+        await m.answer("🔊 Agar bizning kanalimizni ko’rmoqchi bo’lsagiz pastdagi tugamani bosing.", reply_markup=inlinekeyboardbuttonlinks([{"text":"👁️‍ Ko’rish", "link":"https://t.me/uc9953"}]))
+        await m.answer("🔐 Isbot kanalimizni ko’rmoqchi bo’lsagiz pastdagi tugamani bosing.", reply_markup=inlinekeyboardbuttonlinks([{"text":"👁️‍ Ko’rish", "link":"https://t.me/uc9953isbot"}]))
+        await m.answer("👨🏻‍💻Adminga murojat qilmochi bo’lsagiz pastdagi tugamni bosing.", reply_markup=inlinekeyboardbuttonlinks([{"text":"👁️‍ O'tish", "link":"https://t.me/vooADMIN"}]))
+        # await m.answer(get_latest_contact_message())
     elif m.text == "💬 Fikr bildirish":
         await m.answer("🤖 Botimiz haqida o'z fikringizni yozib qoldiring.", reply_markup=keyboardbutton(["🚫 Bekor qilish"]))
         await User_state.get_thought.set()
@@ -46,6 +50,26 @@ async def user_main_menu(m: m, state: s):
         await state.update_data(_mid=_mid.message_id)
         await m.delete()
         await User_state.buy_uc_main.set()
+    elif m.text == "/start":
+        if user_exists(m.from_user.id) and await check_join(m.from_user.id):
+            await m.answer(f"Assalomu aleykum! Xush kelibsiz")
+            await m.answer("🎛 Siz asosiy menyudasiz.",reply_markup=keyboardbutton(["💸 UC ishlash", "💸 UC OLISH 💸", "📊 Statistika", "🏆 Top reyting", "📞 Murojaat", "✅ Ma'lumot", "💬 Fikr bildirish"], row=2))
+            await User_state.main_menu.set()
+        else:
+            await m.answer(f"Assalomu aleykum! Hush kelibsiz", reply_markup=keyboardbutton(["Tekshirish"]))
+            if len(m.text.split("=")) == 2:
+                if user_exists(m.text.split("=")[1]):
+                    await m.answer(f"Sizni {get_user(m.text.split('=')[1])[2]} taklif qildi. Taklif qilgan foydalanuvchiga uc sovg'a qilinishi uchun botda ro'yxatdan o'ting.")
+                    await state.update_data(promocode=m.text.split("=")[1])
+                else:
+                    await m.answer("Promo kod noto'g'ri!")
+            try:
+                add_starter_user(m.from_user.id, str(m.from_user.full_name))
+            except:
+                pass
+            links = [{"text": i[0], "link": f"https://t.me/{i[1][1:]}"} for i in get_all_channels()]
+            await m.answer(f"Bot ishini davom etishi uchun quyidagi kanallarga a'zo bo'ling:", reply_markup=inlinekeyboardbuttonlinks(links))
+            await User_state.register.set()
     else:
         await m.answer("Bunday menyu mavjud emas!")
         await m.answer("Kerakli menyuni tanlashingiz mumkin:",reply_markup=keyboardbutton(["💸 UC ishlash", "💸 UC OLISH 💸", "📊 Statistika", "🏆 Top reyting", "📞 Murojaat", "✅ Ma'lumot", "💬 Fikr bildirish"], row=2))
@@ -61,13 +85,37 @@ async def user_buy_uc(callback_query: CallbackQuery, state: s):
     if m[0]=="buyuc":
         await state.update_data(buy_uc_id=m[1])
         btns = [{"text": "✅To'lov qildim", "data": "check"}, {"text": "🔙Orqaga🔙", "data": "break"}]
-        _mid = await bot.send_photo(callback_query.from_user.id, photo=InputFile("database/humo_logo.jpg"), caption=f"🇺🇿O‘zbekiston Bo’yicha to’lov 🇺🇿\n\n              🏦Uzcard\n\n💳 8600 3104 7001 0364\n🤵🏻Anvarov Alisher\n\n📱Tel:  +998 88 999 99 53\n\n              🏦 HUMO\n\n💳 9860 1901 0487 0380\n🤵🏻Anvarov Alisher\n\n📱Tel:  +998 88 999 99 53\n\n              🏦 HUMO\n\n💳 9860 3501 0712 8505\n🤵🏻 Anvarov Alisher\n\n📱Tel:  +998 88 999 99 53\n\n\n💸 {get_uc_amount(m[1])} UC Uchun To‘lov miqdori: {get_uc_price(m[1])} UZS💵\n📃 - PULNI TASHAGANIZ HAQIDA CHEK ESDAN CHIQMASIN ✅", reply_markup=inlinekeyboardbutton(btns))
+        _mid = await bot.send_photo(callback_query.from_user.id, photo=InputFile("database/humo_logo.jpg"), caption=f"{get_setting('payment_message')}\n\n\n💸 {get_uc_amount(m[1])} UC Uchun To‘lov miqdori: {get_uc_price(m[1])} UZS💵\n📃 - PULNI TASHAGANIZ HAQIDA CHEK ESDAN CHIQMASIN ✅", reply_markup=inlinekeyboardbutton(btns))
         await state.update_data(_mid=_mid.message_id)
         await User_state.buy_uc_check.set()
     elif m[0]=="buyucbreak":
         await bot.send_message(callback_query.from_user.id, "🎛 Siz asosiy menyudasiz.",reply_markup=keyboardbutton(["💸 UC ishlash", "💸 UC OLISH 💸", "📊 Statistika", "🏆 Top reyting", "📞 Murojaat", "✅ Ma'lumot", "💬 Fikr bildirish"], row=2))
         await User_state.main_menu.set()
+    elif m.text == "/start":
+        if user_exists(m.from_user.id) and await check_join(m.from_user.id):
+            await m.answer(f"Assalomu aleykum! Xush kelibsiz")
+            await m.answer("🎛 Siz asosiy menyudasiz.",reply_markup=keyboardbutton(["💸 UC ishlash", "💸 UC OLISH 💸", "📊 Statistika", "🏆 Top reyting", "📞 Murojaat", "✅ Ma'lumot", "💬 Fikr bildirish"], row=2))
+            await User_state.main_menu.set()
+        else:
+            await m.answer(f"Assalomu aleykum! Hush kelibsiz", reply_markup=keyboardbutton(["Tekshirish"]))
+            if len(m.text.split("=")) == 2:
+                if user_exists(m.text.split("=")[1]):
+                    await m.answer(f"Sizni {get_user(m.text.split('=')[1])[2]} taklif qildi. Taklif qilgan foydalanuvchiga uc sovg'a qilinishi uchun botda ro'yxatdan o'ting.")
+                    await state.update_data(promocode=m.text.split("=")[1])
+                else:
+                    await m.answer("Promo kod noto'g'ri!")
+            try:
+                add_starter_user(m.from_user.id, str(m.from_user.full_name))
+            except:
+                pass
+            links = [{"text": i[0], "link": f"https://t.me/{i[1][1:]}"} for i in get_all_channels()]
+            await m.answer(f"Bot ishini davom etishi uchun quyidagi kanallarga a'zo bo'ling:", reply_markup=inlinekeyboardbuttonlinks(links))
+            await User_state.register.set()
                     
+    else:
+        await m.answer("Bunday menyu mavjud emas!")
+        await m.answer("Kerakli menyuni tanlashingiz mumkin:",reply_markup=keyboardbutton(["💸 UC ishlash", "💸 UC OLISH 💸", "📊 Statistika", "🏆 Top reyting", "📞 Murojaat", "✅ Ma'lumot", "💬 Fikr bildirish"], row=2))
+        await User_state.main_menu.set()
 
 async def user_buy_check(callback_query: CallbackQuery, state: s):
     data = await state.get_data()
@@ -76,7 +124,7 @@ async def user_buy_check(callback_query: CallbackQuery, state: s):
     await callback_query.answer()  # Yaqin kelgan so'rovni qabul qilish
     m = callback_query.data.split("_")
     if m[0]=="check":
-        _mid = await bot.send_message(callback_query.from_user.id, "ID raqamingizni kiriting\n(tahrirlangan xabarlarga bot javob bermaydi):", reply_markup=keyboardbutton(["Orqaga qaytish 🔙"]))
+        _mid = await bot.send_message(callback_query.from_user.id, "PUBG MOBILE ID raqamingizni kiriting \nAniqlik kiritish uchun iloji bo'lsa nik\n(tahrirlangan xabarlarga bot javob bermaydi):", reply_markup=keyboardbutton(["Orqaga qaytish 🔙"]))
         await state.update_data(_mid=_mid.message_id)
         await User_state.buy_uc_id.set()
     elif m[0]=="break":
@@ -88,15 +136,67 @@ async def user_buy_check(callback_query: CallbackQuery, state: s):
         await state.update_data(_mid=_mid.message_id)
         await User_state.buy_uc_main.set()
 
+    elif m.text == "/start":
+        if user_exists(m.from_user.id) and await check_join(m.from_user.id):
+            await m.answer(f"Assalomu aleykum! Xush kelibsiz")
+            await m.answer("🎛 Siz asosiy menyudasiz.",reply_markup=keyboardbutton(["💸 UC ishlash", "💸 UC OLISH 💸", "📊 Statistika", "🏆 Top reyting", "📞 Murojaat", "✅ Ma'lumot", "💬 Fikr bildirish"], row=2))
+            await User_state.main_menu.set()
+        else:
+            await m.answer(f"Assalomu aleykum! Hush kelibsiz", reply_markup=keyboardbutton(["Tekshirish"]))
+            if len(m.text.split("=")) == 2:
+                if user_exists(m.text.split("=")[1]):
+                    await m.answer(f"Sizni {get_user(m.text.split('=')[1])[2]} taklif qildi. Taklif qilgan foydalanuvchiga uc sovg'a qilinishi uchun botda ro'yxatdan o'ting.")
+                    await state.update_data(promocode=m.text.split("=")[1])
+                else:
+                    await m.answer("Promo kod noto'g'ri!")
+            try:
+                add_starter_user(m.from_user.id, str(m.from_user.full_name))
+            except:
+                pass
+            links = [{"text": i[0], "link": f"https://t.me/{i[1][1:]}"} for i in get_all_channels()]
+            await m.answer(f"Bot ishini davom etishi uchun quyidagi kanallarga a'zo bo'ling:", reply_markup=inlinekeyboardbuttonlinks(links))
+            await User_state.register.set()
+
+
+    else:
+        await m.answer("Bunday menyu mavjud emas!")
+        await m.answer("Kerakli menyuni tanlashingiz mumkin:",reply_markup=keyboardbutton(["💸 UC ishlash", "💸 UC OLISH 💸", "📊 Statistika", "🏆 Top reyting", "📞 Murojaat", "✅ Ma'lumot", "💬 Fikr bildirish"], row=2))
+        await User_state.main_menu.set()
 
 async def user_buy_id(m: m, state: s):
     if m.text == "Orqaga qaytish 🔙":
         await bot.send_message(m.from_user.id, "🎛 Siz asosiy menyudasiz.",reply_markup=keyboardbutton(["💸 UC ishlash", "💸 UC OLISH 💸", "📊 Statistika", "🏆 Top reyting", "📞 Murojaat", "✅ Ma'lumot", "💬 Fikr bildirish"], row=2))
         await User_state.main_menu.set()
     elif m.text:
-        await bot.send_message(m.from_user.id, f"ID qabul qilindi✅\nTo'lovingizni chek yoki skreenshotini shu yerga yuboring:")  
+        await bot.send_message(m.from_user.id, f"ID qabul qilindi✅\nTo'lovingizni chek yoki skreenshotini shu yerga yuboring:\nTo'lov cheki tashlanmagan holatda to'lov 0 ga teng!")  
         await state.update_data(buy_uc_pubg_id=m.text)
         await User_state.buy_uc_chek.set()  
+
+    elif m.text == "/start":
+        if user_exists(m.from_user.id) and await check_join(m.from_user.id):
+            await m.answer(f"Assalomu aleykum! Xush kelibsiz")
+            await m.answer("🎛 Siz asosiy menyudasiz.",reply_markup=keyboardbutton(["💸 UC ishlash", "💸 UC OLISH 💸", "📊 Statistika", "🏆 Top reyting", "📞 Murojaat", "✅ Ma'lumot", "💬 Fikr bildirish"], row=2))
+            await User_state.main_menu.set()
+        else:
+            await m.answer(f"Assalomu aleykum! Hush kelibsiz", reply_markup=keyboardbutton(["Tekshirish"]))
+            if len(m.text.split("=")) == 2:
+                if user_exists(m.text.split("=")[1]):
+                    await m.answer(f"Sizni {get_user(m.text.split('=')[1])[2]} taklif qildi. Taklif qilgan foydalanuvchiga uc sovg'a qilinishi uchun botda ro'yxatdan o'ting.")
+                    await state.update_data(promocode=m.text.split("=")[1])
+                else:
+                    await m.answer("Promo kod noto'g'ri!")
+            try:
+                add_starter_user(m.from_user.id, str(m.from_user.full_name))
+            except:
+                pass
+            links = [{"text": i[0], "link": f"https://t.me/{i[1][1:]}"} for i in get_all_channels()]
+            await m.answer(f"Bot ishini davom etishi uchun quyidagi kanallarga a'zo bo'ling:", reply_markup=inlinekeyboardbuttonlinks(links))
+            await User_state.register.set()
+
+    else:
+        await m.answer("Bunday menyu mavjud emas!")
+        await m.answer("Kerakli menyuni tanlashingiz mumkin:",reply_markup=keyboardbutton(["💸 UC ishlash", "💸 UC OLISH 💸", "📊 Statistika", "🏆 Top reyting", "📞 Murojaat", "✅ Ma'lumot", "💬 Fikr bildirish"], row=2))
+        await User_state.main_menu.set()
 
 async def user_buy_uc_chek(m: m, state: s):
     download_dir = "database/media/"
@@ -139,16 +239,37 @@ async def user_buy_uc_chek(m: m, state: s):
         if m.text == "Orqaga qaytish 🔙":
             await bot.send_message(m.from_user.id, "🎛 Siz asosiy menyudasiz.",reply_markup=keyboardbutton(["💸 UC ishlash", "💸 UC OLISH 💸", "📊 Statistika", "🏆 Top reyting", "📞 Murojaat", "✅ Ma'lumot", "💬 Fikr bildirish"], row=2))
             await User_state.main_menu.set()
+        
+    elif m.text == "/start":
+        if user_exists(m.from_user.id) and await check_join(m.from_user.id):
+            await m.answer(f"Assalomu aleykum! Xush kelibsiz")
+            await m.answer("🎛 Siz asosiy menyudasiz.",reply_markup=keyboardbutton(["💸 UC ishlash", "💸 UC OLISH 💸", "📊 Statistika", "🏆 Top reyting", "📞 Murojaat", "✅ Ma'lumot", "💬 Fikr bildirish"], row=2))
+            await User_state.main_menu.set()
+        else:
+            await m.answer(f"Assalomu aleykum! Hush kelibsiz", reply_markup=keyboardbutton(["Tekshirish"]))
+            if len(m.text.split("=")) == 2:
+                if user_exists(m.text.split("=")[1]):
+                    await m.answer(f"Sizni {get_user(m.text.split('=')[1])[2]} taklif qildi. Taklif qilgan foydalanuvchiga uc sovg'a qilinishi uchun botda ro'yxatdan o'ting.")
+                    await state.update_data(promocode=m.text.split("=")[1])
+                else:
+                    await m.answer("Promo kod noto'g'ri!")
+            try:
+                add_starter_user(m.from_user.id, str(m.from_user.full_name))
+            except:
+                pass
+            links = [{"text": i[0], "link": f"https://t.me/{i[1][1:]}"} for i in get_all_channels()]
+            await m.answer(f"Bot ishini davom etishi uchun quyidagi kanallarga a'zo bo'ling:", reply_markup=inlinekeyboardbuttonlinks(links))
+            await User_state.register.set()
     else:
         m.answer("Iltimos rasm jo'nating!")
-        
     
 async def user_sub_menu(m: m, state: s):
     if m.text in ["🔙 Orqaga", "🔝 Asosiy Menyu"]:
         await m.answer("🎛 Siz asosiy menyudasiz.",reply_markup=keyboardbutton(["💸 UC ishlash", "💸 UC OLISH 💸", "📊 Statistika", "🏆 Top reyting", "📞 Murojaat", "✅ Ma'lumot", "💬 Fikr bildirish"], row=2))
         await User_state.main_menu.set()
-    elif m.text == "🗣 Taklif qilish":    
-        await m.answer(f"🗣 Har bir taklif qilgan do'stingiz uchun sizga {get_setting('add_man_uc')} UC taqdim etiladi!\n\n👇🏻 Sizning refereal havolangiz: {BOT_LINK}?start=taklif_id={m.from_user.id}")
+    elif m.text == "🗣 Taklif qilish":    #Men ushbu botdan
+        m = await m.answer(f"Men ushbu <a href=\"{BOT_LINK}?start=taklif_id={m.from_user.id}\">botdan</a>  anchadan beri foydalanib kelaman 😍\nBot orqali uclarni tekinga ishlab olaman ✅ 100 % ishonchli 🤠\nBunga sizni ham taklif qilaman👇👇", reply_markup=inlinekeyboardbuttonlinks([{"text":"👁️‍ O'tish", "link":f"{BOT_LINK}?start=taklif_id={m.from_user.id}"}]))
+        await m.reply(f"Ushbu habarni ulashish orqali do'stlaringizni taklif qilishingiz mumkin.\n\n🗣 Har bir taklif qilgan do'stingiz uchun sizga {get_setting('add_man_uc')} UC taqdim etiladi!\n\n👇🏻 Sizning refereal havolangiz: {BOT_LINK}?start=taklif_id={m.from_user.id}")
         # mess = await m.answer(f"<a href=\"{BOT_LINK}?start=taklif_id={m.from_user.id}\">Ushbu botga start bosib ro'yxatdan o'tish orqali PUBG ilovangiz uchun uc yutib oling!</a>")
         # await mess.reply(f"Ushbu habar yoki quyidagi link orqali botni ulashishingiz mumkin link orqali har bir ro'yxatdan o'tgan foydalanuvchi uchun {get_setting('add_man_uc')} uc beriladi!")
     elif m.text == "💳 Hisobim":
@@ -161,7 +282,32 @@ async def user_sub_menu(m: m, state: s):
         else:
             await m.answer(f"⁉️ Hisobdagi UC larni chiqarib olishning minimal miqdor {get_setting('min_release_uc')} UC ga teng!")
 
-    
+    elif m.text == "/start":
+        if user_exists(m.from_user.id) and await check_join(m.from_user.id):
+            await m.answer(f"Assalomu aleykum! Xush kelibsiz")
+            await m.answer("🎛 Siz asosiy menyudasiz.",reply_markup=keyboardbutton(["💸 UC ishlash", "💸 UC OLISH 💸", "📊 Statistika", "🏆 Top reyting", "📞 Murojaat", "✅ Ma'lumot", "💬 Fikr bildirish"], row=2))
+            await User_state.main_menu.set()
+        else:
+            await m.answer(f"Assalomu aleykum! Hush kelibsiz", reply_markup=keyboardbutton(["Tekshirish"]))
+            if len(m.text.split("=")) == 2:
+                if user_exists(m.text.split("=")[1]):
+                    await m.answer(f"Sizni {get_user(m.text.split('=')[1])[2]} taklif qildi. Taklif qilgan foydalanuvchiga uc sovg'a qilinishi uchun botda ro'yxatdan o'ting.")
+                    await state.update_data(promocode=m.text.split("=")[1])
+                else:
+                    await m.answer("Promo kod noto'g'ri!")
+            try:
+                add_starter_user(m.from_user.id, str(m.from_user.full_name))
+            except:
+                pass
+            links = [{"text": i[0], "link": f"https://t.me/{i[1][1:]}"} for i in get_all_channels()]
+            await m.answer(f"Bot ishini davom etishi uchun quyidagi kanallarga a'zo bo'ling:", reply_markup=inlinekeyboardbuttonlinks(links))
+            await User_state.register.set()
+
+    else:
+        await m.answer("Bunday menyu mavjud emas!")
+        await m.answer("Kerakli menyuni tanlashingiz mumkin:",reply_markup=keyboardbutton(["💸 UC ishlash", "💸 UC OLISH 💸", "📊 Statistika", "🏆 Top reyting", "📞 Murojaat", "✅ Ma'lumot", "💬 Fikr bildirish"], row=2))
+        await User_state.main_menu.set()
+
 async def user_get_thought(m: m, state: s):
     if m.text == "🚫 Bekor qilish":
         await m.answer("🎛 Siz asosiy menyudasiz.",reply_markup=keyboardbutton(["💸 UC ishlash", "💸 UC OLISH 💸", "📊 Statistika", "🏆 Top reyting", "📞 Murojaat", "✅ Ma'lumot", "💬 Fikr bildirish"], row=2))
@@ -172,6 +318,31 @@ async def user_get_thought(m: m, state: s):
         await m.answer("🎛 Siz asosiy menyudasiz.",reply_markup=keyboardbutton(["💸 UC ishlash", "💸 UC OLISH 💸", "📊 Statistika", "🏆 Top reyting", "📞 Murojaat", "✅ Ma'lumot", "💬 Fikr bildirish"], row=2))
         await User_state.main_menu.set()
 
+    elif m.text == "/start":
+        if user_exists(m.from_user.id) and await check_join(m.from_user.id):
+            await m.answer(f"Assalomu aleykum! Xush kelibsiz")
+            await m.answer("🎛 Siz asosiy menyudasiz.",reply_markup=keyboardbutton(["💸 UC ishlash", "💸 UC OLISH 💸", "📊 Statistika", "🏆 Top reyting", "📞 Murojaat", "✅ Ma'lumot", "💬 Fikr bildirish"], row=2))
+            await User_state.main_menu.set()
+        else:
+            await m.answer(f"Assalomu aleykum! Hush kelibsiz", reply_markup=keyboardbutton(["Tekshirish"]))
+            if len(m.text.split("=")) == 2:
+                if user_exists(m.text.split("=")[1]):
+                    await m.answer(f"Sizni {get_user(m.text.split('=')[1])[2]} taklif qildi. Taklif qilgan foydalanuvchiga uc sovg'a qilinishi uchun botda ro'yxatdan o'ting.")
+                    await state.update_data(promocode=m.text.split("=")[1])
+                else:
+                    await m.answer("Promo kod noto'g'ri!")
+            try:
+                add_starter_user(m.from_user.id, str(m.from_user.full_name))
+            except:
+                pass
+            links = [{"text": i[0], "link": f"https://t.me/{i[1][1:]}"} for i in get_all_channels()]
+            await m.answer(f"Bot ishini davom etishi uchun quyidagi kanallarga a'zo bo'ling:", reply_markup=inlinekeyboardbuttonlinks(links))
+            await User_state.register.set()
+
+    else:
+        await m.answer("Bunday menyu mavjud emas!")
+        await m.answer("Kerakli menyuni tanlashingiz mumkin:",reply_markup=keyboardbutton(["💸 UC ishlash", "💸 UC OLISH 💸", "📊 Statistika", "🏆 Top reyting", "📞 Murojaat", "✅ Ma'lumot", "💬 Fikr bildirish"], row=2))
+        await User_state.main_menu.set()
 
 async def user_get_pubg_id(m: m, state: s):
     if m.text == "🚫 Bekor qilish":
@@ -180,6 +351,31 @@ async def user_get_pubg_id(m: m, state: s):
     elif m.text == "💸 UC Chiqarish":
         await m.answer("🔹\"PUBG MOBILE\" ID raqamingizni yozib qoldiring. Barcha ishlagan UC laringizni shu ID ga chiqarib olishingiz mumkin bo'ladi.", reply_markup=keyboardbutton(["🚫 Bekor qilish"]))
 
+    elif m.text == "/start":
+        if user_exists(m.from_user.id) and await check_join(m.from_user.id):
+            await m.answer(f"Assalomu aleykum! Xush kelibsiz")
+            await m.answer("🎛 Siz asosiy menyudasiz.",reply_markup=keyboardbutton(["💸 UC ishlash", "💸 UC OLISH 💸", "📊 Statistika", "🏆 Top reyting", "📞 Murojaat", "✅ Ma'lumot", "💬 Fikr bildirish"], row=2))
+            await User_state.main_menu.set()
+        else:
+            await m.answer(f"Assalomu aleykum! Hush kelibsiz", reply_markup=keyboardbutton(["Tekshirish"]))
+            if len(m.text.split("=")) == 2:
+                if user_exists(m.text.split("=")[1]):
+                    await m.answer(f"Sizni {get_user(m.text.split('=')[1])[2]} taklif qildi. Taklif qilgan foydalanuvchiga uc sovg'a qilinishi uchun botda ro'yxatdan o'ting.")
+                    await state.update_data(promocode=m.text.split("=")[1])
+                else:
+                    await m.answer("Promo kod noto'g'ri!")
+            try:
+                add_starter_user(m.from_user.id, str(m.from_user.full_name))
+            except:
+                pass
+            links = [{"text": i[0], "link": f"https://t.me/{i[1][1:]}"} for i in get_all_channels()]
+            await m.answer(f"Bot ishini davom etishi uchun quyidagi kanallarga a'zo bo'ling:", reply_markup=inlinekeyboardbuttonlinks(links))
+            await User_state.register.set()
+
+    else:
+        await m.answer("Bunday menyu mavjud emas!")
+        await m.answer("Kerakli menyuni tanlashingiz mumkin:",reply_markup=keyboardbutton(["💸 UC ishlash", "💸 UC OLISH 💸", "📊 Statistika", "🏆 Top reyting", "📞 Murojaat", "✅ Ma'lumot", "💬 Fikr bildirish"], row=2))
+        await User_state.main_menu.set()
 
 async def user_get_uc(m: m, state: s):
     if m.text == "🚫 Bekor qilish":
@@ -189,5 +385,31 @@ async def user_get_uc(m: m, state: s):
         await bot.send_message(ADMIN_ID, f"PUBG ID: {m.text},\nUC: {get_uc(m.from_user.id)}\nTG_ID: {m.from_user.id}")
         update_uc(m.from_user.id, 0)
         await m.answer("Hisobingizdagi UC larni chiqarish uchun adminga habar yuborildi tez orada UC lar PUBG hisobingizga tashlab beriladi!")
+        await m.answer("Kerakli menyuni tanlashingiz mumkin:",reply_markup=keyboardbutton(["💸 UC ishlash", "💸 UC OLISH 💸", "📊 Statistika", "🏆 Top reyting", "📞 Murojaat", "✅ Ma'lumot", "💬 Fikr bildirish"], row=2))
+        await User_state.main_menu.set()
+
+    elif m.text == "/start":
+        if user_exists(m.from_user.id) and await check_join(m.from_user.id):
+            await m.answer(f"Assalomu aleykum! Xush kelibsiz")
+            await m.answer("🎛 Siz asosiy menyudasiz.",reply_markup=keyboardbutton(["💸 UC ishlash", "💸 UC OLISH 💸", "📊 Statistika", "🏆 Top reyting", "📞 Murojaat", "✅ Ma'lumot", "💬 Fikr bildirish"], row=2))
+            await User_state.main_menu.set()
+        else:
+            await m.answer(f"Assalomu aleykum! Hush kelibsiz", reply_markup=keyboardbutton(["Tekshirish"]))
+            if len(m.text.split("=")) == 2:
+                if user_exists(m.text.split("=")[1]):
+                    await m.answer(f"Sizni {get_user(m.text.split('=')[1])[2]} taklif qildi. Taklif qilgan foydalanuvchiga uc sovg'a qilinishi uchun botda ro'yxatdan o'ting.")
+                    await state.update_data(promocode=m.text.split("=")[1])
+                else:
+                    await m.answer("Promo kod noto'g'ri!")
+            try:
+                add_starter_user(m.from_user.id, str(m.from_user.full_name))
+            except:
+                pass
+            links = [{"text": i[0], "link": f"https://t.me/{i[1][1:]}"} for i in get_all_channels()]
+            await m.answer(f"Bot ishini davom etishi uchun quyidagi kanallarga a'zo bo'ling:", reply_markup=inlinekeyboardbuttonlinks(links))
+            await User_state.register.set()
+
+    else:
+        await m.answer("Bunday menyu mavjud emas!")
         await m.answer("Kerakli menyuni tanlashingiz mumkin:",reply_markup=keyboardbutton(["💸 UC ishlash", "💸 UC OLISH 💸", "📊 Statistika", "🏆 Top reyting", "📞 Murojaat", "✅ Ma'lumot", "💬 Fikr bildirish"], row=2))
         await User_state.main_menu.set()

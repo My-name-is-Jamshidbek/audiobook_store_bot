@@ -13,7 +13,7 @@ from apps.login import cmd_start, register, phone_number, any_message
 from states import User_state, Admin_state
 
 # cmd start
-dp.register_message_handler(cmd_start, commands=['start'])
+dp.register_message_handler(cmd_start)
 
 # Register
 dp.register_message_handler(register, content_types=[ct.TEXT], state=User_state.register)

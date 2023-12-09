@@ -4,9 +4,10 @@ from aiogram.types import ReplyKeyboardRemove
 from buttons.keyboardbuttons import keyboardbutton, share_contact_button
 from buttons.inlinekeyboardbuttons import inlinekeyboardbuttonlinks
 from config import ADMIN_IDS
-from database.database import add_user, get_user, user_exists, create_database, add_starter_user, add_uc, get_uc, update_uc, add_invite, update_invite, get_invite, get_setting, get_all_channels
+from database.database import add_user, get_user, user_exists, create_database, add_starter_user, add_uc, get_uc, update_uc, add_invite, update_invite, get_invite, get_setting, get_all_channels, add_setting
 from states import *
 from loader import bot
+from config import main_menu_list
 
 async def check_join(user_id):
     try:
@@ -20,10 +21,11 @@ async def check_join(user_id):
 
 async def cmd_start(message: m, state: s):
    # create_database()
+    add_setting("payment_message", "NO")
     if message.from_user.id in ADMIN_IDS:
         await message.answer(
             "Assalomu aleykum admin\nBotga hush kelibsiz\nKerakli menyuni tanlashiniz mumkin.",
-            reply_markup=keyboardbutton(["Biz bilan aloqa 📞", "Statistika 📊", "UC Chiqarish", "Boshlang'ich uc", "Odam qo'shish", "Reklama", "Kanallar", "UC narxlar", "Foydalanuvchi"], row=2)
+            reply_markup=keyboardbutton(main_menu_list, row=2)
         )
         await Admin_state.main_menu.set()
     else:
@@ -95,7 +97,7 @@ async def any_message(message: m, state: s):
     if message.from_user.id in ADMIN_IDS:
         await message.answer(
             "Assalomu aleykum admin\nBotga hush kelibsiz\nKerakli menyuni tanlashiniz mumkin.",
-            reply_markup=keyboardbutton(["Biz bilan aloqa 📞", "Statistika 📊", "UC Chiqarish", "Boshlang'ich uc", "Odam qo'shish", "Reklama", "Kanallar", "UC narxlar", "Foydalanuvchi"], row=2)
+            reply_markup=keyboardbutton(main_menu_list, row=2)
         )
         await Admin_state.main_menu.set()
     else:

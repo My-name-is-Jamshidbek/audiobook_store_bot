@@ -12,3 +12,4 @@ TEST_TOKEN = os.getenv("TEST_TOKEN")
 DATABASE_NAME = os.getenv("DATABASE_NAME")
 BOT_LINK = os.getenv("BOT_LINK")
 UC_PAY_BOT_TOKEN = os.getenv("UC_PAY_BOT_TOKEN")
+main_menu_list = [ "Biz bilan aloqa 📞", "Statistika 📊", "UC Chiqarish", "Boshlang'ich uc", "Odam qo'shish", "Reklama", "Kanallar", "UC narxlar", "Foydalanuvchi", "To'lov ma'lumoti"]
