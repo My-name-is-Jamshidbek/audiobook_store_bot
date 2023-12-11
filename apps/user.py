@@ -70,6 +70,8 @@ async def user_main_menu(m: m, state: s):
             links = [{"text": i[0], "link": f"https://t.me/{i[1][1:]}"} for i in get_all_channels()]
             await m.answer(f"Bot ishini davom etishi uchun quyidagi kanallarga a'zo bo'ling:", reply_markup=inlinekeyboardbuttonlinks(links))
             await User_state.register.set()
+    elif m.text == "/help" or m.text == "/yordam":
+        await bot.send_video(chat_id=m.chat.id, video=InputFile("/home/admin/audiobook_store_bot/database/media/IMG_7750.MOV"), caption='Uc ishlash qo’llanma 👇👇\n#start tugamasini bosig.\n1. 💸 Uc ishlash bo’limini tanlang ✅\n2. Taklif qilish tugmasini bosing ✅ \n3. Sizga berilgan havolani do’stlarigizga yuboring.✅\n4. Siz yuborgan havoladan do’stlaringiz to’liq ro’yhatdan o’tishi shart shundagina sizga belgilangan uc beriladi 🤩\n5. Uc miqdoringiz 61 uc bo’lganda uc chiqarib olishingiz munkin ✅')
     else:
         await m.answer("Bunday menyu mavjud emas!")
         await m.answer("Kerakli menyuni tanlashingiz mumkin:",reply_markup=keyboardbutton(["💸 UC ishlash", "💸 UC OLISH 💸", "📊 Statistika", "🏆 Top reyting", "📞 Murojaat", "✅ Ma'lumot", "💬 Fikr bildirish"], row=2))
@@ -111,7 +113,8 @@ async def user_buy_uc(callback_query: CallbackQuery, state: s):
             links = [{"text": i[0], "link": f"https://t.me/{i[1][1:]}"} for i in get_all_channels()]
             await m.answer(f"Bot ishini davom etishi uchun quyidagi kanallarga a'zo bo'ling:", reply_markup=inlinekeyboardbuttonlinks(links))
             await User_state.register.set()
-                    
+    elif m.text == "/help" or m.text == "/yordam":
+        await bot.send_video(chat_id=m.chat.id, video=InputFile("/home/admin/audiobook_store_bot/database/media/IMG_7750.MOV"), caption='Uc ishlash qo’llanma 👇👇\n#start tugamasini bosig.\n1. 💸 Uc ishlash bo’limini tanlang ✅\n2. Taklif qilish tugmasini bosing ✅ \n3. Sizga berilgan havolani do’stlarigizga yuboring.✅\n4. Siz yuborgan havoladan do’stlaringiz to’liq ro’yhatdan o’tishi shart shundagina sizga belgilangan uc beriladi 🤩\n5. Uc miqdoringiz 61 uc bo’lganda uc chiqarib olishingiz munkin ✅')
     else:
         await m.answer("Bunday menyu mavjud emas!")
         await m.answer("Kerakli menyuni tanlashingiz mumkin:",reply_markup=keyboardbutton(["💸 UC ishlash", "💸 UC OLISH 💸", "📊 Statistika", "🏆 Top reyting", "📞 Murojaat", "✅ Ma'lumot", "💬 Fikr bildirish"], row=2))
@@ -156,8 +159,8 @@ async def user_buy_check(callback_query: CallbackQuery, state: s):
             links = [{"text": i[0], "link": f"https://t.me/{i[1][1:]}"} for i in get_all_channels()]
             await m.answer(f"Bot ishini davom etishi uchun quyidagi kanallarga a'zo bo'ling:", reply_markup=inlinekeyboardbuttonlinks(links))
             await User_state.register.set()
-
-
+    elif m.text == "/help" or m.text == "/yordam":
+        await bot.send_video(chat_id=m.chat.id, video=InputFile("/home/admin/audiobook_store_bot/database/media/IMG_7750.MOV"), caption='Uc ishlash qo’llanma 👇👇\n#start tugamasini bosig.\n1. 💸 Uc ishlash bo’limini tanlang ✅\n2. Taklif qilish tugmasini bosing ✅ \n3. Sizga berilgan havolani do’stlarigizga yuboring.✅\n4. Siz yuborgan havoladan do’stlaringiz to’liq ro’yhatdan o’tishi shart shundagina sizga belgilangan uc beriladi 🤩\n5. Uc miqdoringiz 61 uc bo’lganda uc chiqarib olishingiz munkin ✅')
     else:
         await m.answer("Bunday menyu mavjud emas!")
         await m.answer("Kerakli menyuni tanlashingiz mumkin:",reply_markup=keyboardbutton(["💸 UC ishlash", "💸 UC OLISH 💸", "📊 Statistika", "🏆 Top reyting", "📞 Murojaat", "✅ Ma'lumot", "💬 Fikr bildirish"], row=2))
@@ -192,7 +195,8 @@ async def user_buy_id(m: m, state: s):
             links = [{"text": i[0], "link": f"https://t.me/{i[1][1:]}"} for i in get_all_channels()]
             await m.answer(f"Bot ishini davom etishi uchun quyidagi kanallarga a'zo bo'ling:", reply_markup=inlinekeyboardbuttonlinks(links))
             await User_state.register.set()
-
+    elif m.text == "/help" or m.text == "/yordam":
+        await bot.send_video(chat_id=m.chat.id, video=InputFile("/home/admin/audiobook_store_bot/database/media/IMG_7750.MOV"), caption='Uc ishlash qo’llanma 👇👇\n#start tugamasini bosig.\n1. 💸 Uc ishlash bo’limini tanlang ✅\n2. Taklif qilish tugmasini bosing ✅ \n3. Sizga berilgan havolani do’stlarigizga yuboring.✅\n4. Siz yuborgan havoladan do’stlaringiz to’liq ro’yhatdan o’tishi shart shundagina sizga belgilangan uc beriladi 🤩\n5. Uc miqdoringiz 61 uc bo’lganda uc chiqarib olishingiz munkin ✅')
     else:
         await m.answer("Bunday menyu mavjud emas!")
         await m.answer("Kerakli menyuni tanlashingiz mumkin:",reply_markup=keyboardbutton(["💸 UC ishlash", "💸 UC OLISH 💸", "📊 Statistika", "🏆 Top reyting", "📞 Murojaat", "✅ Ma'lumot", "💬 Fikr bildirish"], row=2))
@@ -260,6 +264,8 @@ async def user_buy_uc_chek(m: m, state: s):
             links = [{"text": i[0], "link": f"https://t.me/{i[1][1:]}"} for i in get_all_channels()]
             await m.answer(f"Bot ishini davom etishi uchun quyidagi kanallarga a'zo bo'ling:", reply_markup=inlinekeyboardbuttonlinks(links))
             await User_state.register.set()
+    elif m.text == "/help" or m.text == "/yordam":
+        await bot.send_video(chat_id=m.chat.id, video=InputFile("/home/admin/audiobook_store_bot/database/media/IMG_7750.MOV"), caption='Uc ishlash qo’llanma 👇👇\n#start tugamasini bosig.\n1. 💸 Uc ishlash bo’limini tanlang ✅\n2. Taklif qilish tugmasini bosing ✅ \n3. Sizga berilgan havolani do’stlarigizga yuboring.✅\n4. Siz yuborgan havoladan do’stlaringiz to’liq ro’yhatdan o’tishi shart shundagina sizga belgilangan uc beriladi 🤩\n5. Uc miqdoringiz 61 uc bo’lganda uc chiqarib olishingiz munkin ✅')
     else:
         m.answer("Iltimos rasm jo'nating!")
     
@@ -302,7 +308,8 @@ async def user_sub_menu(m: m, state: s):
             links = [{"text": i[0], "link": f"https://t.me/{i[1][1:]}"} for i in get_all_channels()]
             await m.answer(f"Bot ishini davom etishi uchun quyidagi kanallarga a'zo bo'ling:", reply_markup=inlinekeyboardbuttonlinks(links))
             await User_state.register.set()
-
+    elif m.text == "/help" or m.text == "/yordam":
+        await bot.send_video(chat_id=m.chat.id, video=InputFile("/home/admin/audiobook_store_bot/database/media/IMG_7750.MOV"), caption='Uc ishlash qo’llanma 👇👇\n#start tugamasini bosig.\n1. 💸 Uc ishlash bo’limini tanlang ✅\n2. Taklif qilish tugmasini bosing ✅ \n3. Sizga berilgan havolani do’stlarigizga yuboring.✅\n4. Siz yuborgan havoladan do’stlaringiz to’liq ro’yhatdan o’tishi shart shundagina sizga belgilangan uc beriladi 🤩\n5. Uc miqdoringiz 61 uc bo’lganda uc chiqarib olishingiz munkin ✅')
     else:
         await m.answer("Bunday menyu mavjud emas!")
         await m.answer("Kerakli menyuni tanlashingiz mumkin:",reply_markup=keyboardbutton(["💸 UC ishlash", "💸 UC OLISH 💸", "📊 Statistika", "🏆 Top reyting", "📞 Murojaat", "✅ Ma'lumot", "💬 Fikr bildirish"], row=2))
@@ -338,7 +345,8 @@ async def user_get_thought(m: m, state: s):
             links = [{"text": i[0], "link": f"https://t.me/{i[1][1:]}"} for i in get_all_channels()]
             await m.answer(f"Bot ishini davom etishi uchun quyidagi kanallarga a'zo bo'ling:", reply_markup=inlinekeyboardbuttonlinks(links))
             await User_state.register.set()
-
+    elif m.text == "/help" or m.text == "/yordam":
+        await bot.send_video(chat_id=m.chat.id, video=InputFile("/home/admin/audiobook_store_bot/database/media/IMG_7750.MOV"), caption='Uc ishlash qo’llanma 👇👇\n#start tugamasini bosig.\n1. 💸 Uc ishlash bo’limini tanlang ✅\n2. Taklif qilish tugmasini bosing ✅ \n3. Sizga berilgan havolani do’stlarigizga yuboring.✅\n4. Siz yuborgan havoladan do’stlaringiz to’liq ro’yhatdan o’tishi shart shundagina sizga belgilangan uc beriladi 🤩\n5. Uc miqdoringiz 61 uc bo’lganda uc chiqarib olishingiz munkin ✅')
     else:
         await m.answer("Bunday menyu mavjud emas!")
         await m.answer("Kerakli menyuni tanlashingiz mumkin:",reply_markup=keyboardbutton(["💸 UC ishlash", "💸 UC OLISH 💸", "📊 Statistika", "🏆 Top reyting", "📞 Murojaat", "✅ Ma'lumot", "💬 Fikr bildirish"], row=2))
@@ -371,7 +379,8 @@ async def user_get_pubg_id(m: m, state: s):
             links = [{"text": i[0], "link": f"https://t.me/{i[1][1:]}"} for i in get_all_channels()]
             await m.answer(f"Bot ishini davom etishi uchun quyidagi kanallarga a'zo bo'ling:", reply_markup=inlinekeyboardbuttonlinks(links))
             await User_state.register.set()
-
+    elif m.text == "/help" or m.text == "/yordam":
+        await bot.send_video(chat_id=m.chat.id, video=InputFile("/home/admin/audiobook_store_bot/database/media/IMG_7750.MOV"), caption='Uc ishlash qo’llanma 👇👇\n#start tugamasini bosig.\n1. 💸 Uc ishlash bo’limini tanlang ✅\n2. Taklif qilish tugmasini bosing ✅ \n3. Sizga berilgan havolani do’stlarigizga yuboring.✅\n4. Siz yuborgan havoladan do’stlaringiz to’liq ro’yhatdan o’tishi shart shundagina sizga belgilangan uc beriladi 🤩\n5. Uc miqdoringiz 61 uc bo’lganda uc chiqarib olishingiz munkin ✅')
     else:
         await m.answer("Bunday menyu mavjud emas!")
         await m.answer("Kerakli menyuni tanlashingiz mumkin:",reply_markup=keyboardbutton(["💸 UC ishlash", "💸 UC OLISH 💸", "📊 Statistika", "🏆 Top reyting", "📞 Murojaat", "✅ Ma'lumot", "💬 Fikr bildirish"], row=2))
@@ -408,7 +417,8 @@ async def user_get_uc(m: m, state: s):
             links = [{"text": i[0], "link": f"https://t.me/{i[1][1:]}"} for i in get_all_channels()]
             await m.answer(f"Bot ishini davom etishi uchun quyidagi kanallarga a'zo bo'ling:", reply_markup=inlinekeyboardbuttonlinks(links))
             await User_state.register.set()
-
+    elif m.text == "/help" or m.text == "/yordam":
+        await bot.send_video(chat_id=m.chat.id, video=InputFile("/home/admin/audiobook_store_bot/database/media/IMG_7750.MOV"), caption='Uc ishlash qo’llanma 👇👇\n#start tugamasini bosig.\n1. 💸 Uc ishlash bo’limini tanlang ✅\n2. Taklif qilish tugmasini bosing ✅ \n3. Sizga berilgan havolani do’stlarigizga yuboring.✅\n4. Siz yuborgan havoladan do’stlaringiz to’liq ro’yhatdan o’tishi shart shundagina sizga belgilangan uc beriladi 🤩\n5. Uc miqdoringiz 61 uc bo’lganda uc chiqarib olishingiz munkin ✅')
     else:
         await m.answer("Bunday menyu mavjud emas!")
         await m.answer("Kerakli menyuni tanlashingiz mumkin:",reply_markup=keyboardbutton(["💸 UC ishlash", "💸 UC OLISH 💸", "📊 Statistika", "🏆 Top reyting", "📞 Murojaat", "✅ Ma'lumot", "💬 Fikr bildirish"], row=2))

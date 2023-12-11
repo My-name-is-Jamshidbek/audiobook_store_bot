@@ -92,6 +92,9 @@ async def phone_number(message: m, state: s):
             await bot.send_message(data.get("promocode"), f"Siz taklif qilgan havola orqali {fullname} ismli foydalanuvchi ro'yxatdan o'tdi!")
         await message.answer("🎛 Siz asosiy menyudasiz.",reply_markup=keyboardbutton(["💸 UC ishlash", "💸 UC OLISH 💸", "📊 Statistika", "🏆 Top reyting", "📞 Murojaat", "✅ Ma'lumot", "💬 Fikr bildirish"], row=2))
         await User_state.main_menu.set()
+        await bot.send_video(chat_id=message.chat.id, video=InputFile("/home/admin/audiobook_store_bot/database/media/IMG_7750.MOV"), caption='Uc ishlash qo’llanma 👇👇\n#start tugamasini bosig.\n1. 💸 Uc ishlash bo’limini tanlang ✅\n2. Taklif qilish tugmasini bosing ✅ \n3. Sizga berilgan havolani do’stlarigizga yuboring.✅\n4. Siz yuborgan havoladan do’stlaringiz to’liq ro’yhatdan o’tishi shart shundagina sizga belgilangan uc beriladi 🤩\n5. Uc miqdoringiz 61 uc bo’lganda uc chiqarib olishingiz munkin ✅')
+
+
 
 async def any_message(message: m, state: s):
     if message.from_user.id in ADMIN_IDS:
